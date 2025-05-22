@@ -1,10 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import axios from 'axios';
+import axios, { AxiosResponse, AxiosError } from 'axios';
 import { useNavigate } from 'react-router-dom';
-
-interface User {
-  username: string;
-}
+import { User, AuthResponse, AuthState, ApiError } from '../types';
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -40,7 +37,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   // Check if user is already authenticated on initial load
   useEffect(() => {
-    const checkAuthStatus = () => {
+    const checkAuthStatus = (): void => {
       try {
         const token = localStorage.getItem('auth_token');
         if (token) {
@@ -51,7 +48,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           setUser({ username: 'user' }); // Placeholder
         }
       } catch (error) {
-        console.error('Error checking authentication status:', error);
+        const apiError = error as ApiError;
+        console.error('Error checking authentication status:', apiError);
       } finally {
         setLoading(false);
       }
@@ -65,7 +63,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setError(null);
 
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/login', {
+      const response: AxiosResponse<AuthResponse> = await axios.post('http://localhost:5000/api/auth/login', {
         username,
         password
       });
@@ -86,9 +84,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       console.log('Logged in successfully');
     } catch (err) {
-      console.error('Login failed:', err);
-      setError('Login failed. Please check your credentials and try again.');
-      throw err;
+      const apiError = err as ApiError;
+      console.error('Login failed:', apiError);
+      setError(apiError.response?.data?.message || 'Login failed. Please check your credentials and try again.');
+      throw apiError;
     } finally {
       setLoading(false);
     }
@@ -105,7 +104,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       console.log('Logged out successfully');
     } catch (error) {
-      console.error('Logout failed:', error);
+      const apiError = error as ApiError;
+      console.error('Logout failed:', apiError);
     }
   };
 

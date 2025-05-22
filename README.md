@@ -1,6 +1,96 @@
-# Getting Started with Create React App
+# JDM QA Demo Application
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A full-stack task management application with authentication built using React, TypeScript, and Express.
+
+## Project Overview
+
+This application demonstrates modern web development practices including:
+
+- TypeScript integration for type-safe code
+- RESTful API architecture
+- JWT-based authentication
+- React Context API for state management
+- Form validation with Formik and Yup
+- Modular backend architecture
+- Code quality tools (ESLint & Prettier)
+
+## Tech Stack
+
+### Frontend
+- React 19
+- TypeScript
+- React Router for navigation
+- Formik & Yup for form handling and validation
+- Bootstrap for styling
+- Axios for API requests
+
+### Backend
+- Express.js
+- JWT for authentication
+- Express Validator for request validation
+
+## Project Structure
+
+```
+jdmqademo/
+├── build/                # Production build output
+├── docs/                 # Project documentation
+├── node_modules/         # Dependencies
+├── public/               # Static assets
+├── server/               # Backend code
+│   ├── controllers/      # Route controllers
+│   ├── middleware/       # Express middleware
+│   ├── models/           # Data models
+│   └── routes/           # API routes
+├── src/                  # Frontend code
+│   ├── components/       # React components
+│   ├── context/          # React context providers
+│   ├── routes/           # Frontend routes
+│   ├── services/         # API service functions
+│   ├── utils/            # Helper functions
+│   └── types.ts          # TypeScript type definitions
+├── .env                  # Environment variables
+├── .eslintrc.js          # ESLint configuration
+├── .prettierrc.js        # Prettier configuration
+├── package.json          # Project dependencies and scripts
+├── server.js             # Express server entry point
+└── tsconfig.json         # TypeScript configuration
+```
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js (v16+)
+- npm (v8+)
+
+### Installation
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/josemejias11/jdmqademo.git
+   cd jdmqademo
+   ```
+
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+3. Create a `.env` file in the root directory with the following:
+   ```
+   PORT=3000
+   JWT_SECRET=your_jwt_secret_here
+   ```
+
+4. Start the development servers:
+   ```bash
+   # In one terminal - start the React development server
+   npm start
+   
+   # In another terminal - start the Express server
+   npm run dev
+   ```
 
 ## Available Scripts
 
@@ -8,63 +98,103 @@ In the project directory, you can run:
 
 ### `npm start`
 
-Runs the app in the development mode.\
+Runs the frontend app in development mode.\
 Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### `npm run dev`
 
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Runs the backend Express server with nodemon for automatic reloading.
 
 ### `npm run build`
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Builds the app for production to the `build` folder.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### `npm run lint`
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Runs ESLint to check for code quality issues.
 
-### `npm run eject`
+### `npm run lint:fix`
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+Automatically fixes ESLint issues where possible.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### `npm run format`
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+Runs Prettier to format all code files.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### `npm run format:check`
 
-## Learn More
+Checks if files are formatted according to Prettier rules.
+
+### `npm test`
+
+Set up for Playwright tests (not yet configured).
+
+## Development Workflow
+
+1. Pull the latest code from the repository
+2. Install any new dependencies with `npm install`
+3. Start both the frontend and backend servers as described above
+4. Make your changes
+5. Format your code with `npm run format`
+6. Run linting with `npm run lint:fix` to ensure code quality
+7. Test your changes locally
+8. Commit and push your changes
+
+## Backend API
+
+The backend provides the following API endpoints:
+
+### Authentication
+
+- **POST /api/auth/login**: Authenticate a user and receive a JWT token
+  ```json
+  // Request
+  {
+    "username": "user",
+    "password": "password"
+  }
+  
+  // Response
+  {
+    "success": true,
+    "token": "jwt_token_here",
+    "user": {
+      "id": 1,
+      "username": "user"
+    }
+  }
+  ```
+
+### Task Management
+
+- **GET /api/tasks**: Get all tasks for the authenticated user
+- **GET /api/tasks/:id**: Get a specific task by ID
+- **POST /api/tasks**: Create a new task
+  ```json
+  // Request
+  {
+    "title": "Task title",
+    "description": "Task description"
+  }
+  ```
+- **PUT /api/tasks/:id**: Update an existing task
+- **DELETE /api/tasks/:id**: Delete a task
+
+All task endpoints require authentication via JWT token in the Authorization header:
+```
+Authorization: Bearer your_jwt_token
+```
+
+## Create React App
+
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+For additional information about advanced features, see:
+- [Code Splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+- [Analyzing Bundle Size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+- [Making a Progressive Web App](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+- [Advanced Configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+- [Deployment](https://facebook.github.io/create-react-app/docs/deployment)
+- [Troubleshooting](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)

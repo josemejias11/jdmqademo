@@ -19,12 +19,12 @@ const TaskList: React.FC = () => {
   }
 
   return (
-      <ul className="list-group">
-        {tasks.map((task: Task) => (
-            <TaskItem key={task.id} task={task} />
-        ))}
-      </ul>
+    <ul className="list-group">
+      {tasks.map((task: Task) => (
+        <TaskItem key={task.id} task={task} />
+      ))}
+    </ul>
   );
-}
+};
 
 export default TaskList;

@@ -1,5 +1,5 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import axios, { AxiosResponse, AxiosError } from 'axios';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import axios, { AxiosResponse } from 'axios';
 import { Task, BackendTask, ApiError, AxiosAuthConfig } from '../types';
 
 const API_URL = 'http://localhost:5000/api/tasks';
@@ -39,28 +39,24 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
   const [error, setError] = useState<string | null>(null);
 
   // Get the auth token for API requests
-  const getAuthToken = (): string | null => {
-    return localStorage.getItem('auth_token');
-  };
+  const getAuthToken = (): string | null => localStorage.getItem('auth_token');
 
   // Configure axios with auth token
-  const getAxiosConfig = (): AxiosAuthConfig => {
+  const getAxiosConfig = useCallback((): AxiosAuthConfig => {
     const token = getAuthToken();
     return {
       headers: {
         Authorization: `Bearer ${token}`
       }
     };
-  };
+  }, []);
 
   // Map backend task to frontend task
-  const mapBackendTask = (backendTask: BackendTask): Task => {
-    return {
-      id: backendTask.id,
-      text: backendTask.title,
-      done: backendTask.completed
-    };
-  };
+  const mapBackendTask = (backendTask: BackendTask): Task => ({
+    id: backendTask.id,
+    text: backendTask.title,
+    done: backendTask.completed
+  });
 
   // Load tasks from API on initial load
   useEffect(() => {
@@ -76,14 +72,16 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
       } catch (err) {
         const apiError = err as ApiError;
         console.error('Error fetching tasks:', apiError);
-        setError(apiError.response?.data?.message || 'Failed to load tasks. Please try again later.');
+        setError(
+          apiError.response?.data?.message || 'Failed to load tasks. Please try again later.'
+        );
       } finally {
         setLoading(false);
       }
     };
 
     fetchTasks();
-  }, []);
+  }, [getAxiosConfig]);
 
   // Add a new task via API
   const addTask = async (text: string): Promise<void> => {
@@ -94,8 +92,8 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
 
     try {
       const response: AxiosResponse<BackendTask> = await axios.post(
-        API_URL, 
-        { title: text.trim(), description: '' }, 
+        API_URL,
+        { title: text.trim(), description: '' },
         getAxiosConfig()
       );
 
@@ -131,18 +129,20 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
 
       // Update the task via API
       const response: AxiosResponse<BackendTask> = await axios.put(
-        `${API_URL}/${id}`, 
-        { completed: !taskToToggle.done }, 
+        `${API_URL}/${id}`,
+        { completed: !taskToToggle.done },
         getAxiosConfig()
       );
 
       // Update local state
       const updatedTask = mapBackendTask(response.data);
-      setTasks(tasks.map(t => t.id === id ? updatedTask : t));
+      setTasks(tasks.map(t => (t.id === id ? updatedTask : t)));
     } catch (err) {
       const apiError = err as ApiError;
       console.error('Error toggling task:', apiError);
-      setError(apiError.response?.data?.message || 'Failed to update task. Please try again later.');
+      setError(
+        apiError.response?.data?.message || 'Failed to update task. Please try again later.'
+      );
     } finally {
       setLoading(false);
     }
@@ -159,7 +159,9 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
     } catch (err) {
       const apiError = err as ApiError;
       console.error('Error deleting task:', apiError);
-      setError(apiError.response?.data?.message || 'Failed to delete task. Please try again later.');
+      setError(
+        apiError.response?.data?.message || 'Failed to delete task. Please try again later.'
+      );
     } finally {
       setLoading(false);
     }

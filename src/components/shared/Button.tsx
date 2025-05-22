@@ -22,13 +22,13 @@ const Button: React.FC<ButtonProps> = ({
 }) => {
   const baseClass = 'btn';
   const variantClass = `btn-${variant}`;
-  
+
   return (
     <button
-      type={type}
       className={`${baseClass} ${variantClass} ${className}`}
-      onClick={onClick}
       disabled={disabled}
+      type={type}
+      onClick={onClick}
     >
       {children}
     </button>

@@ -9,12 +9,8 @@ const router = express.Router();
 router.post(
   '/login',
   [
-    body('username')
-      .notEmpty()
-      .withMessage('Username is required'),
-    body('password')
-      .notEmpty()
-      .withMessage('Password is required')
+    body('username').notEmpty().withMessage('Username is required'),
+    body('password').notEmpty().withMessage('Password is required')
   ],
   validate,
   authController.login

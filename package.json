@@ -24,7 +24,11 @@
     "build": "react-scripts build",
     "dev": "nodemon server.js",
     "test": "echo \"No tests configured - consider setting up Playwright\"",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "lint": "eslint --ext .js,.jsx,.ts,.tsx src/ server/",
+    "lint:fix": "eslint --ext .js,.jsx,.ts,.tsx src/ server/ --fix",
+    "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx,json,css,md}\" \"server/**/*.js\" \"*.js\"",
+    "format:check": "prettier --check \"src/**/*.{js,jsx,ts,tsx,json,css,md}\" \"server/**/*.js\" \"*.js\""
   },
   "eslintConfig": {
     "extends": [
@@ -46,7 +50,10 @@
   "devDependencies": {
     "@types/react": "^19.1.5",
     "@types/react-dom": "^19.1.5",
+    "eslint-config-prettier": "^10.1.5",
+    "eslint-plugin-prettier": "^5.4.0",
     "nodemon": "^3.1.10",
+    "prettier": "^3.5.3",
     "typescript": "^4.9.5"
   },
   "description": "This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).",

@@ -1,6 +1,6 @@
 // Task service functions
 import axios, { AxiosResponse } from 'axios';
-import { Task, BackendTask, ApiError, AxiosAuthConfig } from '../types';
+import { Task, BackendTask, ApiError } from '../types';
 import { getAuthConfig } from '../utils/authUtils';
 import { mapBackendTask } from '../utils/taskUtils';
 
@@ -36,8 +36,8 @@ export const addTask = async (text: string): Promise<Task> => {
 
   try {
     const response: AxiosResponse<BackendTask> = await axios.post(
-      API_URL, 
-      { title: text.trim(), description: '' }, 
+      API_URL,
+      { title: text.trim(), description: '' },
       getAuthConfig()
     );
 
@@ -59,8 +59,8 @@ export const addTask = async (text: string): Promise<Task> => {
 export const toggleTaskDone = async (id: number, currentDoneStatus: boolean): Promise<Task> => {
   try {
     const response: AxiosResponse<BackendTask> = await axios.put(
-      `${API_URL}/${id}`, 
-      { completed: !currentDoneStatus }, 
+      `${API_URL}/${id}`,
+      { completed: !currentDoneStatus },
       getAuthConfig()
     );
 

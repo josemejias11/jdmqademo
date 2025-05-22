@@ -14,13 +14,13 @@ const getTasks = (req, res, next) => {
 const getTaskById = (req, res, next) => {
   try {
     const task = Task.findById(req.params.id, req.user.username);
-    
+
     if (!task) {
       const error = new Error('Task not found');
       error.statusCode = 404;
       return next(error);
     }
-    
+
     res.json({ success: true, data: task });
   } catch (err) {
     next(err);
@@ -36,7 +36,7 @@ const createTask = (req, res, next) => {
       description,
       userId: req.user.username
     });
-    
+
     res.status(201).json({ success: true, data: task });
   } catch (err) {
     next(err);
@@ -52,13 +52,13 @@ const updateTask = (req, res, next) => {
       description,
       completed
     });
-    
+
     if (!task) {
       const error = new Error('Task not found');
       error.statusCode = 404;
       return next(error);
     }
-    
+
     res.json({ success: true, data: task });
   } catch (err) {
     next(err);
@@ -69,13 +69,13 @@ const updateTask = (req, res, next) => {
 const deleteTask = (req, res, next) => {
   try {
     const deleted = Task.delete(req.params.id, req.user.username);
-    
+
     if (!deleted) {
       const error = new Error('Task not found');
       error.statusCode = 404;
       return next(error);
     }
-    
+
     res.json({ success: true, message: 'Task deleted successfully' });
   } catch (err) {
     next(err);

@@ -4,15 +4,15 @@ import TaskForm from './TaskForm';
 import TaskList from './TaskList';
 
 function Task() {
-    return (
-        <div className="container py-5">
-            <h1 className="text-center mb-4">Task Manager</h1>
+  return (
+    <div className="container py-5">
+      <h1 className="text-center mb-4">Task Manager</h1>
 
-            <TaskForm />
+      <TaskForm />
 
-            <TaskList />
-        </div>
-    );
+      <TaskList />
+    </div>
+  );
 }
 
 export default Task;

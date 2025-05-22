@@ -1,7 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import axios, { AxiosResponse, AxiosError } from 'axios';
-import { useNavigate } from 'react-router-dom';
-import { User, AuthResponse, AuthState, ApiError } from '../types';
+import axios, { AxiosResponse } from 'axios';
+import { User, AuthResponse, ApiError } from '../types';
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -63,10 +62,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setError(null);
 
     try {
-      const response: AxiosResponse<AuthResponse> = await axios.post('http://localhost:5000/api/auth/login', {
-        username,
-        password
-      });
+      const response: AxiosResponse<AuthResponse> = await axios.post(
+        'http://localhost:5000/api/auth/login',
+        {
+          username,
+          password
+        }
+      );
 
       const data = response.data;
       const token = data?.success ? data.token : null;
@@ -82,11 +84,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setIsAuthenticated(true);
       setUser({ username });
 
-      console.log('Logged in successfully');
+      console.warn('Logged in successfully');
     } catch (err) {
       const apiError = err as ApiError;
       console.error('Login failed:', apiError);
-      setError(apiError.response?.data?.message || 'Login failed. Please check your credentials and try again.');
+      setError(
+        apiError.response?.data?.message ||
+          'Login failed. Please check your credentials and try again.'
+      );
       throw apiError;
     } finally {
       setLoading(false);
@@ -102,7 +107,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setIsAuthenticated(false);
       setUser(null);
 
-      console.log('Logged out successfully');
+      console.warn('Logged out successfully');
     } catch (error) {
       const apiError = error as ApiError;
       console.error('Logout failed:', apiError);

@@ -7,7 +7,7 @@ import { TaskProvider } from './context/TaskContext';
 import { AuthProvider } from './context/AuthContext';
 
 const rootElement = document.getElementById('root');
-if (!rootElement) throw new Error("Root element not found");
+if (!rootElement) throw new Error('Root element not found');
 const root = ReactDOM.createRoot(rootElement);
 const isProd = process.env.NODE_ENV === 'production';
 

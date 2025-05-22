@@ -12,7 +12,10 @@ const API_URL = 'http://localhost:5000/api';
  * @returns The response data from the API
  * @throws ApiError if login fails
  */
-export const login = async (username: string, password: string): Promise<{ success: boolean; user: User }> => {
+export const login = async (
+  username: string,
+  password: string
+): Promise<{ success: boolean; user: User }> => {
   try {
     const response: AxiosResponse<AuthResponse> = await axios.post(`${API_URL}/auth/login`, {
       username,
@@ -47,7 +50,7 @@ export const logout = (): void => {
   try {
     // Remove token from localStorage
     removeAuthToken();
-    console.log('Logged out successfully');
+    console.warn('Logged out successfully');
   } catch (error) {
     console.error('Logout failed:', error);
   }

@@ -4,7 +4,20 @@ interface InputProps {
   value: string;
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
   placeholder?: string;
-  type?: 'text' | 'password' | 'email' | 'number' | 'tel' | 'url' | 'search' | 'date' | 'time' | 'datetime-local' | 'month' | 'week' | 'color';
+  type?:
+    | 'text'
+    | 'password'
+    | 'email'
+    | 'number'
+    | 'tel'
+    | 'url'
+    | 'search'
+    | 'date'
+    | 'time'
+    | 'datetime-local'
+    | 'month'
+    | 'week'
+    | 'color';
   className?: string;
   disabled?: boolean;
   name?: string;
@@ -30,15 +43,15 @@ const Input: React.FC<InputProps> = ({
 
   return (
     <input
-      type={type}
       className={`${baseClass} ${className}`}
+      disabled={disabled}
+      id={id}
+      name={name}
+      placeholder={placeholder}
+      required={required}
+      type={type}
       value={value}
       onChange={onChange}
-      placeholder={placeholder}
-      disabled={disabled}
-      name={name}
-      id={id}
-      required={required}
     />
   );
 };

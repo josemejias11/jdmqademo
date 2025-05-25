@@ -4,7 +4,7 @@ import { Task, BackendTask, ApiError } from '../types';
 import { getAuthConfig } from '../utils/authUtils';
 import { mapBackendTask } from '../utils/taskUtils';
 
-const API_URL = 'http://localhost:5000/api/tasks';
+const API_URL = '/api/tasks';
 
 /**
  * Fetch all tasks from the API

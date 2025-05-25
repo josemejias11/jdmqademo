@@ -3,7 +3,7 @@ import axios, { AxiosResponse } from 'axios';
 import { User, AuthResponse, AuthState, ApiError } from '../types';
 import { setAuthToken, removeAuthToken } from '../utils/authUtils';
 
-const API_URL = 'http://localhost:5000/api';
+const API_URL = '/api';
 
 /**
  * Login a user with username and password

@@ -63,7 +63,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
     try {
       const response: AxiosResponse<AuthResponse> = await axios.post(
-        'http://localhost:5000/api/auth/login',
+        '/api/auth/login',
         {
           username,
           password

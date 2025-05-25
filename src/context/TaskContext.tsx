@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useEffect, useCallback } fr
 import axios, { AxiosResponse } from 'axios';
 import { Task, BackendTask, ApiError, AxiosAuthConfig } from '../types';
 
-const API_URL = 'http://localhost:5000/api/tasks';
+const API_URL = 'http://localhost:3000/api/tasks';
 
 interface TaskContextType {
   tasks: Task[];

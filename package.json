@@ -2,6 +2,7 @@
   "name": "jdmqademo",
   "version": "0.1.0",
   "private": true,
+  "proxy": "http://localhost:5000",
   "dependencies": {
     "axios": "^1.9.0",
     "bootstrap": "^5.3.6",
@@ -67,6 +68,5 @@
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/josemejias11/jdmqademo/issues"
-  },
-  "homepage": "https://github.com/josemejias11/jdmqademo#readme"
+  }
 }

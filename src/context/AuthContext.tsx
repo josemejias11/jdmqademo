@@ -62,23 +62,21 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setError(null);
 
     try {
-      const response: AxiosResponse<AuthResponse> = await axios.post(
-        '/api/auth/login',
-        {
-          username,
-          password
-        }
-      );
+      const response: AxiosResponse<AuthResponse> = await axios.post('/api/auth/login', {
+        username,
+        password
+      });
 
       const data = response.data;
-      const token = data?.success ? data.token : null;
+      const token = data.token;
 
-      if (!token || typeof token !== 'string') {
-        throw new Error('Invalid token received from server.');
+      if (!data || !data.success || !token.trim()) {
+        console.error('Invalid login response structure:', data);
+        return;
       }
 
       // Store token in localStorage
-      localStorage.setItem('auth_token', token);
+      localStorage.setItem('auth_token', token as string);
 
       // Update auth state
       setIsAuthenticated(true);

@@ -1,12 +1,6 @@
 // Task related types
 export interface Task {
   id: number;
-  text: string;
-  done: boolean;
-}
-
-export interface BackendTask {
-  id: number;
   title: string;
   completed: boolean;
   description?: string;

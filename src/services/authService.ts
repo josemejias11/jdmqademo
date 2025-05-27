@@ -1,5 +1,5 @@
 // Authentication service functions
-import axios from 'axios';
+import apiClient from '../utils/apiClient';
 import { User, AuthResponse, AuthState, ApiError } from '../types';
 import { setAuthToken, removeAuthToken } from '../utils/authUtils';
 
@@ -17,7 +17,7 @@ const login = async (
   password: string
 ): Promise<{ success: boolean; user: User }> => {
   try {
-    const response = await axios.post<AuthResponse>(`${API_URL}/auth/login`, {
+    const response = await apiClient.post<AuthResponse>(`${API_URL}/auth/login`, {
       username,
       password
     });

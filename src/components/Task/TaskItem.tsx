@@ -13,13 +13,13 @@ const TaskItem: React.FC<Props> = ({ task }) => {
     <li className="list-group-item d-flex justify-content-between align-items-center">
       <span
         style={{
-          textDecoration: task.done ? 'line-through' : 'none',
+          textDecoration: task.completed ? 'line-through' : 'none',
           cursor: loading ? 'wait' : 'pointer',
           opacity: loading ? 0.7 : 1
         }}
         onClick={() => toggleTaskDone(task.id)}
       >
-        {task.text}
+        {task.title}
       </span>
       <button
         className="btn btn-danger btn-sm"

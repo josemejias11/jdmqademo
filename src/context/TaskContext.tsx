@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import axios, { AxiosResponse } from 'axios';
-import { Task, BackendTask, ApiError, AxiosAuthConfig } from '../types';
+import apiClient from '../utils/apiClient';
+import { Task, ApiError } from '../types';
+import { getAuthConfig } from '../utils/authUtils';
 
 const API_URL = '/api/tasks';
 
@@ -38,25 +39,10 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Get the auth token for API requests
-  const getAuthToken = (): string | null => localStorage.getItem('auth_token');
-
-  // Configure axios with auth token
-  const getAxiosConfig = useCallback((): AxiosAuthConfig => {
-    const token = getAuthToken();
-    return {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    };
+  // Use the getAuthConfig from authUtils
+  const getConfig = useCallback(() => {
+    return getAuthConfig();
   }, []);
-
-  // Map backend task to frontend task
-  const mapBackendTask = (backendTask: BackendTask): Task => ({
-    id: backendTask.id,
-    text: backendTask.title,
-    done: backendTask.completed
-  });
 
   // Load tasks from API on initial load
   useEffect(() => {
@@ -65,23 +51,28 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
       setError(null);
 
       try {
-        const response: AxiosResponse<BackendTask[]> = await axios.get(API_URL, getAxiosConfig());
-        const backendTasks = response.data;
-        const frontendTasks = backendTasks.map(mapBackendTask);
-        setTasks(frontendTasks);
+        const response = await apiClient.get(API_URL, getConfig());
+        setTasks(response.data);
       } catch (err) {
         const apiError = err as ApiError;
         console.error('Error fetching tasks:', apiError);
-        setError(
-          apiError.response?.data?.message || 'Failed to load tasks. Please try again later.'
-        );
+
+        // Special handling for 431 errors (Request Header Fields Too Large)
+        if (apiError.response?.status === 431) {
+          // This could be caused by a token that's too large
+          setError('Session expired or invalid. Please log out and log in again.');
+        } else {
+          setError(
+            apiError.response?.data?.message || 'Failed to load tasks. Please try again later.'
+          );
+        }
       } finally {
         setLoading(false);
       }
     };
 
     void fetchTasks();
-  }, [getAxiosConfig]);
+  }, [getConfig]);
 
   // Add a new task via API
   const addTask = async (text: string): Promise<void> => {
@@ -91,14 +82,13 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
     setError(null);
 
     try {
-      const response: AxiosResponse<BackendTask> = await axios.post(
+      const response = await apiClient.post(
         API_URL,
         { title: text.trim(), description: '' },
-        getAxiosConfig()
+        getConfig()
       );
 
-      const newTask = mapBackendTask(response.data);
-      setTasks([...tasks, newTask]);
+      setTasks([...tasks, response.data]);
     } catch (err) {
       const apiError = err as ApiError;
       console.error('Error adding task:', apiError);
@@ -130,15 +120,14 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
       }
 
       // Update the task via API
-      const response: AxiosResponse<BackendTask> = await axios.put(
+      const response = await apiClient.put(
         `${API_URL}/${id}`,
-        { completed: !taskToToggle.done },
-        getAxiosConfig()
+        { completed: !taskToToggle.completed },
+        getConfig()
       );
 
       // Update local state
-      const updatedTask = mapBackendTask(response.data);
-      setTasks(tasks.map(t => (t.id === id ? updatedTask : t)));
+      setTasks(tasks.map(t => (t.id === id ? response.data : t)));
     } catch (err) {
       const apiError = err as ApiError;
       console.error('Error toggling task:', apiError);
@@ -156,7 +145,7 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
     setError(null);
 
     try {
-      await axios.delete<void>(`${API_URL}/${id}`, getAxiosConfig());
+      await apiClient.delete(`${API_URL}/${id}`, getConfig());
       setTasks(tasks.filter(t => t.id !== id));
     } catch (err) {
       const apiError = err as ApiError;

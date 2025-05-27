@@ -1,8 +1,7 @@
 // Task service functions
-import axios, { AxiosResponse } from 'axios';
-import { Task, BackendTask, ApiError } from '../types';
+import apiClient from '../utils/apiClient';
+import { Task, ApiError } from '../types';
 import { getAuthConfig } from '../utils/authUtils';
-import { mapBackendTask } from '../utils/taskUtils';
 
 const API_URL = '/api/tasks';
 
@@ -13,9 +12,8 @@ const API_URL = '/api/tasks';
  */
 export const fetchTasks = async (): Promise<Task[]> => {
   try {
-    const response: AxiosResponse<BackendTask[]> = await axios.get(API_URL, getAuthConfig());
-    const backendTasks = response.data;
-    return backendTasks.map(mapBackendTask);
+    const response = await apiClient.get<Task[]>(API_URL, getAuthConfig());
+    return response.data;
   } catch (err) {
     const apiError = err as ApiError;
     console.error('Error fetching tasks:', apiError);
@@ -35,13 +33,13 @@ export const addTask = async (text: string): Promise<Task> => {
   }
 
   try {
-    const response: AxiosResponse<BackendTask> = await axios.post(
+    const response = await apiClient.post<Task>(
       API_URL,
       { title: text.trim(), description: '' },
       getAuthConfig()
     );
 
-    return mapBackendTask(response.data);
+    return response.data;
   } catch (err) {
     const apiError = err as ApiError;
     console.error('Error adding task:', apiError);
@@ -52,19 +50,22 @@ export const addTask = async (text: string): Promise<Task> => {
 /**
  * Toggle the 'done' status of a task via API
  * @param id The task ID
- * @param currentDoneStatus The current 'done' status
+ * @param currentCompletedStatus The current 'completed' status
  * @returns The updated Task
  * @throws ApiError if updating fails
  */
-export const toggleTaskDone = async (id: number, currentDoneStatus: boolean): Promise<Task> => {
+export const toggleTaskDone = async (
+  id: number,
+  currentCompletedStatus: boolean
+): Promise<Task> => {
   try {
-    const response: AxiosResponse<BackendTask> = await axios.put(
+    const response = await apiClient.put<Task>(
       `${API_URL}/${id}`,
-      { completed: !currentDoneStatus },
+      { completed: !currentCompletedStatus },
       getAuthConfig()
     );
 
-    return mapBackendTask(response.data);
+    return response.data;
   } catch (err) {
     const apiError = err as ApiError;
     console.error('Error toggling task:', apiError);
@@ -79,7 +80,7 @@ export const toggleTaskDone = async (id: number, currentDoneStatus: boolean): Pr
  */
 export const deleteTask = async (id: number): Promise<void> => {
   try {
-    await axios.delete<void>(`${API_URL}/${id}`, getAuthConfig());
+    await apiClient.delete<void>(`${API_URL}/${id}`, getAuthConfig());
   } catch (err) {
     const apiError = err as ApiError;
     console.error('Error deleting task:', apiError);

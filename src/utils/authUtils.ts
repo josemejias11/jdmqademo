@@ -12,6 +12,10 @@ export const getAuthToken = (): string | null => localStorage.getItem('auth_toke
  * @param token The token to store
  */
 export const setAuthToken = (token: string): void => {
+  // Ensure token is not excessively large
+  if (token && token.length > 8000) {
+    console.warn('Warning: Auth token is unusually large');
+  }
   localStorage.setItem('auth_token', token);
 };
 
@@ -30,7 +34,9 @@ export const getAuthConfig = (): AxiosAuthConfig => {
   const token = getAuthToken();
   return {
     headers: {
-      Authorization: `Bearer ${token}`
+      Authorization: token ? `Bearer ${token}` : '',
+      'Content-Type': 'application/json',
+      Accept: 'application/json'
     }
   };
 };

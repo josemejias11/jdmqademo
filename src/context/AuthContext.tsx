@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import axios, { AxiosResponse } from 'axios';
+import apiClient from '../utils/apiClient';
 import { User, AuthResponse, ApiError } from '../types';
+import { getAuthToken, setAuthToken, removeAuthToken } from '../utils/authUtils';
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -38,7 +39,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   useEffect(() => {
     const checkAuthStatus = (): void => {
       try {
-        const token = localStorage.getItem('auth_token');
+        const token = getAuthToken();
         if (token) {
           // In a real app, you would validate the token here
           // For now, we'll just assume it's valid if it exists
@@ -62,7 +63,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setError(null);
 
     try {
-      const response: AxiosResponse<AuthResponse> = await axios.post('/api/auth/login', {
+      // Use minimal headers for login request
+      const response = await apiClient.post<AuthResponse>('/api/auth/login', {
         username,
         password
       });
@@ -76,7 +78,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       }
 
       // Store token in localStorage
-      localStorage.setItem('auth_token', token as string);
+      setAuthToken(token as string);
 
       // Update auth state
       setIsAuthenticated(true);
@@ -86,10 +88,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     } catch (err) {
       const apiError = err as ApiError;
       console.error('Login failed:', apiError);
-      setError(
-        apiError.response?.data?.message ||
-          'Login failed. Please check your credentials and try again.'
-      );
+
+      // Special handling for 431 errors
+      if (apiError.response?.status === 431) {
+        setError('Server error: Headers too large. Please try again later.');
+      } else {
+        setError(
+          apiError.response?.data?.message ||
+            'Login failed. Please check your credentials and try again.'
+        );
+      }
       throw apiError;
     } finally {
       setLoading(false);
@@ -99,7 +107,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const logout = (): void => {
     try {
       // Remove token from localStorage
-      localStorage.removeItem('auth_token');
+      removeAuthToken();
 
       // Update auth state
       setIsAuthenticated(false);

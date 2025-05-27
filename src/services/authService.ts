@@ -1,7 +1,7 @@
 // Authentication service functions
 import apiClient from '../utils/apiClient';
 import { User, AuthResponse, AuthState, ApiError } from '../types';
-import { setAuthToken, removeAuthToken } from '../utils/authUtils';
+import { setAuthToken, removeAuthToken } from '../utils/';
 
 const API_URL = '/api';
 

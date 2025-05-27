@@ -9,6 +9,7 @@ module.exports = {
     sourceType: 'module'
   },
   env: {
+    node: true,
     es6: true
   },
   rules: {
@@ -36,7 +37,8 @@ module.exports = {
       env: {
         browser: true,
         es6: true,
-        jest: true
+        jest: true,
+        node: true
       },
       extends: [
         'react-app', // Base CRA ESLint configuration

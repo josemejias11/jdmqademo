@@ -1,89 +1,172 @@
-// Task service functions
 import apiClient from '../utils/apiClient';
-import { Task, ApiError } from '../types';
 import { getAuthConfig } from '../utils/authUtils';
+
+// Task interface
+export interface Task {
+  id: string;
+  title: string;
+  description: string;
+  completed: boolean;
+  userId: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+// Task form values interface
+export interface TaskFormValues {
+  title: string;
+  description: string;
+  completed: boolean;
+}
+
+// API Error interface
+export interface ApiError {
+  message: string;
+  status?: number;
+  [key: string]: any;
+}
 
 const API_URL = '/api/tasks';
 
 /**
- * Fetch all tasks from the API
- * @returns Array of Task objects
+ * Get all tasks for the current user
+ * @returns Promise with all tasks
  * @throws ApiError if fetching fails
  */
-export const fetchTasks = async (): Promise<Task[]> => {
+export const getTasks = async (): Promise<{ success: boolean; data: Task[] }> => {
   try {
-    const response = await apiClient.get<Task[]>(API_URL, getAuthConfig());
+    const config = getAuthConfig();
+    const response = await apiClient.get(API_URL, config);
     return response.data;
-  } catch (err) {
-    const apiError = err as ApiError;
-    console.error('Error fetching tasks:', apiError);
+  } catch (err: unknown) {
+    // Convert unknown error to ApiError
+    const apiError: ApiError = {
+      message: err instanceof Error ? err.message : 'Failed to fetch tasks',
+      status: err && typeof err === 'object' && 'response' in err ? 
+        (err as { response?: { status?: number } }).response?.status : undefined
+    };
     throw apiError;
   }
 };
 
 /**
- * Add a new task via API
- * @param text The task text
- * @returns The newly created Task
- * @throws ApiError if adding fails
- */
-export const addTask = async (text: string): Promise<Task> => {
-  if (text.trim() === '') {
-    throw new Error('Task text cannot be empty');
-  }
-
-  try {
-    const response = await apiClient.post<Task>(
-      API_URL,
-      { title: text.trim(), description: '' },
-      getAuthConfig()
-    );
-
-    return response.data;
-  } catch (err) {
-    const apiError = err as ApiError;
-    console.error('Error adding task:', apiError);
-    throw apiError;
-  }
-};
-
-/**
- * Toggle the 'done' status of a task via API
+ * Get a specific task by ID
  * @param id The task ID
- * @param currentCompletedStatus The current 'completed' status
- * @returns The updated Task
- * @throws ApiError if updating fails
+ * @returns Promise with the requested task
+ * @throws ApiError if fetching fails
  */
-export const toggleTaskDone = async (
-  id: number,
-  currentCompletedStatus: boolean
-): Promise<Task> => {
+export const getTaskById = async (id: string): Promise<{ success: boolean; data: Task }> => {
   try {
-    const response = await apiClient.put<Task>(
-      `${API_URL}/${id}`,
-      { completed: !currentCompletedStatus },
-      getAuthConfig()
-    );
-
+    const config = getAuthConfig();
+    const response = await apiClient.get(`${API_URL}/${id}`, config);
     return response.data;
-  } catch (err) {
-    const apiError = err as ApiError;
-    console.error('Error toggling task:', apiError);
+  } catch (err: unknown) {
+    // Convert unknown error to ApiError
+    const apiError: ApiError = {
+      message: err instanceof Error ? err.message : `Failed to fetch task ${id}`,
+      status: err && typeof err === 'object' && 'response' in err ? 
+        (err as { response?: { status?: number } }).response?.status : undefined
+    };
     throw apiError;
   }
 };
 
 /**
- * Delete a task via API
- * @param id The task ID
+ * Create a new task
+ * @param taskData The task data
+ * @returns Promise with the created task
+ * @throws ApiError if creation fails
+ */
+export const createTask = async (
+  taskData: TaskFormValues
+): Promise<{ success: boolean; data: Task }> => {
+  try {
+    if (!taskData.title || taskData.title.trim() === '') {
+      throw new Error('Task title cannot be empty');
+    }
+
+    const config = getAuthConfig();
+    const response = await apiClient.post(API_URL, taskData, config);
+    return response.data;
+  } catch (err: unknown) {
+    // Convert unknown error to ApiError
+    const apiError: ApiError = {
+      message: err instanceof Error ? err.message : 'Failed to create task',
+      status: err && typeof err === 'object' && 'response' in err ? 
+        (err as { response?: { status?: number } }).response?.status : undefined
+    };
+    throw apiError;
+  }
+};
+
+/**
+ * Update an existing task
+ * @param id The task ID to update
+ * @param taskData The updated task data
+ * @returns Promise with the updated task
+ * @throws ApiError if update fails
+ */
+export const updateTask = async (
+  id: string,
+  taskData: Partial<TaskFormValues>
+): Promise<{ success: boolean; data: Task }> => {
+  try {
+    const config = getAuthConfig();
+    const response = await apiClient.put(`${API_URL}/${id}`, taskData, config);
+    return response.data;
+  } catch (err: unknown) {
+    // Convert unknown error to ApiError
+    const apiError: ApiError = {
+      message: err instanceof Error ? err.message : `Failed to update task ${id}`,
+      status: err && typeof err === 'object' && 'response' in err ? 
+        (err as { response?: { status?: number } }).response?.status : undefined
+    };
+    throw apiError;
+  }
+};
+
+/**
+ * Delete a task
+ * @param id The task ID to delete
+ * @returns Promise with the deletion result
  * @throws ApiError if deletion fails
  */
-export const deleteTask = async (id: number): Promise<void> => {
+export const deleteTask = async (id: string): Promise<{ success: boolean; message: string }> => {
   try {
-    await apiClient.delete<void>(`${API_URL}/${id}`, getAuthConfig());
-  } catch (err) {
-    const apiError = err as ApiError;
-    console.error('Error deleting task:', apiError);
+    const config = getAuthConfig();
+    const response = await apiClient.delete(`${API_URL}/${id}`, config);
+    return response.data;
+  } catch (err: unknown) {
+    // Convert unknown error to ApiError
+    const apiError: ApiError = {
+      message: err instanceof Error ? err.message : `Failed to delete task ${id}`,
+      status: err && typeof err === 'object' && 'response' in err ? 
+        (err as { response?: { status?: number } }).response?.status : undefined
+    };
+    throw apiError;
+  }
+};
+
+/**
+ * Toggle the completion status of a task
+ * @param id The task ID
+ * @param currentStatus The current completion status
+ * @returns Promise with the updated task
+ * @throws ApiError if update fails
+ */
+export const toggleTaskCompletion = async (
+  id: string,
+  currentStatus: boolean
+): Promise<{ success: boolean; data: Task }> => {
+  try {
+    return await updateTask(id, { completed: !currentStatus });
+  } catch (err: unknown) {
+    // Convert unknown error to ApiError
+    const apiError: ApiError = {
+      message: err instanceof Error ? err.message : `Failed to toggle task ${id} completion`,
+      status: err && typeof err === 'object' && 'response' in err ? 
+        (err as { response?: { status?: number } }).response?.status : undefined
+    };
     throw apiError;
   }
 };

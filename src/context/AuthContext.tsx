@@ -1,15 +1,41 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import apiClient from '../utils/apiClient';
-import { User, AuthResponse, ApiError } from '../types';
 import { getAuthToken, setAuthToken, removeAuthToken } from '../utils/authUtils';
 
-interface AuthContextType {
+// Define types here to avoid dependency on external types file
+export interface User {
+  username: string;
+  [key: string]: unknown;
+}
+
+export interface AuthResponse {
+  success: boolean;
+  token: string;
+  user?: User;
+  message?: string;
+}
+
+export interface ApiError {
+  message: string;
+  response?: {
+    status?: number;
+    data?: Record<string, unknown>;
+  };
+  [key: string]: unknown;
+}
+
+export interface AuthState {
   isAuthenticated: boolean;
   user: User | null;
-  login: (username: string, password: string) => Promise<void>;
-  logout: () => void;
   loading: boolean;
   error: string | null;
+}
+
+interface AuthContextType {
+  authState: AuthState;
+  setAuthState: (state: Partial<AuthState>) => void;
+  login: (username: string, password: string) => Promise<void>;
+  logout: () => void;
 }
 
 // Create the context
@@ -30,10 +56,21 @@ interface AuthProviderProps {
 
 // Provider component
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+  // Use a single state object for better consistency
+  const [authState, setAuthStateValue] = useState<AuthState>({
+    isAuthenticated: false,
+    user: null,
+    loading: true,
+    error: null
+  });
+
+  // Function to update auth state
+  const setAuthState = (newState: Partial<AuthState>) => {
+    setAuthStateValue(prevState => ({
+      ...prevState,
+      ...newState
+    }));
+  };
 
   // Check if user is already authenticated on initial load
   useEffect(() => {
@@ -43,15 +80,20 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         if (token) {
           // In a real app, you would validate the token here
           // For now, we'll just assume it's valid if it exists
-          setIsAuthenticated(true);
-          // Extract user info from token or make an API call to get user data
-          setUser({ username: 'user' }); // Placeholder
+          setAuthState({
+            isAuthenticated: true,
+            user: { username: 'user' }, // Placeholder - in real app extract from token or API call
+            loading: false
+          });
+        } else {
+          setAuthState({ loading: false });
         }
       } catch (error) {
-        const apiError = error as ApiError;
-        console.error('Error checking authentication status:', apiError);
-      } finally {
-        setLoading(false);
+        console.error('Error checking authentication status:', error);
+        setAuthState({
+          loading: false,
+          error: 'Failed to verify authentication status'
+        });
       }
     };
 
@@ -59,8 +101,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }, []);
 
   const login = async (username: string, password: string): Promise<void> => {
-    setLoading(true);
-    setError(null);
+    setAuthState({
+      loading: true,
+      error: null
+    });
 
     try {
       // Use minimal headers for login request
@@ -72,35 +116,48 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       const data = response.data;
       const token = data.token;
 
-      if (!data || !data.success || !token.trim()) {
+      if (!data || !data.success || !token || typeof token !== 'string' || !token.trim()) {
         console.error('Invalid login response structure:', data);
+        setAuthState({
+          loading: false,
+          error: 'Invalid response from server'
+        });
         return;
       }
 
       // Store token in localStorage
-      setAuthToken(token as string);
+      setAuthToken(token);
 
       // Update auth state
-      setIsAuthenticated(true);
-      setUser({ username });
+      setAuthState({
+        isAuthenticated: true,
+        user: { username },
+        loading: false,
+        error: null
+      });
 
-      console.warn('Logged in successfully');
-    } catch (err) {
-      const apiError = err as ApiError;
-      console.error('Login failed:', apiError);
+      // Authentication successful
+    } catch (err: unknown) {
+      // Handle login error
 
-      // Special handling for 431 errors
-      if (apiError.response?.status === 431) {
-        setError('Server error: Headers too large. Please try again later.');
-      } else {
-        setError(
-          apiError.response?.data?.message ||
-            'Login failed. Please check your credentials and try again.'
-        );
+      let errorMessage = 'Login failed. Please check your credentials and try again.';
+
+      // Special handling for specific errors
+      if (err && typeof err === 'object' && 'response' in err) {
+        const errorObj = err as { response?: { status?: number; data?: { message?: string } } };
+        if (errorObj.response?.status === 431) {
+          errorMessage = 'Server error: Headers too large. Please try again later.';
+        } else if (errorObj.response?.data?.message) {
+          errorMessage = errorObj.response.data.message;
+        }
       }
-      throw apiError;
-    } finally {
-      setLoading(false);
+
+      setAuthState({
+        loading: false,
+        error: errorMessage
+      });
+
+      throw err;
     }
   };
 
@@ -110,25 +167,25 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       removeAuthToken();
 
       // Update auth state
-      setIsAuthenticated(false);
-      setUser(null);
+      setAuthState({
+        isAuthenticated: false,
+        user: null,
+        error: null
+      });
 
-      console.warn('Logged out successfully');
+      // Logout successful
     } catch (error) {
-      const apiError = error as ApiError;
-      console.error('Logout failed:', apiError);
+      // Error during logout
     }
   };
 
   // Values and functions to expose via the context
-  const value = {
-    isAuthenticated,
-    user,
+  const contextValue: AuthContextType = {
+    authState,
+    setAuthState,
     login,
-    logout,
-    loading,
-    error
+    logout
   };
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>;
 };

@@ -1,5 +1,5 @@
 // Authentication utility functions
-import { AxiosAuthConfig } from '../types';
+import { AxiosRequestConfig } from 'axios';
 
 /**
  * Get the authentication token from local storage
@@ -12,10 +12,16 @@ export const getAuthToken = (): string | null => localStorage.getItem('auth_toke
  * @param token The token to store
  */
 export const setAuthToken = (token: string): void => {
-  // Ensure token is not excessively large
-  if (token && token.length > 8000) {
+  if (!token || typeof token !== 'string' || token.trim() === '') {
+    console.warn('Invalid token rejected');
+    localStorage.removeItem('auth_token');
+    return;
+  }
+
+  if (token.length > 8000) {
     console.warn('Warning: Auth token is unusually large');
   }
+
   localStorage.setItem('auth_token', token);
 };
 
@@ -30,13 +36,16 @@ export const removeAuthToken = (): void => {
  * Get axios configuration with authentication headers
  * @returns Axios config object with authorization header
  */
-export const getAuthConfig = (): AxiosAuthConfig => {
+export const getAuthConfig = (): AxiosRequestConfig => {
   const token = getAuthToken();
-  return {
-    headers: {
-      Authorization: token ? `Bearer ${token}` : '',
-      'Content-Type': 'application/json',
-      Accept: 'application/json'
-    }
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+    Accept: 'application/json'
   };
+
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
+  }
+
+  return { headers };
 };

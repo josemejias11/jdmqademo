@@ -31,7 +31,15 @@ const auth = (req, res, next) => {
 
     console.log(`Auth: Token received (length: ${token.length} bytes)`);
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your_secret_key');
+    // Check if JWT_SECRET is configured
+    if (!process.env.JWT_SECRET) {
+      console.log('Auth Error: JWT secret not configured');
+      const error = new Error('Server configuration error');
+      error.statusCode = 500;
+      return next(error);
+    }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
     console.log(`Auth: Token verified successfully for user: ${decoded.username}`);
 
     // Add user from payload

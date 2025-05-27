@@ -14,14 +14,30 @@ const requestLogger = require('./server/middleware/requestLogger');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Middleware for CORS with specific options
-app.use(
-  cors({
-    origin: 'http://localhost:3000', // Allow only the frontend origin
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-    credentials: true
-  })
+// CORS Configuration
+// In development: Allow all origins for easier testing
+// In production: Restrict to specific allowed origins
+const corsOptions = {
+  origin:
+    process.env.NODE_ENV === 'production'
+      ? process.env.ALLOWED_ORIGIN || 'http://localhost:3000' // Specific origin in production
+      : true, // Allow any origin in development
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
+  maxAge: 86400 // Cache preflight requests for 24 hours
+};
+
+// Apply CORS middleware with our configuration
+app.use(cors(corsOptions));
+
+// Log CORS configuration on startup
+console.log(
+  `CORS configured with origin: ${
+    process.env.NODE_ENV === 'production'
+      ? process.env.ALLOWED_ORIGIN || 'http://localhost:3000'
+      : 'Any origin (development mode)'
+  }`
 );
 
 // Parse JSON with a limit to prevent large payloads

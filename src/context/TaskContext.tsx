@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import apiClient from '../utils/apiClient';
 import { Task, ApiError } from '../types';
-import { getAuthConfig } from '../utils/authUtils';
+import { getAuthConfig } from '../utils/';
 
 const API_URL = '/api/tasks';
 
@@ -55,7 +55,7 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
         setTasks(response.data);
       } catch (err) {
         const apiError = err as ApiError;
-        console.error('Error fetching tasks:', apiError);
+        console.error('Error fetching tasks:', JSON.stringify(apiError, null, 2));
 
         // Special handling for 431 errors (Request Header Fields Too Large)
         if (apiError.response?.status === 431) {

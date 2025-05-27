@@ -29,8 +29,9 @@ const Dashboard: React.FC = () => {
         const response = await getTasks();
         setTasks(response.data);
         setError(null);
-      } catch (error: any) {
-        setError(error.message || 'Failed to fetch tasks');
+      } catch (error: Error | unknown) {
+        const errorMessage = error instanceof Error ? error.message : 'Failed to fetch tasks';
+        setError(errorMessage);
       } finally {
         setIsLoading(false);
       }

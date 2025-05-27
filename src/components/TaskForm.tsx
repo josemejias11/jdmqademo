@@ -66,7 +66,8 @@ const TaskForm: React.FC<TaskFormProps> = ({ task, onSubmitSuccess }) => {
           });
           setError(null);
         } catch (error: Error | unknown) {
-          const errorMessage = error instanceof Error ? error.message : 'Failed to fetch task details';
+          const errorMessage =
+            error instanceof Error ? error.message : 'Failed to fetch task details';
           setError(errorMessage);
         } finally {
           setIsLoading(false);
@@ -77,7 +78,10 @@ const TaskForm: React.FC<TaskFormProps> = ({ task, onSubmitSuccess }) => {
     fetchTask();
   }, [isEditMode, task, id]);
 
-  const handleSubmit = async (values: TaskFormValues, { setSubmitting }: { setSubmitting: (isSubmitting: boolean) => void }) => {
+  const handleSubmit = async (
+    values: TaskFormValues,
+    { setSubmitting }: { setSubmitting: (isSubmitting: boolean) => void }
+  ) => {
     try {
       setIsLoading(true);
       setError(null);
@@ -98,7 +102,8 @@ const TaskForm: React.FC<TaskFormProps> = ({ task, onSubmitSuccess }) => {
         navigate('/tasks');
       }
     } catch (error: Error | unknown) {
-      const errorMessage = error instanceof Error ? error.message : 'An error occurred while saving the task';
+      const errorMessage =
+        error instanceof Error ? error.message : 'An error occurred while saving the task';
       setError(errorMessage);
     } finally {
       setIsLoading(false);
@@ -133,7 +138,12 @@ const TaskForm: React.FC<TaskFormProps> = ({ task, onSubmitSuccess }) => {
           validationSchema={TaskSchema}
           onSubmit={handleSubmit}
         >
-          {({ errors, touched, isSubmitting, /* Unused variables prefixed with underscore */ _values, _setFieldValue }) => (
+          {({
+            errors,
+            touched,
+            isSubmitting
+            // Deliberately not destructuring values and setFieldValue as they're unused
+          }) => (
             <Form>
               <div className="mb-3">
                 <label className="form-label" htmlFor="title">

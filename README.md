@@ -1,6 +1,6 @@
 # JDM QA Demo Application
 
-A full-stack task management application with authentication built using React, TypeScript, and Express.
+A full-stack task management application with authentication built using React, TypeScript, Express, and Bootstrap.
 
 ## Project Overview
 
@@ -11,6 +11,7 @@ This application demonstrates modern web development practices including:
 - JWT-based authentication
 - React Context API for state management
 - Form validation with Formik and Yup
+- Responsive UI with Bootstrap 5
 - Modular backend architecture
 - Code quality tools (ESLint & Prettier)
 - End-to-end testing with Playwright
@@ -22,13 +23,15 @@ This application demonstrates modern web development practices including:
 - TypeScript
 - React Router for navigation
 - Formik & Yup for form handling and validation
-- Bootstrap for styling
+- Bootstrap 5 for responsive styling
+- React Icons for UI elements
 - Axios for API requests
 
 ### Backend
 - Express.js
 - JWT for authentication
 - Express Validator for request validation
+- In-memory data store (for demonstration purposes)
 
 ### Testing
 - Playwright for end-to-end testing
@@ -50,6 +53,7 @@ jdmqademo/
 ├── src/                  # Frontend code
 │   ├── components/       # React components
 │   ├── context/          # React context providers
+│   ├── pages/            # Page components
 │   ├── routes/           # Frontend routes
 │   ├── services/         # API service functions
 │   ├── utils/            # Helper functions
@@ -60,12 +64,29 @@ jdmqademo/
 ├── .eslintrc.js          # ESLint configuration
 ├── .gitignore            # Files to exclude from git
 ├── .prettierrc.js        # Prettier configuration
-├── diagnose-api.js       # API diagnostics utility
 ├── package.json          # Project dependencies and scripts
 ├── playwright.config.ts  # Playwright configuration
 ├── server.js             # Express server entry point
 └── tsconfig.json         # TypeScript configuration
 ```
+
+## Features
+
+### Authentication
+- Login with username and password
+- JWT token-based authentication
+- Protected routes for authenticated users
+- Automatic redirection for unauthenticated users
+- Secure logout functionality
+
+### Task Management
+- Dashboard with task statistics and overview
+- Task listing with filtering and search capabilities
+- Task creation and editing forms
+- Task detail view with all task information
+- Task status toggle (completed/pending)
+- Delete confirmation modals
+- Responsive UI for all screen sizes
 
 ## Getting Started
 
@@ -95,7 +116,7 @@ jdmqademo/
    - Edit the `.env` file to set your own values:
      ```
      # Server configuration
-     PORT=3000
+     PORT=5001
      NODE_ENV=development
 
      # Security
@@ -103,10 +124,10 @@ jdmqademo/
 
      # Mock user credentials (for development only)
      MOCK_USER=admin
-     MOCK_PASSWORD=your_secure_password
+     MOCK_PASSWORD=changeme
 
      # API URL for scripts
-     API_URL=http://localhost:3000
+     API_URL=http://localhost:5001
      ```
    
    > **IMPORTANT**: Never commit your `.env` file to version control. It contains sensitive information.
@@ -118,11 +139,15 @@ jdmqademo/
 
 5. Start the development servers:
    ```bash
-   # In one terminal - start the React development server
-   npm start
-   
-   # In another terminal - start the Express server
+   # Start both frontend and backend with concurrently
    npm run dev
+   
+   # Or start them separately:
+   # In one terminal - start the Express server
+   npm run server
+   
+   # In another terminal - start the React development server
+   npm start
    ```
 
 ## Available Scripts
@@ -134,9 +159,13 @@ In the project directory, you can run:
 Runs the frontend app in development mode.\
 Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
+### `npm run server`
+
+Runs the backend Express server with nodemon for automatic reloading on port 5001.
+
 ### `npm run dev`
 
-Runs the backend Express server with nodemon for automatic reloading.
+Runs both the frontend and backend concurrently in development mode.
 
 ### `npm run build`
 
@@ -175,7 +204,7 @@ Installs the Playwright browser dependencies.
 1. Pull the latest code from the repository
 2. Install any new dependencies with `npm install`
 3. Make sure your `.env` file is properly configured
-4. Start both the frontend and backend servers as described above
+4. Start both the frontend and backend servers with `npm run dev`
 5. Make your changes
 6. Format your code with `npm run format`
 7. Run linting with `npm run lint:fix` to ensure code quality
@@ -217,18 +246,14 @@ The backend provides the following API endpoints:
   ```json
   // Request
   {
-    "username": "user",
-    "password": "password"
+    "username": "admin",
+    "password": "changeme"
   }
   
   // Response
   {
     "success": true,
-    "token": "jwt_token_here",
-    "user": {
-      "id": 1,
-      "username": "user"
-    }
+    "token": "jwt_token_here"
   }
   ```
 
@@ -241,7 +266,8 @@ The backend provides the following API endpoints:
   // Request
   {
     "title": "Task title",
-    "description": "Task description"
+    "description": "Task description",
+    "completed": false
   }
   ```
 - **PUT /api/tasks/:id**: Update an existing task
@@ -278,35 +304,36 @@ This application implements several security best practices:
 - Mock user authentication (should be replaced with proper user management in production)
 - Development CORS settings allow all origins (restricted in production)
 
-## Utility Scripts
-
-### API Diagnostics
-
-The project includes a diagnostics script that can help troubleshoot API issues:
-
-```bash
-node diagnose-api.js
-```
-
-This script:
-- Tests the authentication endpoint
-- Analyzes the JWT token
-- Tests the tasks endpoint
-- Provides detailed error information
-
 ## Environment Variables
 
 The application uses the following environment variables:
 
 | Variable | Description | Default |
 |----------|-------------|---------|
-| PORT | The port the server will run on | 3000 |
+| PORT | The port the server will run on | 5001 |
 | NODE_ENV | Environment mode (development/production) | development |
 | JWT_SECRET | Secret key for signing JWT tokens | None (required) |
 | MOCK_USER | Username for development authentication | admin |
 | MOCK_PASSWORD | Password for development authentication | changeme |
-| API_URL | Base URL for API (used by diagnostic script) | http://localhost:3000 |
+| API_URL | Base URL for API (used by diagnostic script) | http://localhost:5001 |
 | ALLOWED_ORIGIN | Allowed CORS origin in production | http://localhost:3000 |
+
+## Bootstrap UI Components
+
+The application uses Bootstrap 5 for responsive styling and includes the following UI components:
+
+- Navigation bar with responsive collapsing
+- Cards for content containers
+- Modals for confirmations and forms
+- Alerts for error messages and notifications
+- Progress bars for task completion tracking
+- Buttons and button groups for actions
+- Tables for displaying task lists
+- Form controls with validation styling
+- Spinners for loading indicators
+- Icons from React Icons library
+
+The UI is fully responsive and works well on mobile, tablet, and desktop screens.
 
 ## Contributing
 

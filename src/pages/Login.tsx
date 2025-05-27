@@ -38,7 +38,8 @@ const Login: React.FC = () => {
       navigate('/dashboard');
     } catch (error: Error | unknown) {
       // Handle login errors
-      const errorMessage = error instanceof Error ? error.message : 'Login failed. Please try again.';
+      const errorMessage =
+        error instanceof Error ? error.message : 'Login failed. Please try again.';
       setLoginError(errorMessage);
     } finally {
       setIsLoading(false);

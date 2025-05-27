@@ -23,7 +23,7 @@ export interface TaskFormValues {
 export interface ApiError {
   message: string;
   status?: number;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 const API_URL = '/api/tasks';
@@ -42,8 +42,10 @@ export const getTasks = async (): Promise<{ success: boolean; data: Task[] }> =>
     // Convert unknown error to ApiError
     const apiError: ApiError = {
       message: err instanceof Error ? err.message : 'Failed to fetch tasks',
-      status: err && typeof err === 'object' && 'response' in err ? 
-        (err as { response?: { status?: number } }).response?.status : undefined
+      status:
+        err && typeof err === 'object' && 'response' in err
+          ? (err as { response?: { status?: number } }).response?.status
+          : undefined
     };
     throw apiError;
   }
@@ -64,8 +66,10 @@ export const getTaskById = async (id: string): Promise<{ success: boolean; data:
     // Convert unknown error to ApiError
     const apiError: ApiError = {
       message: err instanceof Error ? err.message : `Failed to fetch task ${id}`,
-      status: err && typeof err === 'object' && 'response' in err ? 
-        (err as { response?: { status?: number } }).response?.status : undefined
+      status:
+        err && typeof err === 'object' && 'response' in err
+          ? (err as { response?: { status?: number } }).response?.status
+          : undefined
     };
     throw apiError;
   }
@@ -92,8 +96,10 @@ export const createTask = async (
     // Convert unknown error to ApiError
     const apiError: ApiError = {
       message: err instanceof Error ? err.message : 'Failed to create task',
-      status: err && typeof err === 'object' && 'response' in err ? 
-        (err as { response?: { status?: number } }).response?.status : undefined
+      status:
+        err && typeof err === 'object' && 'response' in err
+          ? (err as { response?: { status?: number } }).response?.status
+          : undefined
     };
     throw apiError;
   }
@@ -118,8 +124,10 @@ export const updateTask = async (
     // Convert unknown error to ApiError
     const apiError: ApiError = {
       message: err instanceof Error ? err.message : `Failed to update task ${id}`,
-      status: err && typeof err === 'object' && 'response' in err ? 
-        (err as { response?: { status?: number } }).response?.status : undefined
+      status:
+        err && typeof err === 'object' && 'response' in err
+          ? (err as { response?: { status?: number } }).response?.status
+          : undefined
     };
     throw apiError;
   }
@@ -140,8 +148,10 @@ export const deleteTask = async (id: string): Promise<{ success: boolean; messag
     // Convert unknown error to ApiError
     const apiError: ApiError = {
       message: err instanceof Error ? err.message : `Failed to delete task ${id}`,
-      status: err && typeof err === 'object' && 'response' in err ? 
-        (err as { response?: { status?: number } }).response?.status : undefined
+      status:
+        err && typeof err === 'object' && 'response' in err
+          ? (err as { response?: { status?: number } }).response?.status
+          : undefined
     };
     throw apiError;
   }
@@ -164,8 +174,10 @@ export const toggleTaskCompletion = async (
     // Convert unknown error to ApiError
     const apiError: ApiError = {
       message: err instanceof Error ? err.message : `Failed to toggle task ${id} completion`,
-      status: err && typeof err === 'object' && 'response' in err ? 
-        (err as { response?: { status?: number } }).response?.status : undefined
+      status:
+        err && typeof err === 'object' && 'response' in err
+          ? (err as { response?: { status?: number } }).response?.status
+          : undefined
     };
     throw apiError;
   }

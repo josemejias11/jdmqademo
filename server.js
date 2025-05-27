@@ -12,7 +12,7 @@ const notFound = require('./server/middleware/notFound');
 const requestLogger = require('./server/middleware/requestLogger');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.BACKEND_PORT || 3001;
 
 // CORS Configuration
 // In development: Allow all origins for easier testing

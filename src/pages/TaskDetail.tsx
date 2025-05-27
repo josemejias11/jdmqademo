@@ -26,8 +26,10 @@ const TaskDetail: React.FC = () => {
         const response = await getTaskById(id);
         setTask(response.data);
         setError(null);
-      } catch (error: any) {
-        setError(error.message || 'Failed to fetch task details');
+      } catch (error: Error | unknown) {
+        const errorMessage =
+          error instanceof Error ? error.message : 'Failed to fetch task details';
+        setError(errorMessage);
       } finally {
         setIsLoading(false);
       }
@@ -42,8 +44,9 @@ const TaskDetail: React.FC = () => {
     try {
       await deleteTask(id);
       navigate('/tasks');
-    } catch (error: any) {
-      setError(error.message || 'Failed to delete task');
+    } catch (error: Error | unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to delete task';
+      setError(errorMessage);
       setShowDeleteModal(false);
     }
   };

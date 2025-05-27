@@ -26,6 +26,30 @@ const Tasks: React.FC = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [taskToDelete, setTaskToDelete] = useState<string | null>(null);
 
+  // Define applyFiltersAndSearch function before it's used in useEffect
+  // Apply filters and search to the task list
+  const applyFiltersAndSearch = React.useCallback(() => {
+    let result = [...tasks];
+
+    // Apply status filter
+    if (filter === 'completed') {
+      result = result.filter(task => task.completed);
+    } else if (filter === 'pending') {
+      result = result.filter(task => !task.completed);
+    }
+
+    // Apply search term
+    if (searchTerm.trim() !== '') {
+      const term = searchTerm.toLowerCase();
+      result = result.filter(
+        task =>
+          task.title.toLowerCase().includes(term) || task.description.toLowerCase().includes(term)
+      );
+    }
+
+    setFilteredTasks(result);
+  }, [filter, searchTerm, tasks]);
+
   // Fetch tasks on component mount
   useEffect(() => {
     fetchTasks();
@@ -50,28 +74,7 @@ const Tasks: React.FC = () => {
     }
   };
 
-  // Apply filters and search to the task list
-  const applyFiltersAndSearch = React.useCallback(() => {
-    let result = [...tasks];
-
-    // Apply status filter
-    if (filter === 'completed') {
-      result = result.filter(task => task.completed);
-    } else if (filter === 'pending') {
-      result = result.filter(task => !task.completed);
-    }
-
-    // Apply search term
-    if (searchTerm.trim() !== '') {
-      const term = searchTerm.toLowerCase();
-      result = result.filter(
-        task =>
-          task.title.toLowerCase().includes(term) || task.description.toLowerCase().includes(term)
-      );
-    }
-
-    setFilteredTasks(result);
-  }, [filter, searchTerm, tasks]);
+  // This section is deleted since we moved it above
 
   const confirmDelete = (taskId: string) => {
     setTaskToDelete(taskId);

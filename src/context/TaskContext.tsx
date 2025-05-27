@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useEffect, useCallback } fr
 import axios, { AxiosResponse } from 'axios';
 import { Task, BackendTask, ApiError, AxiosAuthConfig } from '../types';
 
-const API_URL = 'http://localhost:3000/api/tasks';
+const API_URL = '/api/tasks';
 
 interface TaskContextType {
   tasks: Task[];
@@ -80,7 +80,7 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
       }
     };
 
-    fetchTasks();
+    void fetchTasks();
   }, [getAxiosConfig]);
 
   // Add a new task via API
@@ -111,7 +111,7 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
   // Add a new task
   const handleAddTask = (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
-    addTask(task);
+    void addTask(task);
     setTask('');
   };
 
@@ -124,7 +124,9 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
       // Find the task to toggle
       const taskToToggle = tasks.find(t => t.id === id);
       if (!taskToToggle) {
-        throw new Error('Task not found');
+        console.error('Task not found');
+        setError('Task not found');
+        return;
       }
 
       // Update the task via API

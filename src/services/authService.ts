@@ -1,5 +1,5 @@
 // Authentication service functions
-import axios, { AxiosResponse } from 'axios';
+import axios from 'axios';
 import { User, AuthResponse, AuthState, ApiError } from '../types';
 import { setAuthToken, removeAuthToken } from '../utils/authUtils';
 
@@ -12,12 +12,12 @@ const API_URL = '/api';
  * @returns The response data from the API
  * @throws ApiError if login fails
  */
-export const login = async (
+const login = async (
   username: string,
   password: string
 ): Promise<{ success: boolean; user: User }> => {
   try {
-    const response: AxiosResponse<AuthResponse> = await axios.post(`${API_URL}/auth/login`, {
+    const response = await axios.post<AuthResponse>(`${API_URL}/auth/login`, {
       username,
       password
     });
@@ -42,6 +42,8 @@ export const login = async (
     throw apiError;
   }
 };
+
+export { login };
 
 /**
  * Logout the current user

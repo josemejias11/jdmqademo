@@ -116,7 +116,7 @@ jdmqademo/
    - Edit the `.env` file to set your own values:
      ```
      # Server configuration
-     PORT=5001
+     PORT=3001
      NODE_ENV=development
 
      # Security
@@ -127,7 +127,7 @@ jdmqademo/
      MOCK_PASSWORD=changeme
 
      # API URL for scripts
-     API_URL=http://localhost:5001
+     API_URL=http://localhost:3001
      ```
    
    > **IMPORTANT**: Never commit your `.env` file to version control. It contains sensitive information.
@@ -161,7 +161,7 @@ Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
 ### `npm run server`
 
-Runs the backend Express server with nodemon for automatic reloading on port 5001.
+Runs the backend Express server with nodemon for automatic reloading on port 3001.
 
 ### `npm run dev`
 
@@ -304,18 +304,75 @@ This application implements several security best practices:
 - Mock user authentication (should be replaced with proper user management in production)
 - Development CORS settings allow all origins (restricted in production)
 
+## API Structure and Configuration
+
+The application follows a structured approach for API communication between the frontend and backend:
+
+### API Base URL Configuration
+
+The frontend uses a centralized API client configuration in `src/utils/apiClient.ts`:
+
+```typescript
+// Custom Axios instance with minimal headers
+import axios from 'axios';
+
+// Create a custom instance with minimal default headers
+const apiClient = axios.create({
+  baseURL: 'http://localhost:3001/api',
+  headers: {
+    'Content-Type': 'application/json',
+    Accept: 'application/json'
+  }
+});
+
+export default apiClient;
+```
+
+This configuration:
+- Sets a common base URL (`http://localhost:3001/api`) for all API requests
+- Defines standard headers used across all requests
+- Creates a reusable Axios instance for consistent API communication
+
+### Service-Level API Implementation
+
+Each API domain has its own service file that uses the apiClient. For example, `src/services/taskService.ts` handles all task-related API calls:
+
+```typescript
+import apiClient from '../utils/apiClient';
+
+// The path should not include /api as it's already in the baseURL
+const API_URL = '/tasks'; 
+
+export const getTasks = async () => {
+  const response = await apiClient.get(API_URL);
+  return response.data;
+};
+```
+
+### Avoiding Common Pitfalls
+
+A common issue to avoid is duplicating the `/api` prefix in service files. Since the `baseURL` in `apiClient.ts` already includes `/api`, the URL paths in service files should not repeat it.
+
+For example:
+- ✅ Correct: `const API_URL = '/tasks'`
+- ❌ Incorrect: `const API_URL = '/api/tasks'` (creates `/api/api/tasks`)
+
+### Recent Fixes
+
+The application recently fixed a "Not Found" error that occurred when API requests were being made to `/api/api/tasks` instead of the correct endpoint `/api/tasks`. This was caused by the duplicate `/api` prefix in both the baseURL and the service file paths. The fix involved ensuring that service files don't repeat the `/api` prefix already present in the baseURL configuration.
+
 ## Environment Variables
 
 The application uses the following environment variables:
 
 | Variable | Description | Default |
 |----------|-------------|---------|
-| PORT | The port the server will run on | 5001 |
+| PORT | The port the server will run on | 3001 |
 | NODE_ENV | Environment mode (development/production) | development |
 | JWT_SECRET | Secret key for signing JWT tokens | None (required) |
 | MOCK_USER | Username for development authentication | admin |
 | MOCK_PASSWORD | Password for development authentication | changeme |
-| API_URL | Base URL for API (used by diagnostic script) | http://localhost:5001 |
+| API_URL | Base URL for API (used by diagnostic script) | http://localhost:3001 |
 | ALLOWED_ORIGIN | Allowed CORS origin in production | http://localhost:3000 |
 
 ## Bootstrap UI Components

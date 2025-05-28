@@ -1,70 +1,15 @@
 {
   "name": "jdmqademo",
-  "version": "0.1.0",
-  "private": true,
-  "proxy": "http://localhost:3001",
-  "dependencies": {
-    "axios": "^1.6.2",
-    "bootstrap": "^5.3.2",
-    "cors": "^2.8.5",
-    "dotenv": "^16.3.1",
-    "express": "^4.18.2",
-    "express-validator": "^7.0.1",
-    "formik": "^2.4.5",
-    "jsonwebtoken": "^9.0.2",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-icons": "^4.12.0",
-    "react-router-dom": "^6.20.0",
-    "react-scripts": "^3.0.1",
-    "web-vitals": "^2.1.4",
-    "yup": "^1.3.2"
+  "version": "1.0.0",
+  "description": "A full-stack task management application with authentication built using React, TypeScript, Express, and Bootstrap.",
+  "main": ".eslintrc.js",
+  "directories": {
+    "test": "tests"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "dev": "concurrently \"npm run server\" \"npm start\"",
-    "server": "nodemon server.js",
-    "test": "playwright test",
-    "test:ui": "playwright test --ui",
-    "eject": "react-scripts eject",
-    "lint": "eslint --ext .js,.jsx,.ts,.tsx src/ server/",
-    "lint:fix": "eslint --ext .js,.jsx,.ts,.tsx src/ server/ --fix",
-    "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx,json,css,md}\" \"server/**/*.js\" \"*.js\"",
-    "format:check": "prettier --check \"src/**/*.{js,jsx,ts,tsx,json,css,md}\" \"server/**/*.js\" \"*.js\"",
-    "playwright:install": "playwright install"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
   },
-  "eslintConfig": {
-    "extends": [
-      "react-app"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  },
-  "devDependencies": {
-    "@playwright/test": "^1.40.0",
-    "@types/node": "^22.15.23",
-    "@types/react": "^18.2.37",
-    "@types/react-dom": "^18.2.15",
-    "concurrently": "^9.1.2",
-    "eslint-config-prettier": "^9.0.0",
-    "eslint-plugin-prettier": "^5.0.1",
-    "nodemon": "^3.0.1",
-    "prettier": "^3.1.0",
-    "typescript": "^4.9.5"
-  },
-  "description": "This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).",
-  "main": "index.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/josemejias11/jdmqademo.git"
@@ -74,5 +19,6 @@
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/josemejias11/jdmqademo/issues"
-  }
+  },
+  "homepage": "https://github.com/josemejias11/jdmqademo#readme"
 }

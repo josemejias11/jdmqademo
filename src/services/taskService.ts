@@ -26,7 +26,7 @@ export interface ApiError {
   [key: string]: unknown;
 }
 
-const API_URL = '/api/tasks';
+const API_URL = '/tasks';
 
 /**
  * Get all tasks for the current user

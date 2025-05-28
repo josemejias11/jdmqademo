@@ -10,7 +10,5 @@ const apiClient = axios.create({
   }
 });
 
-console.log("Using API base URL:", 'http://localhost:3001/api');
-
 // Export the instance
 export default apiClient;

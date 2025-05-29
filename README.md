@@ -15,6 +15,7 @@ This application demonstrates modern web development practices including:
 - Modular backend architecture
 - Code quality tools (ESLint & Prettier)
 - End-to-end testing with Playwright
+- Dockerized frontend, backend, and PostgreSQL using Docker Compose
 
 ## Tech Stack
 
@@ -79,6 +80,7 @@ jdmqademo/
 - Automatic redirection for unauthenticated users
 - Secure logout functionality
 
+
 ### Task Management
 - Dashboard with task statistics and overview
 - Task listing with filtering and search capabilities
@@ -89,6 +91,8 @@ jdmqademo/
 - Responsive UI for all screen sizes
 
 ## Getting Started
+
+You can run the application using either npm scripts or Docker Compose.
 
 ### Prerequisites
 
@@ -150,7 +154,7 @@ jdmqademo/
    npm start
    ```
 
-## Available Scripts
+## Option 1: Available Scripts
 
 In the project directory, you can run:
 
@@ -199,6 +203,24 @@ Runs Playwright tests with UI mode for interactive debugging.
 
 Installs the Playwright browser dependencies.
 
+
+## Option 2: Using Docker Compose
+
+To run the full application (frontend, backend, and database) using Docker:
+
+1. Ensure Docker and Docker Compose are installed.
+2. Create a `.env` file based on `.env.example` and update environment variables as needed.
+3. Start all services:
+   ```bash
+   docker compose up --build
+   ```
+   This will launch:
+    - Frontend: http://localhost:3000
+    - Backend API: http://localhost:3001
+    - PostgreSQL: localhost:5432
+
+> Use `docker compose down` to stop the services.
+
 ## Development Workflow
 
 1. Pull the latest code from the repository
@@ -219,10 +241,10 @@ This project uses Playwright for end-to-end testing. The tests are located in th
 ### Running Tests
 
 ```bash
-# Run all tests
+  # Run all tests
 npm test
 
-# Run tests with UI for debugging
+  # Run tests with UI for debugging
 npm run test:ui
 ```
 
@@ -349,18 +371,6 @@ export const getTasks = async () => {
 };
 ```
 
-### Avoiding Common Pitfalls
-
-A common issue to avoid is duplicating the `/api` prefix in service files. Since the `baseURL` in `apiClient.ts` already includes `/api`, the URL paths in service files should not repeat it.
-
-For example:
-- ✅ Correct: `const API_URL = '/tasks'`
-- ❌ Incorrect: `const API_URL = '/api/tasks'` (creates `/api/api/tasks`)
-
-### Recent Fixes
-
-The application recently fixed a "Not Found" error that occurred when API requests were being made to `/api/api/tasks` instead of the correct endpoint `/api/tasks`. This was caused by the duplicate `/api` prefix in both the baseURL and the service file paths. The fix involved ensuring that service files don't repeat the `/api` prefix already present in the baseURL configuration.
-
 ## Environment Variables
 
 The application uses the following environment variables:
@@ -391,15 +401,3 @@ The application uses Bootstrap 5 for responsive styling and includes the followi
 - Icons from React Icons library
 
 The UI is fully responsive and works well on mobile, tablet, and desktop screens.
-
-## Contributing
-
-Contributions are welcome! Please follow these steps:
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Make your changes
-4. Run tests to ensure everything works
-5. Commit your changes (`git commit -m 'Add some amazing feature'`)
-6. Push to the branch (`git push origin feature/amazing-feature`)
-7. Open a Pull Request

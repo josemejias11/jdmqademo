@@ -3,13 +3,13 @@ const cors = require('cors');
 require('dotenv').config();
 
 // Import routes
-const authRoutes = require('./server/routes/authRoutes');
-const taskRoutes = require('./server/routes/taskRoutes');
+const authRoutes = require('./routes/authRoutes');
+const taskRoutes = require('./routes/taskRoutes');
 
 // Import middleware
-const errorHandler = require('./server/middleware/errorHandler');
-const notFound = require('./server/middleware/notFound');
-const requestLogger = require('./server/middleware/requestLogger');
+const errorHandler = require('./middleware/errorHandler');
+const notFound = require('./middleware/notFound');
+const requestLogger = require('./middleware/requestLogger');
 
 const app = express();
 const PORT = process.env.BACKEND_PORT || 3001;

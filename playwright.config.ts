@@ -2,7 +2,7 @@
 import { defineConfig, devices } from '@playwright/test';
 
 const config = defineConfig({
-  testDir: './tests',
+  testDir: './playwright',
   timeout: 30 * 1000,
   expect: {
     timeout: 5000
@@ -16,6 +16,7 @@ const config = defineConfig({
     baseURL: 'http://localhost:3000',
     actionTimeout: 0,
     trace: 'on-first-retry',
+  headless: process.env.HEADED !== 'true',
   },
   projects: [
     {

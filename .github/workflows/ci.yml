@@ -50,7 +50,7 @@ jobs:
       - name: Start app and server
         run: |
           npm run server &
-          npx wait-on http://localhost:3001
+          npx wait-on http://localhost:3001/api/health
 
       - name: Run Playwright tests
         run: |

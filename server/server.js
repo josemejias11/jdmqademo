@@ -46,6 +46,20 @@ app.use(express.json({ limit: '10kb' }));
 // Request logging for debugging
 app.use(requestLogger);
 
+// Health check root route
+app.get('/', (req, res) => {
+  res.status(200).send('OK');
+});
+
+app.head('/', (req, res) => {
+  res.sendStatus(200);
+});
+
+// New health check route at /api/health
+app.get('/api/health', (req, res) => {
+  res.status(200).json({ status: 'ok' });
+});
+
 // Set appropriate content type for API responses
 app.use('/api', (req, res, next) => {
   res.setHeader('Content-Type', 'application/json');

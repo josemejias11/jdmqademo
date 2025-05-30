@@ -1,16 +1,32 @@
+# Node dependencies
 node_modules
 client/node_modules
 server/node_modules
 
+# Docker config files
 Dockerfile
-Dockerfile.frontend
-Dockerfile.backend
 docker-compose.yml
 
+# Git and environment
 .git
 .gitignore
 .env
+
+# Logs and builds
 *.log
 coverage
 dist/
 build/
+
+# Editor/OS junk
+.vscode/
+.DS_Store
+*.swp
+
+# Playwright
+playwright-report/
+test-results/
+.playwright/
+*.png
+*.mp4
+*.webm

@@ -1,42 +1,36 @@
+version: "3.9"
+
 services:
-  frontend:
+  app:
     build:
       context: .
-      dockerfile: src/Dockerfile
+      dockerfile: Dockerfile
     ports:
-      - "3000:3000"
-    depends_on:
-      - backend
+      - "3000:3000"  # React frontend
+      - "3001:3001"  # Express backend
     volumes:
       - .:/app
       - /app/node_modules
     environment:
-      DATABASE_URL: postgres://postgres:postgres@db:5432/jdmqa
-
-  backend:
-    build:
-      context: .
-      dockerfile: server/Dockerfile
-    ports:
-      - "3001:3001"
+      - NODE_ENV=development
+      - JWT_SECRET=devsecret
+      - MOCK_USER=admin
+      - MOCK_PASSWORD=changeme
+      - API_URL=http://localhost:3001
     depends_on:
       - db
-    volumes:
-      - .:/app
-      - /app/node_modules
-    environment:
-      DATABASE_URL: postgres://postgres:postgres@db:5432/jdmqa
 
   db:
     image: postgres:15
+    restart: always
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: jdmqa
-    volumes:
-      - pgdata:/var/lib/postgresql/data
+      POSTGRES_DB: jdmqademo
     ports:
       - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
 
 volumes:
   pgdata:

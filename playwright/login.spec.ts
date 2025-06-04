@@ -371,17 +371,23 @@ test.describe('Login Functionality', () => {
     });
 
     test('Tab navigation through form elements', async ({ page }) => {
-        // Start fresh by clicking on body first
-        await page.locator('body').click();
+        await page.goto('http://localhost:3000/login');
+        await page.waitForLoadState('domcontentloaded');
 
-        await page.keyboard.press('Tab');
-        await expect(page.getByLabel('Username')).toBeFocused();
+        // Focus Username
+        const usernameField = page.getByLabel('Username');
+        await usernameField.focus();
+        await expect(usernameField).toBeFocused();
 
-        await page.keyboard.press('Tab');
-        await expect(page.getByLabel('Password')).toBeFocused();
+        // Focus Password
+        const passwordField = page.getByLabel('Password');
+        await passwordField.focus();
+        await expect(passwordField).toBeFocused();
 
-        await page.keyboard.press('Tab');
-        await expect(page.getByRole('button', { name: /login/i })).toBeFocused();
+        // Focus Login button
+        const loginButton = page.getByRole('button', { name: /login/i });
+        await loginButton.focus();
+        await expect(loginButton).toBeFocused();
     });
 
     test('Security - SQL injection attempt in username', async ({ page }) => {

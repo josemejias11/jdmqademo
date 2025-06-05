@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { getTasks, deleteTask } from '../services/taskService';
+import * as taskService from '../services/taskService';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { FaCheck, FaEdit, FaEye, FaPlus, FaTrash } from 'react-icons/fa';
 
@@ -15,6 +15,21 @@ interface Task {
   updatedAt: Date;
 }
 
+const ModalFooterButtons: React.FC<{
+  onCancel: () => void;
+  onConfirm: () => void;
+  confirmLabel?: string;
+}> = ({ onCancel, onConfirm, confirmLabel = 'Delete' }) => (
+  <div className="modal-footer">
+    <button className="btn btn-secondary" type="button" onClick={onCancel}>
+      Cancel
+    </button>
+    <button className="btn btn-danger" type="button" onClick={onConfirm}>
+      {confirmLabel}
+    </button>
+  </div>
+);
+
 const Tasks: React.FC = () => {
   const navigate = useNavigate();
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -28,7 +43,7 @@ const Tasks: React.FC = () => {
 
   // Define applyFiltersAndSearch function before it's used in useEffect
   // Apply filters and search to the task list
-  const applyFiltersAndSearch = React.useCallback(() => {
+  const applyFiltersAndSearch = useCallback(() => {
     let result = [...tasks];
 
     // Apply status filter
@@ -52,7 +67,7 @@ const Tasks: React.FC = () => {
 
   // Fetch tasks on component mount
   useEffect(() => {
-    fetchTasks();
+    void fetchTasks();
   }, []);
 
   // Apply filters and search when tasks, filter, or searchTerm changes
@@ -63,7 +78,7 @@ const Tasks: React.FC = () => {
   const fetchTasks = async () => {
     try {
       setIsLoading(true);
-      const response = await getTasks();
+      const response = await taskService.getTasks();
       setTasks(response.data);
       setError(null);
     } catch (error: Error | unknown) {
@@ -85,7 +100,7 @@ const Tasks: React.FC = () => {
     if (!taskToDelete) return;
 
     try {
-      await deleteTask(taskToDelete);
+      await taskService.deleteTask(taskToDelete);
       setTasks(tasks.filter(task => task.id !== taskToDelete));
       setShowDeleteModal(false);
       setTaskToDelete(null);
@@ -97,7 +112,7 @@ const Tasks: React.FC = () => {
 
   const toggleTaskStatus = async (taskId: string, currentStatus: boolean) => {
     // This would be handled by an updateTask call in a real app
-    // For now, just update the UI
+    // For now, update the UI
     setTasks(
       tasks.map(task => (task.id === taskId ? { ...task, completed: !currentStatus } : task))
     );
@@ -257,7 +272,7 @@ const Tasks: React.FC = () => {
 
       {/* Delete Confirmation Modal */}
       {showDeleteModal && (
-        <div className="modal fade show" style={{ display: 'block' }} tabIndex={-1}>
+        <div className="modal show d-block" role="dialog" tabIndex={-1 as number}>
           <div className="modal-dialog">
             <div className="modal-content">
               <div className="modal-header">
@@ -271,21 +286,12 @@ const Tasks: React.FC = () => {
               <div className="modal-body">
                 <p>Are you sure you want to delete this task? This action cannot be undone.</p>
               </div>
-              <div className="modal-footer">
-                <button
-                  className="btn btn-secondary"
-                  type="button"
-                  onClick={() => setShowDeleteModal(false)}
-                >
-                  Cancel
-                </button>
-                <button className="btn btn-danger" type="button" onClick={handleDelete}>
-                  Delete
-                </button>
-              </div>
+              <ModalFooterButtons
+                onCancel={() => setShowDeleteModal(false)}
+                onConfirm={handleDelete}
+              />
             </div>
           </div>
-          <div className="modal-backdrop fade show"></div>
         </div>
       )}
     </div>

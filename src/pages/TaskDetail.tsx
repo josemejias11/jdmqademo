@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { getTaskById, deleteTask, Task } from '../services/taskService';
+import { getTaskById, deleteTask, Task } from '../services/';
 import { FaArrowLeft, FaEdit, FaTrash, FaCheck, FaHourglassHalf } from 'react-icons/fa';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -141,7 +141,12 @@ const TaskDetail: React.FC = () => {
 
       {/* Delete Confirmation Modal */}
       {showDeleteModal && (
-        <div className="modal fade show" style={{ display: 'block' }} tabIndex={-1}>
+        <div
+          className="modal show d-block position-fixed top-0 start-0 w-100 h-100"
+          role="dialog"
+          style={{ zIndex: 1055 }}
+          tabIndex={-1}
+        >
           <div className="modal-dialog">
             <div className="modal-content">
               <div className="modal-header">
@@ -170,7 +175,6 @@ const TaskDetail: React.FC = () => {
               </div>
             </div>
           </div>
-          <div className="modal-backdrop fade show"></div>
         </div>
       )}
     </div>

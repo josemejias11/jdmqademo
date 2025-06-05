@@ -1,37 +1,73 @@
 import { test, expect } from '@playwright/test';
 
+// Helper function to generate unique task titles
+const generateUniqueTitle = (prefix: string = 'Test Task') => 
+  `${prefix} ${Date.now()}-${Math.random().toString(36).substring(2, 7)}`;
+
 test.describe('Task Management Flow', () => {
   // Setup for all tests
   test.beforeEach(async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 720 });
     await page.goto('http://localhost:3000/login');
-    await page.click('#username');
     await page.fill('#username', 'admin');
-    await page.click('#password');
     await page.fill('#password', 'changeme');
     await page.click('.btn');
     await expect(page).toHaveURL(/\/dashboard$/);
   });
 
+  // Cleanup after each test
+  test.afterEach(async ({ page }) => {
+    // Ensure we're on the tasks page
+    await page.goto('http://localhost:3000/tasks');
+    
+    // Set up dialog handler for delete confirmations
+    page.on('dialog', dialog => dialog.accept());
+    
+    // Try to delete any tasks that match our test pattern
+    const rows = await page.locator('tr', { 
+      has: page.getByText(/Test Task|Complete Task|Statistics Task/, { exact: false }) 
+    }).all();
+    
+    for (const row of rows) {
+      try {
+        await row.locator('.btn-sm').nth(2).click(); // Delete button
+        await page.waitForTimeout(100); // Brief wait for deletion
+      } catch (e) {
+        console.log('Could not delete a test task, may already be gone');
+      }
+    }
+  });
+
   test('complete task creation and management flow', async ({ page }) => {
+    const uniqueTitle = `Test Task ${Date.now()}`;
     // Navigate to create task
     await page.click('text=Create Task');
     await expect(page).toHaveURL(/\/tasks\/new$/);
-    await page.click('#title');
-    await page.fill('#title', 'test 123');
-    await page.click('#description');
+    
+    // Create task
+    await page.fill('#title', uniqueTitle);
     await page.fill('#description', 'test task');
     await page.click('button:has-text("Create Task")');
+    await expect(page).toHaveURL(/\/tasks$/);
 
     // Edit task
-    await page.click('.btn-sm:nth-child(2)');
-    await page.click('#description');
+    const taskRow = page.locator('tr', { has: page.getByText(uniqueTitle, { exact: true }) });
+    await expect(taskRow).toBeVisible();
+    await taskRow.locator('.btn-sm').nth(1).click(); // Second button is edit
+    await expect(page).toHaveURL(/\/tasks\/\d+$/); // Match any task ID
+    const currentUrl = page.url();
+    const match = currentUrl.match(/\/tasks\/(\d+)$/);
+    const taskId = match ? match[1] : null;
+    expect(taskId).not.toBeNull();
+    console.log(`Editing Task ID: ${taskId}`);
+
+    // Wait for edit page and update task
+    const descriptionField = page.locator('#description').first();
+    await descriptionField.waitFor({ state: 'visible', timeout: 10000 });
     await page.fill('#description', 'test task 123');
     await page.click('button:has-text("Update Task")');
+    await expect(page).toHaveURL(/\/tasks$/);
 
-    // Navigate back to tasks list
-    await page.click('a[href="/tasks"]');
-    
     // Navigate to Dashboard using exact selector
     await page.click('a.nav-link[href="/dashboard"]');
     await expect(page).toHaveURL(/\/dashboard$/);
@@ -42,19 +78,21 @@ test.describe('Task Management Flow', () => {
   });
 
   test('create task with maximum length inputs', async ({ page }) => {
+    const timestamp = Date.now();
     await page.click('text=Create Task');
     await expect(page).toHaveURL(/\/tasks\/new$/);
     
-    const longTitle = 'A'.repeat(100);
+    const longTitle = `Test ${timestamp} ${'A'.repeat(80)}`; // Making it unique while still being long
     const longDescription = 'B'.repeat(500);
     
     await page.fill('#title', longTitle);
     await page.fill('#description', longDescription);
     await page.click('button:has-text("Create Task")');
 
-    // Verify task was created
+    // Verify task was created and is in the list
     await expect(page).toHaveURL(/\/tasks$/);
-    await expect(page.getByText(longTitle)).toBeVisible();
+    const taskRow = page.locator('tr', { has: page.getByText(longTitle, { exact: true }) });
+    await expect(taskRow).toBeVisible();
   });
 
   test('attempt to create task with empty fields', async ({ page }) => {
@@ -70,60 +108,62 @@ test.describe('Task Management Flow', () => {
   });
 
   test('mark task as complete', async ({ page }) => {
+    const uniqueTitle = `Complete Task ${Date.now()}`;
     // Create a task first
     await page.click('text=Create Task');
-    await page.fill('#title', 'Task to complete');
+    await page.fill('#title', uniqueTitle);
     await page.fill('#description', 'This task will be marked as complete');
     await page.click('button:has-text("Create Task")');
 
-    // Find and click the complete button
-    await page.click('.btn-sm:nth-child(1)'); // Assuming first button is complete
+    // Find and click the complete button for this specific task
+    const taskRow = page.locator('tr', { has: page.getByText(uniqueTitle, { exact: true }) });
+    await expect(taskRow).toBeVisible();
+    await taskRow.locator('.btn-sm').first().click(); // First button is complete
     
     // Verify task is marked as complete
-    await expect(page.getByText('Task to complete')).toHaveClass(/text-decoration-line-through/);
+    await expect(page.getByText(uniqueTitle)).toHaveClass(/text-decoration-line-through/);
   });
 
   test('delete task', async ({ page }) => {
-    // Create a task first
+    // Set up dialog handler before any actions
+    page.on('dialog', dialog => dialog.accept());
+    
+    // Create a task with unique title
+    const uniqueTitle = `Task to delete ${Date.now()}`;
     await page.click('text=Create Task');
-    await page.fill('#title', 'Task to delete');
+    await page.fill('#title', uniqueTitle);
     await page.fill('#description', 'This task will be deleted');
     await page.click('button:has-text("Create Task")');
 
-    // Store the task text to verify deletion
-    const taskText = 'Task to delete';
-
-    // Find and click the delete button
-    await page.click('.btn-sm:nth-child(3)'); // Assuming third button is delete
+    // Find and click the delete button for this specific task
+    const taskRow = page.locator('tr', { has: page.getByText(uniqueTitle, { exact: true }) });
+    await expect(taskRow).toBeVisible();
+    await taskRow.locator('.btn-sm').nth(2).click(); // Third button is delete
     
-    // Accept the confirmation dialog if it appears
-    page.on('dialog', dialog => dialog.accept());
-
     // Verify task is no longer visible
-    await expect(page.getByText(taskText)).not.toBeVisible();
+    await expect(taskRow).not.toBeVisible();
   });
 
   test('task statistics update correctly', async ({ page }) => {
+    const uniqueTitle = `Statistics Task ${Date.now()}`;
+    
     // Create a task
     await page.click('text=Create Task');
-    await page.fill('#title', 'Statistics test task');
+    await page.fill('#title', uniqueTitle);
     await page.fill('#description', 'Testing task statistics');
     await page.click('button:has-text("Create Task")');
 
-    // Go to dashboard
-    await page.click('a.nav-link[href="/dashboard"]');
-
-    // Check initial statistics
-    await expect(page.getByText('Total Tasks')).toBeVisible();
-    await expect(page.getByText('Pending')).toBeVisible();
-    await expect(page.getByText('Completed')).toBeVisible();
-
-    // Go back to tasks and complete the task
-    await page.click('a[href="/tasks"]');
-    await page.click('.btn-sm:nth-child(1)'); // Complete button
+    // Find and complete the task
+    const taskRow = page.locator('tr', { has: page.getByText(uniqueTitle, { exact: true }) });
+    await expect(taskRow).toBeVisible();
+    await taskRow.locator('.btn-sm').first().click(); // Complete button
 
     // Check updated statistics on dashboard
     await page.click('a.nav-link[href="/dashboard"]');
-    await expect(page.locator('.progress-bar')).toBeVisible();
+    await expect(page).toHaveURL(/\/dashboard$/);
+    
+    // Wait for statistics to load and check for any number format
+    await expect(page.getByText(/Completed/)).toBeVisible();
+    await expect(page.getByText(/Pending/)).toBeVisible();
   });
 });

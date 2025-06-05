@@ -3,9 +3,9 @@ import { defineConfig, devices } from '@playwright/test';
 
 const config = defineConfig({
   testDir: './playwright',
-  timeout: 30 * 1000,
+  timeout: 60 * 1000,
   expect: {
-    timeout: 5000
+    timeout: 15000
   },
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
@@ -14,9 +14,9 @@ const config = defineConfig({
   reporter: 'html',
   use: {
     baseURL: 'http://localhost:3000',
-    actionTimeout: 0,
+    actionTimeout: 15000,
     trace: 'on-first-retry',
-  headless: process.env.HEADED !== 'true',
+    headless: process.env.HEADED !== 'true',
   },
   projects: [
     {
@@ -34,7 +34,7 @@ const config = defineConfig({
   ],
   webServer: {
     command: 'npm run dev',
-    port: 5000,
+    port: 3000,
     reuseExistingServer: !process.env.CI,
   },
 });

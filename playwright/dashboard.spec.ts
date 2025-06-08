@@ -61,9 +61,14 @@ test.describe('Task Management Flow', () => {
     const taskId = match ? match[1] : null;
     expect(taskId).not.toBeNull();
 
-    // Wait for the form to be visible and ready
-    await expect(page.locator('#description')).toBeVisible({ timeout: 5000 });
-    await page.fill('#description', 'test task 123');
+    // Wait for task details page to load and navigate to edit
+    await expect(page.locator('.card-title')).toBeVisible();
+    await page.click('a.btn.btn-primary >> text=Edit');
+
+    // Wait for form to be ready and fill in description
+    await expect(page.locator('.card-title >> text=Edit Task')).toBeVisible();
+    await expect(page.locator('textarea[name="description"]')).toBeVisible();
+    await page.fill('textarea[name="description"]', 'test task 123');
     await page.click('button:has-text("Update Task")');
     await expect(page).toHaveURL(/\/tasks$/);
 

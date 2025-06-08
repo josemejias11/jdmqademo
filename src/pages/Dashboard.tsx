@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { getTasks } from '../services/taskService';
+import { getTasks } from '../services/';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { FaCheckCircle, FaClipboardList, FaHourglassHalf, FaPlus } from 'react-icons/fa';
 
@@ -37,7 +37,7 @@ const Dashboard: React.FC = () => {
       }
     };
 
-    fetchTasks();
+    void fetchTasks();
   }, []);
 
   // Calculate task statistics

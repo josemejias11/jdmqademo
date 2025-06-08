@@ -1,7 +1,11 @@
 // Authentication service functions
+// noinspection ExceptionCaughtLocallyJS
+
 import apiClient from '../utils/apiClient';
-import { User, AuthResponse, AuthState, ApiError } from '../types';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { User, AuthResponse, ApiError } from '../types';
 import { setAuthToken, removeAuthToken } from '../utils/';
+
 /**
  * Login a user with username and password
  * @param username The username
@@ -23,6 +27,7 @@ const login = async (
     const token = data?.success ? data.token : null;
 
     if (!token || typeof token !== 'string') {
+      // eslint-disable-next-line no-throw-literal
       throw new Error('Invalid token received from server.');
     }
 
@@ -52,40 +57,5 @@ export const logout = (): void => {
     console.warn('Logged out successfully');
   } catch (error) {
     console.error('Logout failed:', error);
-  }
-};
-
-/**
- * Check if the user is authenticated
- * @returns Object containing authentication status and user info
- */
-export const checkAuthStatus = (): AuthState => {
-  try {
-    const token = localStorage.getItem('auth_token');
-    if (token) {
-      // In a real app, you would validate the token here
-      // For now, we'll just assume it's valid if it exists
-      return {
-        isAuthenticated: true,
-        user: { username: 'user' }, // Placeholder
-        loading: false,
-        error: null
-      };
-    }
-    return {
-      isAuthenticated: false,
-      user: null,
-      loading: false,
-      error: null
-    };
-  } catch (error) {
-    const apiError = error as ApiError;
-    console.error('Error checking authentication status:', apiError);
-    return {
-      isAuthenticated: false,
-      user: null,
-      loading: false,
-      error: apiError.message || 'Authentication check failed'
-    };
   }
 };

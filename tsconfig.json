@@ -18,7 +18,11 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "types": ["react", "react-dom", "node"]
+    "types": [
+      "react",
+      "react-dom",
+      "node"
+    ]
   },
   "include": [
     "src",

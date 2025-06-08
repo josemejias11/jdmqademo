@@ -1,5 +1,7 @@
+// noinspection ExceptionCaughtLocallyJS
+
 import apiClient from '../utils/apiClient';
-import { getAuthConfig } from '../utils/authUtils';
+import { getAuthConfig } from '../utils/';
 
 // Task interface
 export interface Task {
@@ -23,6 +25,7 @@ export interface TaskFormValues {
 export interface ApiError {
   message: string;
   status?: number;
+
   [key: string]: unknown;
 }
 
@@ -39,15 +42,14 @@ export const getTasks = async (): Promise<{ success: boolean; data: Task[] }> =>
     const response = await apiClient.get(API_URL, config);
     return response.data;
   } catch (err: unknown) {
-    // Convert unknown error to ApiError
-    const apiError: ApiError = {
+    // eslint-disable-next-line no-throw-literal
+    throw {
       message: err instanceof Error ? err.message : 'Failed to fetch tasks',
       status:
         err && typeof err === 'object' && 'response' in err
           ? (err as { response?: { status?: number } }).response?.status
           : undefined
-    };
-    throw apiError;
+    } as ApiError;
   }
 };
 
@@ -63,15 +65,14 @@ export const getTaskById = async (id: string): Promise<{ success: boolean; data:
     const response = await apiClient.get(`${API_URL}/${id}`, config);
     return response.data;
   } catch (err: unknown) {
-    // Convert unknown error to ApiError
-    const apiError: ApiError = {
+    // eslint-disable-next-line no-throw-literal
+    throw {
       message: err instanceof Error ? err.message : `Failed to fetch task ${id}`,
       status:
         err && typeof err === 'object' && 'response' in err
           ? (err as { response?: { status?: number } }).response?.status
           : undefined
-    };
-    throw apiError;
+    } as ApiError;
   }
 };
 
@@ -94,14 +95,14 @@ export const createTask = async (
     return response.data;
   } catch (err: unknown) {
     // Convert unknown error to ApiError
-    const apiError: ApiError = {
+    // eslint-disable-next-line no-throw-literal
+    throw {
       message: err instanceof Error ? err.message : 'Failed to create task',
       status:
         err && typeof err === 'object' && 'response' in err
           ? (err as { response?: { status?: number } }).response?.status
           : undefined
-    };
-    throw apiError;
+    } as ApiError;
   }
 };
 
@@ -122,14 +123,14 @@ export const updateTask = async (
     return response.data;
   } catch (err: unknown) {
     // Convert unknown error to ApiError
-    const apiError: ApiError = {
+    // eslint-disable-next-line no-throw-literal
+    throw {
       message: err instanceof Error ? err.message : `Failed to update task ${id}`,
       status:
         err && typeof err === 'object' && 'response' in err
           ? (err as { response?: { status?: number } }).response?.status
           : undefined
-    };
-    throw apiError;
+    } as ApiError;
   }
 };
 
@@ -146,39 +147,13 @@ export const deleteTask = async (id: string): Promise<{ success: boolean; messag
     return response.data;
   } catch (err: unknown) {
     // Convert unknown error to ApiError
-    const apiError: ApiError = {
+    // eslint-disable-next-line no-throw-literal
+    throw {
       message: err instanceof Error ? err.message : `Failed to delete task ${id}`,
       status:
         err && typeof err === 'object' && 'response' in err
           ? (err as { response?: { status?: number } }).response?.status
           : undefined
-    };
-    throw apiError;
-  }
-};
-
-/**
- * Toggle the completion status of a task
- * @param id The task ID
- * @param currentStatus The current completion status
- * @returns Promise with the updated task
- * @throws ApiError if update fails
- */
-export const toggleTaskCompletion = async (
-  id: string,
-  currentStatus: boolean
-): Promise<{ success: boolean; data: Task }> => {
-  try {
-    return await updateTask(id, { completed: !currentStatus });
-  } catch (err: unknown) {
-    // Convert unknown error to ApiError
-    const apiError: ApiError = {
-      message: err instanceof Error ? err.message : `Failed to toggle task ${id} completion`,
-      status:
-        err && typeof err === 'object' && 'response' in err
-          ? (err as { response?: { status?: number } }).response?.status
-          : undefined
-    };
-    throw apiError;
+    } as ApiError;
   }
 };

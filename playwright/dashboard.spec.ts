@@ -62,9 +62,14 @@ test.describe('Task Management Flow', () => {
     console.log(`Editing Task ID: ${taskId}`);
 
     // Wait for edit page and update task
-    const descriptionField = page.locator('#description').first();
-    await descriptionField.waitFor({ state: 'visible', timeout: 10000 });
-    await page.fill('#description', 'test task 123');
+    // Wait for the form to be visible and ready
+    await page.waitForSelector('.card-title:has-text("Edit Task")', { timeout: 5000 });
+    await page.waitForSelector('form', { state: 'visible', timeout: 5000 });
+    
+    // Now wait for and interact with the description field
+    const descriptionField = page.locator('#description');
+    await descriptionField.waitFor({ state: 'visible', timeout: 5000 });
+    await descriptionField.fill('test task 123');
     await page.click('button:has-text("Update Task")');
     await expect(page).toHaveURL(/\/tasks$/);
 

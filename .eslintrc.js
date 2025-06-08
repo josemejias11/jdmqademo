@@ -22,9 +22,8 @@ module.exports = {
   },
   // File-specific configurations
   overrides: [
-    // TypeScript and React files in the src directory
     {
-      files: ['src/**/*.ts', 'src/**/*.tsx'],
+      files: ['**/*.ts', '**/*.tsx'], // applies to all folders
       parser: '@typescript-eslint/parser',
       parserOptions: {
         ecmaVersion: 2020,

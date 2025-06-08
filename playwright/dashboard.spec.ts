@@ -1,8 +1,5 @@
+/* eslint-disable testing-library/prefer-screen-queries */
 import { test, expect } from '@playwright/test';
-
-// Helper function to generate unique task titles
-const generateUniqueTitle = (prefix: string = 'Test Task') => 
-  `${prefix} ${Date.now()}-${Math.random().toString(36).substring(2, 7)}`;
 
 test.describe('Task Management Flow', () => {
   // Setup for all tests
@@ -19,20 +16,23 @@ test.describe('Task Management Flow', () => {
   test.afterEach(async ({ page }) => {
     // Ensure we're on the tasks page
     await page.goto('http://localhost:3000/tasks');
-    
+
     // Set up dialog handler for delete confirmations
     page.on('dialog', dialog => dialog.accept());
-    
+
     // Try to delete any tasks that match our test pattern
-    const rows = await page.locator('tr', { 
-      has: page.getByText(/Test Task|Complete Task|Statistics Task/, { exact: false }) 
-    }).all();
-    
+    const rows = await page
+      .locator('tr', {
+        has: page.getByText(/Test Task|Complete Task|Statistics Task/, { exact: false })
+      })
+      .all();
+
     for (const row of rows) {
       try {
         await row.locator('.btn-sm').nth(2).click(); // Delete button
         await page.waitForTimeout(100); // Brief wait for deletion
       } catch (e) {
+        // eslint-disable-next-line no-console
         console.log('Could not delete a test task, may already be gone');
       }
     }
@@ -43,7 +43,7 @@ test.describe('Task Management Flow', () => {
     // Navigate to create task
     await page.click('text=Create Task');
     await expect(page).toHaveURL(/\/tasks\/new$/);
-    
+
     // Create task
     await page.fill('#title', uniqueTitle);
     await page.fill('#description', 'test task');
@@ -59,13 +59,12 @@ test.describe('Task Management Flow', () => {
     const match = currentUrl.match(/\/tasks\/(\d+)$/);
     const taskId = match ? match[1] : null;
     expect(taskId).not.toBeNull();
-    console.log(`Editing Task ID: ${taskId}`);
 
     // Wait for edit page and update task
     // Wait for the form to be visible and ready
     await page.waitForSelector('.card-title:has-text("Edit Task")', { timeout: 5000 });
     await page.waitForSelector('form', { state: 'visible', timeout: 5000 });
-    
+
     // Now wait for and interact with the description field
     const descriptionField = page.locator('#description');
     await descriptionField.waitFor({ state: 'visible', timeout: 5000 });
@@ -86,10 +85,10 @@ test.describe('Task Management Flow', () => {
     const timestamp = Date.now();
     await page.click('text=Create Task');
     await expect(page).toHaveURL(/\/tasks\/new$/);
-    
+
     const longTitle = `Test ${timestamp} ${'A'.repeat(80)}`; // Making it unique while still being long
     const longDescription = 'B'.repeat(500);
-    
+
     await page.fill('#title', longTitle);
     await page.fill('#description', longDescription);
     await page.click('button:has-text("Create Task")');
@@ -103,10 +102,10 @@ test.describe('Task Management Flow', () => {
   test('attempt to create task with empty fields', async ({ page }) => {
     await page.click('text=Create Task');
     await expect(page).toHaveURL(/\/tasks\/new$/);
-    
+
     // Try to create task without filling fields
     await page.click('button:has-text("Create Task")');
-    
+
     // Should stay on the same page with validation errors
     await expect(page).toHaveURL(/\/tasks\/new$/);
     await expect(page.getByText('Title is required')).toBeVisible();
@@ -124,7 +123,7 @@ test.describe('Task Management Flow', () => {
     const taskRow = page.locator('tr', { has: page.getByText(uniqueTitle, { exact: true }) });
     await expect(taskRow).toBeVisible();
     await taskRow.locator('.btn-sm').first().click(); // First button is complete
-    
+
     // Verify task is marked as complete
     await expect(page.getByText(uniqueTitle)).toHaveClass(/text-decoration-line-through/);
   });
@@ -132,7 +131,7 @@ test.describe('Task Management Flow', () => {
   test('delete task', async ({ page }) => {
     // Set up dialog handler before any actions
     page.on('dialog', dialog => dialog.accept());
-    
+
     // Create a task with unique title
     const uniqueTitle = `Task to delete ${Date.now()}`;
     await page.click('text=Create Task');
@@ -144,14 +143,14 @@ test.describe('Task Management Flow', () => {
     const taskRow = page.locator('tr', { has: page.getByText(uniqueTitle, { exact: true }) });
     await expect(taskRow).toBeVisible();
     await taskRow.locator('.btn-sm').nth(2).click(); // Third button is delete
-    
+
     // Verify task is no longer visible
     await expect(taskRow).not.toBeVisible();
   });
 
   test('task statistics update correctly', async ({ page }) => {
     const uniqueTitle = `Statistics Task ${Date.now()}`;
-    
+
     // Create a task
     await page.click('text=Create Task');
     await page.fill('#title', uniqueTitle);
@@ -166,7 +165,7 @@ test.describe('Task Management Flow', () => {
     // Check updated statistics on dashboard
     await page.click('a.nav-link[href="/dashboard"]');
     await expect(page).toHaveURL(/\/dashboard$/);
-    
+
     // Wait for statistics to load and check for any number format
     await expect(page.getByText(/Completed/)).toBeVisible();
     await expect(page.getByText(/Pending/)).toBeVisible();

@@ -1,7 +1,17 @@
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import React, { createContext, useState, useEffect, useCallback } from 'react';
 import apiClient from '../utils/apiClient';
-import { Task, ApiError } from '../types';
+import { Task } from '../types';
+
 import { getAuthConfig } from '../utils/';
+
+interface ApiError {
+  response?: {
+    status?: number;
+    data?: {
+      message?: string;
+    };
+  };
+}
 
 const API_URL = '/api/tasks';
 
@@ -19,21 +29,12 @@ interface TaskContextType {
 // Create the context
 export const TaskContext = createContext<TaskContextType | undefined>(undefined);
 
-// Custom hook to use the context
-export const useTasks = () => {
-  const context = useContext(TaskContext);
-  if (!context) {
-    throw new Error('useTasks must be used within a TaskProvider');
-  }
-  return context;
-};
-
 interface TaskProviderProps {
   children: React.ReactNode;
 }
 
 // Provider component
-export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
+const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [task, setTask] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
@@ -172,3 +173,5 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
 
   return <TaskContext.Provider value={value}>{children}</TaskContext.Provider>;
 };
+
+export default TaskProvider;

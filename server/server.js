@@ -61,10 +61,13 @@ app.get('/api/health', (req, res) => {
 });
 
 // Set appropriate content type for API responses
-app.use('/api', (req, res, next) => {
+/** @type {import('express').RequestHandler} */
+const setJsonContentType = (req, res, next) => {
   res.setHeader('Content-Type', 'application/json');
   next();
-});
+};
+
+app.use('/api', setJsonContentType);
 
 // Routes
 app.use('/api/auth', authRoutes);

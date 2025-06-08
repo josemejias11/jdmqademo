@@ -22,14 +22,6 @@ export interface AuthResponse {
   user?: User;
   message?: string;
 }
-
-export interface AuthState {
-  isAuthenticated: boolean;
-  user: User | null;
-  loading: boolean;
-  error: string | null;
-}
-
 // API related types
 export interface ApiError extends Error {
   response?: {
@@ -39,11 +31,5 @@ export interface ApiError extends Error {
     };
     status?: number;
     statusText?: string;
-  };
-}
-
-export interface AxiosAuthConfig {
-  headers: {
-    Authorization: string;
   };
 }

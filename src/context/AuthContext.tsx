@@ -16,16 +16,6 @@ export interface AuthResponse {
   message?: string;
 }
 
-export interface ApiError {
-  message: string;
-  response?: {
-    status?: number;
-    data?: Record<string, unknown>;
-  };
-
-  [key: string]: unknown;
-}
-
 export interface AuthState {
   isAuthenticated: boolean;
   user: User | null;

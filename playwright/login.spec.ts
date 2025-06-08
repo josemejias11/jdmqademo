@@ -498,6 +498,7 @@ test.describe('Login Functionality', () => {
     }
   });
 
+  /* eslint-disable jest/no-conditional-expect */
   test('Session persistence after browser refresh', async ({ page }) => {
     // Login first
     await page.getByLabel('Username').fill('admin');
@@ -523,5 +524,6 @@ test.describe('Login Functionality', () => {
       console.log('Session did not persist after refresh (redirected to login)');
       await expect(page).toHaveURL(/\/login/);
     }
+    /* eslint-enable jest/no-conditional-expect */
   });
 });

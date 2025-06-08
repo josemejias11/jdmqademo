@@ -1,4 +1,4 @@
-/* eslint-disable testing-library/prefer-screen-queries */
+//* eslint-disable testing-library/prefer-screen-queries */
 import { test, expect } from '@playwright/test';
 
 test.describe('Task Management Flow', () => {
@@ -23,6 +23,7 @@ test.describe('Task Management Flow', () => {
     // Try to delete any tasks that match our test pattern
     const rows = await page
       .locator('tr', {
+        // eslint-disable-next-line testing-library/prefer-screen-queries
         has: page.getByText(/Test Task|Complete Task|Statistics Task/, { exact: false })
       })
       .all();

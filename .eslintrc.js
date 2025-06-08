@@ -83,7 +83,25 @@ module.exports = {
       files: ['**/*.test.ts', '**/*.test.tsx'],
       rules: {
         '@typescript-eslint/no-explicit-any': 'off',
-        'no-console': 'off'
+        'no-console': 'off',
+        'jest/no-conditional-expect': 'off'
+      }
+    },
+    // Playwright tests
+    {
+      files: ['playwright/**/*.ts', 'playwright/**/*.spec.ts', 'playwright/**/*.test.ts'],
+      env: {
+        browser: true,
+        node: true,
+        jest: true
+      },
+      rules: {
+        '@typescript-eslint/no-explicit-any': 'off',
+        '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
+        'no-console': 'off',
+        'jest/no-conditional-expect': 'off',
+        'testing-library/prefer-screen-queries': 'off',
+        'prettier/prettier': 'warn'
       }
     },
     // JavaScript files in the server directory

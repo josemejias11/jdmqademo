@@ -15,7 +15,7 @@ router.get('/', taskController.getTasks);
 // GET /api/tasks/:id - Get a single task
 router.get(
   '/:id',
-  [param('id').isInt().withMessage('Task ID must be an integer')],
+  param('id').isInt().withMessage('Task ID must be an integer'),
   validate,
   taskController.getTaskById
 );
@@ -40,17 +40,15 @@ router.post(
 // PUT /api/tasks/:id - Update a task
 router.put(
   '/:id',
-  [
-    param('id').isInt().withMessage('Task ID must be an integer'),
-    body('title')
-      .optional()
-      .isString()
-      .withMessage('Title must be a string')
-      .isLength({ max: 100 })
-      .withMessage('Title cannot exceed 100 characters'),
-    body('description').optional().isString().withMessage('Description must be a string'),
-    body('completed').optional().isBoolean().withMessage('Completed must be a boolean')
-  ],
+  param('id').isInt().withMessage('Task ID must be an integer'),
+  body('title')
+    .optional()
+    .isString()
+    .withMessage('Title must be a string')
+    .isLength({ max: 100 })
+    .withMessage('Title cannot exceed 100 characters'),
+  body('description').optional().isString().withMessage('Description must be a string'),
+  body('completed').optional().isBoolean().withMessage('Completed must be a boolean'),
   validate,
   taskController.updateTask
 );
@@ -58,7 +56,7 @@ router.put(
 // DELETE /api/tasks/:id - Delete a task
 router.delete(
   '/:id',
-  [param('id').isInt().withMessage('Task ID must be an integer')],
+  param('id').isInt().withMessage('Task ID must be an integer'),
   validate,
   taskController.deleteTask
 );

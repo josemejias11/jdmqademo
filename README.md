@@ -20,6 +20,7 @@ This application demonstrates modern web development practices including:
 ## Tech Stack
 
 ### Frontend
+
 - React 18
 - TypeScript
 - React Router for navigation
@@ -29,12 +30,14 @@ This application demonstrates modern web development practices including:
 - Axios for API requests
 
 ### Backend
+
 - Express.js
 - JWT for authentication
 - Express Validator for request validation
 - In-memory data store (for demonstration purposes)
 
 ### Testing
+
 - Playwright for end-to-end testing
 - Jest-compatible assertions
 
@@ -74,14 +77,15 @@ jdmqademo/
 ## Features
 
 ### Authentication
+
 - Login with username and password
 - JWT token-based authentication
 - Protected routes for authenticated users
 - Automatic redirection for unauthenticated users
 - Secure logout functionality
 
-
 ### Task Management
+
 - Dashboard with task statistics and overview
 - Task listing with filtering and search capabilities
 - Task creation and editing forms
@@ -113,27 +117,27 @@ You can run the application using either npm scripts or Docker Compose.
    ```
 
 3. Set up environment variables:
-   - Copy the example environment file:
-     ```bash
-     cp .env.example .env
-     ```
-   - Edit the `.env` file to set your own values:
-     ```
-     # Server configuration
-     PORT=3001
-     NODE_ENV=development
+    - Copy the example environment file:
+      ```bash
+      cp .env.example .env
+      ```
+    - Edit the `.env` file to set your own values:
+      ```
+      # Server configuration
+      PORT=3001
+      NODE_ENV=development
+ 
+      # Security
+      JWT_SECRET=use_a_secure_random_string_here
+ 
+      # Mock user credentials (for development only)
+      MOCK_USER=admin
+      MOCK_PASSWORD=changeme
+ 
+      # API URL for scripts
+      API_URL=http://localhost:3001
+      ```
 
-     # Security
-     JWT_SECRET=use_a_secure_random_string_here
-
-     # Mock user credentials (for development only)
-     MOCK_USER=admin
-     MOCK_PASSWORD=changeme
-
-     # API URL for scripts
-     API_URL=http://localhost:3001
-     ```
-   
    > **IMPORTANT**: Never commit your `.env` file to version control. It contains sensitive information.
 
 4. Install Playwright browsers (if you plan to run tests):
@@ -203,7 +207,6 @@ Runs Playwright tests with UI mode for interactive debugging.
 
 Installs the Playwright browser dependencies.
 
-
 ## Option 2: Using Docker Compose
 
 To run the full application (frontend, backend, and database) using Docker:
@@ -251,12 +254,14 @@ npm run test:ui
 ### Test Structure
 
 The tests are organized to cover key functionality:
+
 - Authentication tests (login, logout)
 - Task management tests (create, read, update, delete)
 
 ### Writing New Tests
 
-When adding new features, please add corresponding tests in the `tests/` directory. Follow the existing patterns for structuring your tests.
+When adding new features, please add corresponding tests in the `tests/` directory. Follow the existing patterns for
+structuring your tests.
 
 ## Backend API
 
@@ -296,6 +301,7 @@ The backend provides the following API endpoints:
 - **DELETE /api/tasks/:id**: Delete a task
 
 All task endpoints require authentication via JWT token in the Authorization header:
+
 ```
 Authorization: Bearer your_jwt_token
 ```
@@ -305,23 +311,27 @@ Authorization: Bearer your_jwt_token
 This application implements several security best practices:
 
 ### Authentication
+
 - JWT tokens for stateless authentication
 - Environment variable for JWT secret (never hardcoded)
 - Token expiration (1 hour by default)
 - Proper authorization checks on protected routes
 
 ### API Security
+
 - Request validation with express-validator
 - CORS protection (configurable per environment)
 - JSON payload size limits to prevent DoS attacks
 - Token length validation to prevent oversized tokens
 
 ### Development Security
+
 - Environment variables for sensitive information
 - Proper .gitignore configuration to avoid committing sensitive files
 - Dependencies kept up-to-date with latest security patches
 
 ### Security Limitations (Development Only)
+
 - In-memory data storage (not suitable for production)
 - Mock user authentication (should be replaced with proper user management in production)
 - Development CORS settings allow all origins (restricted in production)
@@ -351,13 +361,15 @@ export default apiClient;
 ```
 
 This configuration:
+
 - Sets a common base URL (`http://localhost:3001/api`) for all API requests
 - Defines standard headers used across all requests
 - Creates a reusable Axios instance for consistent API communication
 
 ### Service-Level API Implementation
 
-Each API domain has its own service file that uses the apiClient. For example, `src/services/taskService.ts` handles all task-related API calls:
+Each API domain has its own service file that uses the apiClient. For example, `src/services/taskService.ts` handles all
+task-related API calls:
 
 ```typescript
 import apiClient from '../utils/apiClient';
@@ -375,15 +387,15 @@ export const getTasks = async () => {
 
 The application uses the following environment variables:
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| PORT | The port the server will run on | 3001 |
-| NODE_ENV | Environment mode (development/production) | development |
-| JWT_SECRET | Secret key for signing JWT tokens | None (required) |
-| MOCK_USER | Username for development authentication | admin |
-| MOCK_PASSWORD | Password for development authentication | changeme |
-| API_URL | Base URL for API (used by diagnostic script) | http://localhost:3001 |
-| ALLOWED_ORIGIN | Allowed CORS origin in production | http://localhost:3000 |
+| Variable       | Description                                  | Default               |
+|----------------|----------------------------------------------|-----------------------|
+| PORT           | The port the server will run on              | 3001                  |
+| NODE_ENV       | Environment mode (development/production)    | development           |
+| JWT_SECRET     | Secret key for signing JWT tokens            | None (required)       |
+| MOCK_USER      | Username for development authentication      | admin                 |
+| MOCK_PASSWORD  | Password for development authentication      | changeme              |
+| API_URL        | Base URL for API (used by diagnostic script) | http://localhost:3001 |
+| ALLOWED_ORIGIN | Allowed CORS origin in production            | http://localhost:3000 |
 
 ## Bootstrap UI Components
 

@@ -12,7 +12,7 @@ export const getAuthToken = (): string | null => localStorage.getItem('auth_toke
  * @param token The token to store
  */
 export const setAuthToken = (token: string): void => {
-  if (!token || typeof token !== 'string' || token.trim() === '') {
+  if (!token || token.trim() === '') {
     console.warn('Invalid token rejected');
     localStorage.removeItem('auth_token');
     return;

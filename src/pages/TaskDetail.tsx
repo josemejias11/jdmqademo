@@ -35,7 +35,7 @@ const TaskDetail: React.FC = () => {
       }
     };
 
-    fetchTask();
+    void fetchTask();
   }, [id]);
 
   const handleDelete = async () => {

@@ -37,7 +37,7 @@ const Dashboard: React.FC = () => {
       }
     };
 
-    fetchTasks();
+    void fetchTasks();
   }, []);
 
   // Calculate task statistics

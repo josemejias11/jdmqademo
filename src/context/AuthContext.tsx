@@ -5,6 +5,7 @@ import { getAuthToken, setAuthToken, removeAuthToken } from '../utils/';
 // Define types here to avoid dependency on external types file
 export interface User {
   username: string;
+
   [key: string]: unknown;
 }
 
@@ -21,6 +22,7 @@ export interface ApiError {
     status?: number;
     data?: Record<string, unknown>;
   };
+
   [key: string]: unknown;
 }
 

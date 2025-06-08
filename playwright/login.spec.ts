@@ -1,5 +1,3 @@
-/* eslint-disable jest/no-conditional-expect */
-/* eslint-disable testing-library/prefer-screen-queries */
 import { test, expect, Page } from '@playwright/test';
 
 // Helper function to check login error feedback

@@ -1,0 +1,6 @@
+{
+  "valid": { "username": "admin", "password": "changeme" },
+  "invalid": { "username": "admin", "password": "wrongpass" },
+  "whitespace": { "username": " admin ", "password": " changeme " },
+  "specialChars": { "username": "admin!@#", "password": "changeme!@#" }
+}

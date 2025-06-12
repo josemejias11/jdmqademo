@@ -1,0 +1,17 @@
+{
+  "name": "playwright-automation-framework",
+  "version": "1.0.0",
+  "description": "Reusable Playwright E2E Test Framework",
+  "scripts": {
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "test:report": "playwright show-report"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.44.1",
+    "eslint": "^8.50.0",
+    "prettier": "^3.2.5",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.5"
+  }
+}

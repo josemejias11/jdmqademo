@@ -1,0 +1,9 @@
+# Test artifacts
+test-results/
+playwright-report/
+blob-report/
+playwright/.auth/
+
+# Keep screenshots directory but ignore its contents
+screenshots/*
+!screenshots/.gitkeep 

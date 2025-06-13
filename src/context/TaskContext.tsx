@@ -1,8 +1,8 @@
 import React, { createContext, useState, useEffect, useCallback } from 'react';
-import apiClient from '../utils/apiClient';
-import { Task } from '../types';
+import apiClient from '../utils/apiClient.js';
+import { Task } from '../types.js';
 
-import { getAuthConfig } from '../utils/';
+import { getAuthConfig } from '../utils/authUtils.js';
 
 interface ApiError {
   response?: {

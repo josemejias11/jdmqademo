@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { logout } from '../services/';
+import { logout } from '../services/authService';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const Navigation: React.FC = () => {

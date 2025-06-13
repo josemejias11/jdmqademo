@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { getTaskById, deleteTask, Task } from '../services/';
+import { getTaskById, deleteTask, Task } from '../services/taskService';
 import { FaArrowLeft, FaEdit, FaTrash, FaCheck, FaHourglassHalf } from 'react-icons/fa';
 import 'bootstrap/dist/css/bootstrap.min.css';
 

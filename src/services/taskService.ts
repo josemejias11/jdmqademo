@@ -1,7 +1,7 @@
 // noinspection ExceptionCaughtLocallyJS
 
 import apiClient from '../utils/apiClient';
-import { getAuthConfig } from '../utils/';
+import { getAuthConfig } from '../utils/authUtils';
 
 // Task interface
 export interface Task {

@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import apiClient from '../utils/apiClient';
-import { getAuthToken, setAuthToken, removeAuthToken } from '../utils/';
+import { getAuthToken, setAuthToken, removeAuthToken } from '../utils/authUtils';
 
 // Define types here to avoid dependency on external types file
 export interface User {

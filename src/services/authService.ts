@@ -4,7 +4,7 @@
 import apiClient from '../utils/apiClient';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { User, AuthResponse, ApiError } from '../types';
-import { setAuthToken, removeAuthToken } from '../utils/';
+import { setAuthToken, removeAuthToken } from '../utils/authUtils';
 
 /**
  * Login a user with username and password

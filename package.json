@@ -8,6 +8,7 @@
     "start": "react-scripts start",
     "frontend": "react-scripts start",
     "backend": "tsx watch server/server.ts",
+    "server": "tsx server/server.ts",
     "dev": "concurrently \"npm run frontend\" \"npm run backend\"",
     "build": "react-scripts build",
     "build:server": "tsc -p tsconfig.server.json",

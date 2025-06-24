@@ -41,7 +41,7 @@ const login = (req: Request<Record<string, never>, unknown, LoginRequestBody>, r
     }
 
     // Invalid credentials
-    const error = new Error('Invalid credentials');
+    const error = new Error('Invalid username or password');
     (error as any).statusCode = 401;
     return next(error);
   } catch (err) {
@@ -51,4 +51,4 @@ const login = (req: Request<Record<string, never>, unknown, LoginRequestBody>, r
 
 export default {
   login
-}; 
+};

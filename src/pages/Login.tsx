@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { login } from '../services/authService';
 import { useAuth } from '../context/AuthContext';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { Modal } from 'react-bootstrap';
 
 // Validation schema for the login form
 const LoginSchema = Yup.object().shape({
@@ -14,14 +15,15 @@ const LoginSchema = Yup.object().shape({
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
-  const { setAuthState } = useAuth();
+  const { setAuthState, authState } = useAuth();
   const [loginError, setLoginError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
   const handleSubmit = async (values: { username: string; password: string }) => {
     setIsLoading(true);
     setLoginError(null);
-
+    setShowModal(false);
     try {
       // Call the login function from authService
       await login(values.username, values.password);
@@ -37,10 +39,13 @@ const Login: React.FC = () => {
       // Redirect to dashboard on success
       navigate('/dashboard');
     } catch (error: Error | unknown) {
-      // Handle login errors
-      const errorMessage =
-        error instanceof Error ? error.message : 'Login failed. Please try again.';
+      // Prefer error from context if available
+      let errorMessage = authState.error || (error instanceof Error ? error.message : 'Login failed. Please try again.');
+      if (errorMessage === 'Request failed with status code 401') {
+        errorMessage = 'Invalid username or password. Please try again.';
+      }
       setLoginError(errorMessage);
+      setShowModal(true);
     } finally {
       setIsLoading(false);
     }
@@ -53,12 +58,6 @@ const Login: React.FC = () => {
           <div className="card shadow-sm">
             <div className="card-body p-4">
               <h2 className="text-center mb-4">Login</h2>
-
-              {loginError && (
-                <div className="alert alert-danger" role="alert">
-                  {loginError}
-                </div>
-              )}
 
               <Formik
                 initialValues={{ username: '', password: '' }}
@@ -119,6 +118,25 @@ const Login: React.FC = () => {
                   </Form>
                 )}
               </Formik>
+
+              <Modal show={showModal} onHide={() => setShowModal(false)} centered>
+                <Modal.Header>
+                  <Modal.Title>Login Error</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                  <div className="d-flex align-items-center text-danger" style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" className="bi bi-exclamation-triangle-fill me-2" viewBox="0 0 16 16">
+                      <path d="M8.982 1.566a1.13 1.13 0 0 0-1.964 0L.165 13.233c-.457.778.091 1.767.982 1.767h13.707c.89 0 1.438-.99.982-1.767L8.982 1.566zm-.982 4.905a.905.905 0 1 1 1.81 0l-.35 3.507a.552.552 0 0 1-1.11 0L8 6.47zm.002 6.002a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+                    </svg>
+                    <span>{loginError}</span>
+                  </div>
+                </Modal.Body>
+                <Modal.Footer>
+                  <button className="btn btn-secondary" onClick={() => setShowModal(false)}>
+                    Close
+                  </button>
+                </Modal.Footer>
+              </Modal>
             </div>
           </div>
         </div>

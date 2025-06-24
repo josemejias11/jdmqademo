@@ -1,4 +1,4 @@
-# JDM QA Demo Application
+run # JDM QA Demo Application
 
 A full-stack task management application with authentication built using React, TypeScript, Express, and Bootstrap.
 

@@ -96,6 +96,9 @@ const TaskForm: React.FC<TaskFormProps> = ({ task, onSubmitSuccess }) => {
         navigate('/tasks');
       }
     } catch (error: Error | unknown) {
+      // Debug: log the error object to the console for inspection
+      // eslint-disable-next-line no-console
+      console.error('Task save error:', error);
       const errorMessage =
         error instanceof Error ? error.message : 'An error occurred while saving the task';
       setError(errorMessage);
@@ -135,8 +138,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ task, onSubmitSuccess }) => {
           {({
             errors,
             touched,
-            isSubmitting,
-            values
+            isSubmitting
             // Deliberately not destructuring setFieldValue as it's unused
           }) => (
             <Form>

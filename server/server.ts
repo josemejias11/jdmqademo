@@ -25,7 +25,7 @@ const corsOptions: CorsOptions = {
   origin:
     process.env.NODE_ENV === 'production'
       ? process.env.ALLOWED_ORIGIN || 'http://localhost:3000'
-      : true,
+      : 'http://localhost:3000', // Explicitly allow frontend in dev
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
@@ -83,4 +83,4 @@ app.use(errorHandler);
 // Start server
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
-}); 
+});

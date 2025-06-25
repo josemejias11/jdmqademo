@@ -1,6 +1,7 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import * as taskService from '../services/taskService';
+import { TaskContext } from '../context/TaskContext';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { FaCheck, FaEdit, FaEye, FaPlus, FaTrash } from 'react-icons/fa';
 import '@fontsource/montserrat/700.css';
@@ -9,15 +10,7 @@ import '@fontsource/inter/400.css';
 import '@fontsource/roboto/400.css';
 
 // Task type definition
-interface Task {
-  id: string;
-  title: string;
-  description: string;
-  completed: boolean;
-  userId: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
+import type { Task } from '../types';
 
 const ModalFooterButtons: React.FC<{
   onCancel: () => void;
@@ -36,14 +29,17 @@ const ModalFooterButtons: React.FC<{
 
 const Tasks: React.FC = () => {
   const navigate = useNavigate();
-  const [tasks, setTasks] = useState<Task[]>([]);
+  const taskContext = useContext(TaskContext);
   const [filteredTasks, setFilteredTasks] = useState<Task[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [filter, setFilter] = useState('all'); // 'all', 'completed', 'pending'
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [taskToDelete, setTaskToDelete] = useState<string | null>(null);
+
+  // Use context tasks if available
+  const tasks = taskContext ? taskContext.tasks : [];
+  const isLoading = taskContext ? taskContext.loading : false;
+  const error = taskContext ? taskContext.error : null;
 
   // Define applyFiltersAndSearch function before it's used in useEffect
   // Apply filters and search to the task list
@@ -71,7 +67,7 @@ const Tasks: React.FC = () => {
 
   // Fetch tasks on component mount
   useEffect(() => {
-    void fetchTasks();
+    // No need to fetch tasks here; context handles it
   }, []);
 
   // Apply filters and search when tasks, filter, or searchTerm changes
@@ -79,53 +75,28 @@ const Tasks: React.FC = () => {
     applyFiltersAndSearch();
   }, [tasks, filter, searchTerm, applyFiltersAndSearch]);
 
-  const fetchTasks = async () => {
-    try {
-      setIsLoading(true);
-      const response = await taskService.getTasks();
-      setTasks(
-        response.data.map((task: any) => ({
-          ...task,
-          createdAt: new Date(task.createdAt),
-          updatedAt: new Date(task.updatedAt),
-        }))
-      );
-      setError(null);
-    } catch (error: Error | unknown) {
-      const errorMessage = error instanceof Error ? error.message : 'Failed to fetch tasks';
-      setError(errorMessage);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // This section is deleted since we moved it above
-
   const confirmDelete = (taskId: string) => {
     setTaskToDelete(taskId);
     setShowDeleteModal(true);
   };
 
+  // Remove handleDelete's call to setTasks and setError from context
   const handleDelete = async () => {
     if (!taskToDelete) return;
-
     try {
       await taskService.deleteTask(taskToDelete);
-      setTasks(tasks.filter(task => task.id !== taskToDelete));
       setShowDeleteModal(false);
       setTaskToDelete(null);
     } catch (error: Error | unknown) {
-      const errorMessage = error instanceof Error ? error.message : 'Failed to delete task';
-      setError(errorMessage);
+      // Optionally show a local error
     }
   };
 
-  const toggleTaskStatus = async (taskId: string, currentStatus: boolean) => {
-    // This would be handled by an updateTask call in a real app
-    // For now, update the UI
-    setTasks(
-      tasks.map(task => (task.id === taskId ? { ...task, completed: !currentStatus } : task))
-    );
+  // Replace toggleTaskStatus with context's toggleTaskDone
+  const handleToggleTask = (taskId: string) => {
+    if (taskContext) {
+      taskContext.toggleTaskDone(taskId);
+    }
   };
 
   return (
@@ -234,7 +205,7 @@ const Tasks: React.FC = () => {
                           task.completed ? 'btn-success' : 'btn-outline-secondary'
                         }`}
                         title={task.completed ? 'Mark as pending' : 'Mark as completed'}
-                        onClick={() => toggleTaskStatus(task.id, task.completed)}
+                        onClick={() => handleToggleTask(task.id)}
                       >
                         <FaCheck />
                       </button>

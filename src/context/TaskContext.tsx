@@ -4,8 +4,6 @@ import { getAuthConfig } from '../utils/authUtils';
 import { getTasks, createTask, updateTask, deleteTask } from '../services/taskService';
 
 
-const API_URL = '/tasks';
-
 interface TaskContextType {
   tasks: Task[];
   task: string;
@@ -87,7 +85,11 @@ const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
         setError('Task not found');
         return;
       }
-      const response = await updateTask(id, { completed: !taskToToggle.completed });
+      const response = await updateTask(id, {
+        title: taskToToggle.title,
+        description: taskToToggle.description,
+        completed: !taskToToggle.completed
+      });
       setTasks(tasks.map(t => (t.id === id ? response.data : t)));
     } catch (err) {
       const apiError = err as { message?: string };

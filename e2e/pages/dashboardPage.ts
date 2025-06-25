@@ -8,8 +8,9 @@ export class DashboardPage {
       await this.page.goto('/dashboard');
       await this.page.waitForLoadState('networkidle');
       await this.verifyOnDashboard();
-    } catch (error: any) {
-      throw new Error(`Failed to navigate to dashboard: ${error.message}`);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      throw new Error(`Failed to navigate to dashboard: ${message}`);
     }
   }
 
@@ -20,10 +21,10 @@ export class DashboardPage {
   }
 
   async verifyDashboardComponents() {
-    // Verify task form components
-    const titleInput = this.page.getByLabel('Title');
-    const descriptionInput = this.page.getByLabel('Description');
-    const addButton = this.page.getByRole('button', { name: /add task/i });
+    // Use name attribute selectors for Formik fields
+    const titleInput = this.page.locator('input[name="title"]');
+    const descriptionInput = this.page.locator('textarea[name="description"]');
+    const addButton = this.page.getByRole('button', { name: /add/i });
 
     await expect(titleInput).toBeVisible();
     await expect(titleInput).toBeEnabled();
@@ -32,12 +33,12 @@ export class DashboardPage {
     await expect(addButton).toBeVisible();
     await expect(addButton).toBeEnabled();
 
-    // Verify task list container
-    await expect(this.page.locator('[data-testid="task-list"]')).toBeVisible();
+    // Task list: use a class or wrapper selector
+    await expect(this.page.locator('.list-group')).toBeVisible();
   }
 
   async verifyTaskListState(expectedTasks: { title: string; description: string }[]) {
-    const taskList = this.page.locator('[data-testid="task-list"]');
+    const taskList = this.page.locator('.list-group');
     await expect(taskList).toBeVisible();
 
     for (const task of expectedTasks) {
@@ -50,21 +51,22 @@ export class DashboardPage {
   }
 
   async verifyEmptyTaskList() {
-    const taskList = this.page.locator('[data-testid="task-list"]');
+    const taskList = this.page.locator('.list-group');
     await expect(taskList).toBeVisible();
     await expect(taskList).toHaveText(/no tasks/i);
   }
 
   async addTask(title: string, description: string) {
     try {
-      await this.page.getByLabel('Title').waitFor({ state: 'visible' });
-      await this.page.getByLabel('Title').fill(title);
-      await this.page.getByLabel('Description').fill(description);
-      await this.page.getByRole('button', { name: /add task/i }).click();
+      await this.page.locator('input[name="title"]').waitFor({ state: 'visible' });
+      await this.page.locator('input[name="title"]').fill(title);
+      await this.page.locator('textarea[name="description"]').fill(description);
+      await this.page.getByRole('button', { name: /add/i }).click();
       await this.page.waitForLoadState('networkidle');
       await this.verifyTaskAdded(title);
-    } catch (error: any) {
-      throw new Error(`Failed to add task: ${error.message}`);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      throw new Error(`Failed to add task: ${message}`);
     }
   }
 
@@ -81,8 +83,9 @@ export class DashboardPage {
       await taskElement.getByRole('button', { name: /delete/i }).click();
       await this.page.waitForLoadState('networkidle');
       await expect(this.page.getByText(title)).not.toBeVisible();
-    } catch (error: any) {
-      throw new Error(`Failed to delete task: ${error.message}`);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      throw new Error(`Failed to delete task: ${message}`);
     }
   }
 
@@ -92,8 +95,9 @@ export class DashboardPage {
       await taskElement.getByRole('checkbox').check();
       await this.page.waitForLoadState('networkidle');
       await this.verifyTaskCompleted(title);
-    } catch (error: any) {
-      throw new Error(`Failed to complete task: ${error.message}`);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      throw new Error(`Failed to complete task: ${message}`);
     }
   }
 

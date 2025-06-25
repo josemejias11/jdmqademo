@@ -5,11 +5,12 @@ export class LoginPage {
 
   async goto() {
     try {
-      await this.page.goto('/login');
+      await this.page.goto('/');
       await this.page.waitForLoadState('networkidle');
       await this.verifyOnLoginPage();
-    } catch (error: any) {
-      throw new Error(`Failed to navigate to login page: ${error.message}`);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      throw new Error(`Failed to navigate to login page: ${message}`);
     }
   }
 
@@ -20,9 +21,9 @@ export class LoginPage {
   }
 
   async verifyLoginFormState() {
-    // Verify form elements are present and in correct state
-    const usernameInput = this.page.getByLabel('Username');
-    const passwordInput = this.page.getByLabel('Password');
+    // Use name attribute selectors for Formik fields
+    const usernameInput = this.page.locator('input[name="username"]');
+    const passwordInput = this.page.locator('input[name="password"]');
     const loginButton = this.page.getByRole('button', { name: /login/i });
 
     await expect(usernameInput).toBeVisible();
@@ -45,13 +46,14 @@ export class LoginPage {
 
   async login(username: string, password: string) {
     try {
-      await this.page.getByLabel('Username').waitFor({ state: 'visible' });
-      await this.page.getByLabel('Username').fill(username);
-      await this.page.getByLabel('Password').fill(password);
+      await this.page.locator('input[name="username"]').waitFor({ state: 'visible' });
+      await this.page.locator('input[name="username"]').fill(username);
+      await this.page.locator('input[name="password"]').fill(password);
       await this.page.getByRole('button', { name: /login/i }).click();
       await this.page.waitForLoadState('networkidle');
-    } catch (error: any) {
-      throw new Error(`Login failed: ${error.message}`);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      throw new Error(`Login failed: ${message}`);
     }
   }
 

@@ -9,19 +9,21 @@ test.describe('Login Functionality', () => {
   test.beforeEach(async ({ page }) => {
     loginPage = new LoginPage(page);
     cleanup = new TestDataCleanup(page);
+    await cleanup.cleanupUserData(); // Clean up before test
     await loginPage.goto();
   });
 
   test.afterEach(async ({ page }) => {
-    await cleanup.cleanupUserData();
+    cleanup = new TestDataCleanup(page);
+    await cleanup.cleanupUserData(); // Clean up after test
   });
 
-  test('Valid login works', async ({ page }) => {
+  test('Valid login works', async () => {
     await loginPage.login('admin', 'changeme');
-    await expect(page).toHaveURL(/dashboard/);
+    await loginPage.verifySuccessfulLogin();
   });
 
-  test('Invalid credentials show error message', async ({ page }) => {
+  test('Invalid credentials show error message', async () => {
     await loginPage.login('wrong', 'wrong');
     await loginPage.verifyLoginError('Invalid username or password');
   });

@@ -2,6 +2,7 @@ import React, { createContext, useState, useEffect, useCallback } from 'react';
 import { Task } from '../types';
 import { getAuthConfig } from '../utils/authUtils';
 import { getTasks, createTask, updateTask, deleteTask } from '../services/taskService';
+import { useAuth } from './AuthContext';
 
 interface TaskContextType {
   tasks: Task[];
@@ -27,14 +28,19 @@ const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
   const [task, setTask] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const { authState } = useAuth();
 
   // Use the getAuthConfig from authUtils
   const getConfig = useCallback(() => {
     return getAuthConfig();
   }, []);
 
-  // Load tasks from API on initial load
+  // Load tasks from API on initial load and when auth changes
   useEffect(() => {
+    if (!authState.isAuthenticated) {
+      setTasks([]);
+      return;
+    }
     const fetchTasks = async (): Promise<void> => {
       setLoading(true);
       setError(null);
@@ -49,7 +55,7 @@ const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
       }
     };
     void fetchTasks();
-  }, []);
+  }, [authState.isAuthenticated]);
 
   // Add a new task via API
   const addTask = async (text: string): Promise<void> => {

@@ -42,6 +42,7 @@ const Login: React.FC = () => {
 
       // Redirect to dashboard on success
       navigate('/dashboard');
+      // Removed window.location.reload(); to allow context to update naturally
     } catch (error: Error | unknown) {
       // Prefer error from context if available
       let errorMessage =

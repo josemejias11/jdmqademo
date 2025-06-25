@@ -6,6 +6,6 @@
 - textbox "Username"
 - text: Password
 - textbox "Password"
-- text: "Default: admin / changeme"
+- text: 'Default: admin / changeme'
 - button "Login"
 ```

@@ -34,9 +34,21 @@ const Navigation: React.FC = () => {
   };
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-primary" style={{ fontFamily: 'Montserrat, Poppins, Arial, sans-serif', fontWeight: 700 }}>
+    <nav
+      className="navbar navbar-expand-lg navbar-dark bg-primary"
+      style={{ fontFamily: 'Montserrat, Poppins, Arial, sans-serif', fontWeight: 700 }}
+    >
       <div className="container">
-        <Link className="navbar-brand" to="/dashboard" style={{ fontFamily: 'Montserrat, Poppins, Arial, sans-serif', fontWeight: 700, letterSpacing: '1px', fontSize: '1.5rem' }}>
+        <Link
+          className="navbar-brand"
+          to="/dashboard"
+          style={{
+            fontFamily: 'Montserrat, Poppins, Arial, sans-serif',
+            fontWeight: 700,
+            letterSpacing: '1px',
+            fontSize: '1.5rem'
+          }}
+        >
           Task Manager
         </Link>
 
@@ -67,7 +79,12 @@ const Navigation: React.FC = () => {
           </ul>
 
           <div className="d-flex">
-            <span className="navbar-text me-3" style={{ fontFamily: 'Inter, Roboto, Arial, sans-serif' }}>Welcome, {authState.user?.username}</span>
+            <span
+              className="navbar-text me-3"
+              style={{ fontFamily: 'Inter, Roboto, Arial, sans-serif' }}
+            >
+              Welcome, {authState.user?.username}
+            </span>
             <button className="btn btn-outline-light" onClick={handleLogout}>
               Logout
             </button>

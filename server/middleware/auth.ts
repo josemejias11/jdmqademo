@@ -62,4 +62,4 @@ const auth = (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
   }
 };
 
-export default auth; 
+export default auth;

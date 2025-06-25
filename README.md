@@ -106,54 +106,60 @@ You can run the application using either npm scripts or Docker Compose.
 ### Installation
 
 1. Clone the repository:
+
    ```bash
    git clone https://github.com/josemejias11/jdmqademo.git
    cd jdmqademo
    ```
 
 2. Install dependencies:
+
    ```bash
    npm install
    ```
 
 3. Set up environment variables:
-    - Copy the example environment file:
-      ```bash
-      cp .env.example .env
-      ```
-    - Edit the `.env` file to set your own values:
-      ```
-      # Server configuration
-      PORT=3001
-      NODE_ENV=development
- 
-      # Security
-      JWT_SECRET=use_a_secure_random_string_here
- 
-      # Mock user credentials (for development only)
-      MOCK_USER=admin
-      MOCK_PASSWORD=changeme
- 
-      # API URL for scripts
-      API_URL=http://localhost:3001
-      ```
+
+   - Copy the example environment file:
+     ```bash
+     cp .env.example .env
+     ```
+   - Edit the `.env` file to set your own values:
+
+     ```
+     # Server configuration
+     PORT=3001
+     NODE_ENV=development
+
+     # Security
+     JWT_SECRET=use_a_secure_random_string_here
+
+     # Mock user credentials (for development only)
+     MOCK_USER=admin
+     MOCK_PASSWORD=changeme
+
+     # API URL for scripts
+     API_URL=http://localhost:3001
+     ```
 
    > **IMPORTANT**: Never commit your `.env` file to version control. It contains sensitive information.
 
 4. Install Playwright browsers (if you plan to run tests):
+
    ```bash
    npm run playwright:install
    ```
 
 5. Start the development servers:
+
    ```bash
    # Start both frontend and backend with concurrently
    npm run dev
-   
+
    # Or start them separately:
    # In one terminal - start the Express server
    npm run server
-   
+
    # In another terminal - start the React development server
    npm start
    ```
@@ -218,9 +224,9 @@ To run the full application (frontend, backend, and database) using Docker:
    docker compose up --build
    ```
    This will launch:
-    - Frontend: http://localhost:3000
-    - Backend API: http://localhost:3001
-    - PostgreSQL: localhost:5432
+   - Frontend: http://localhost:3000
+   - Backend API: http://localhost:3001
+   - PostgreSQL: localhost:5432
 
 > Use `docker compose down` to stop the services.
 
@@ -270,13 +276,14 @@ The backend provides the following API endpoints:
 ### Authentication
 
 - **POST /api/auth/login**: Authenticate a user and receive a JWT token
+
   ```json
   // Request
   {
     "username": "admin",
     "password": "changeme"
   }
-  
+
   // Response
   {
     "success": true,
@@ -375,7 +382,7 @@ task-related API calls:
 import apiClient from '../utils/apiClient';
 
 // The path should not include /api as it's already in the baseURL
-const API_URL = '/tasks'; 
+const API_URL = '/tasks';
 
 export const getTasks = async () => {
   const response = await apiClient.get(API_URL);
@@ -388,7 +395,7 @@ export const getTasks = async () => {
 The application uses the following environment variables:
 
 | Variable       | Description                                  | Default               |
-|----------------|----------------------------------------------|-----------------------|
+| -------------- | -------------------------------------------- | --------------------- |
 | PORT           | The port the server will run on              | 3001                  |
 | NODE_ENV       | Environment mode (development/production)    | development           |
 | JWT_SECRET     | Secret key for signing JWT tokens            | None (required)       |

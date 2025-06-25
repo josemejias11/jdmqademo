@@ -39,8 +39,19 @@ const Dashboard: React.FC = () => {
         <div className="col-12">
           <div className="card shadow-sm">
             <div className="card-body">
-              <h2 className="card-title" style={{ fontFamily: 'Montserrat, Poppins, Arial, sans-serif', color: '#1F75FE', fontWeight: 700 }}>Welcome, {authState.user?.username}!</h2>
-              <p className="card-text" style={{ fontFamily: 'Inter, Roboto, Arial, sans-serif' }}>Here&apos;s an overview of your tasks and progress.</p>
+              <h2
+                className="card-title"
+                style={{
+                  fontFamily: 'Montserrat, Poppins, Arial, sans-serif',
+                  color: '#1F75FE',
+                  fontWeight: 700
+                }}
+              >
+                Welcome, {authState.user?.username}!
+              </h2>
+              <p className="card-text" style={{ fontFamily: 'Inter, Roboto, Arial, sans-serif' }}>
+                Here&apos;s an overview of your tasks and progress.
+              </p>
             </div>
           </div>
         </div>
@@ -60,7 +71,10 @@ const Dashboard: React.FC = () => {
         <>
           <div className="row mb-4">
             <div className="col-md-4 mb-3 mb-md-0">
-              <div className="card text-white bg-primary h-100" style={{ fontFamily: 'Montserrat, Poppins, Arial, sans-serif', fontWeight: 700 }}>
+              <div
+                className="card text-white bg-primary h-100"
+                style={{ fontFamily: 'Montserrat, Poppins, Arial, sans-serif', fontWeight: 700 }}
+              >
                 <div className="card-body d-flex align-items-center">
                   <FaClipboardList className="me-3" size={24} />
                   <div>
@@ -72,7 +86,10 @@ const Dashboard: React.FC = () => {
             </div>
 
             <div className="col-md-4 mb-3 mb-md-0">
-              <div className="card text-white bg-success h-100" style={{ fontFamily: 'Montserrat, Poppins, Arial, sans-serif', fontWeight: 700 }}>
+              <div
+                className="card text-white bg-success h-100"
+                style={{ fontFamily: 'Montserrat, Poppins, Arial, sans-serif', fontWeight: 700 }}
+              >
                 <div className="card-body d-flex align-items-center">
                   <FaCheckCircle className="me-3" size={24} />
                   <div>
@@ -84,7 +101,10 @@ const Dashboard: React.FC = () => {
             </div>
 
             <div className="col-md-4">
-              <div className="card text-white bg-warning h-100" style={{ fontFamily: 'Montserrat, Poppins, Arial, sans-serif', fontWeight: 700 }}>
+              <div
+                className="card text-white bg-warning h-100"
+                style={{ fontFamily: 'Montserrat, Poppins, Arial, sans-serif', fontWeight: 700 }}
+              >
                 <div className="card-body d-flex align-items-center">
                   <FaHourglassHalf className="me-3" size={24} />
                   <div>
@@ -100,7 +120,15 @@ const Dashboard: React.FC = () => {
             <div className="col-12">
               <div className="card shadow-sm">
                 <div className="card-body">
-                  <h5 className="card-title" style={{ fontFamily: 'Montserrat, Poppins, Arial, sans-serif', fontWeight: 700 }}>Task Completion</h5>
+                  <h5
+                    className="card-title"
+                    style={{
+                      fontFamily: 'Montserrat, Poppins, Arial, sans-serif',
+                      fontWeight: 700
+                    }}
+                  >
+                    Task Completion
+                  </h5>
                   <div className="progress">
                     <div
                       aria-valuemax={100}
@@ -122,7 +150,15 @@ const Dashboard: React.FC = () => {
             <div className="col-md-6 mb-3 mb-md-0">
               <div className="card shadow-sm h-100">
                 <div className="card-body">
-                  <h5 className="card-title" style={{ fontFamily: 'Montserrat, Poppins, Arial, sans-serif', fontWeight: 700 }}>Recent Tasks</h5>
+                  <h5
+                    className="card-title"
+                    style={{
+                      fontFamily: 'Montserrat, Poppins, Arial, sans-serif',
+                      fontWeight: 700
+                    }}
+                  >
+                    Recent Tasks
+                  </h5>
                   {tasks.length === 0 ? (
                     <p className="card-text text-muted">No tasks available</p>
                   ) : (
@@ -156,8 +192,21 @@ const Dashboard: React.FC = () => {
               <div className="card shadow-sm h-100">
                 <div className="card-body text-center d-flex flex-column justify-content-center">
                   <FaPlus className="mx-auto mb-3 text-primary" size={48} />
-                  <h5 className="card-title" style={{ fontFamily: 'Montserrat, Poppins, Arial, sans-serif', fontWeight: 700 }}>Add New Task</h5>
-                  <p className="card-text" style={{ fontFamily: 'Inter, Roboto, Arial, sans-serif' }}>Create a new task to keep track of your work</p>
+                  <h5
+                    className="card-title"
+                    style={{
+                      fontFamily: 'Montserrat, Poppins, Arial, sans-serif',
+                      fontWeight: 700
+                    }}
+                  >
+                    Add New Task
+                  </h5>
+                  <p
+                    className="card-text"
+                    style={{ fontFamily: 'Inter, Roboto, Arial, sans-serif' }}
+                  >
+                    Create a new task to keep track of your work
+                  </p>
                   <Link className="btn btn-outline-primary mt-auto" to="/tasks/new">
                     Create Task
                   </Link>

@@ -10,7 +10,7 @@ export class TestDataCleanup {
 
     // Get all task elements
     const taskElements = await this.page.$$('[data-testid="task-item"]');
-    
+
     // Delete each task
     for (const taskElement of taskElements) {
       const title = await taskElement.textContent();
@@ -29,4 +29,4 @@ export class TestDataCleanup {
       console.warn('Failed to cleanup user data:', error);
     }
   }
-} 
+}

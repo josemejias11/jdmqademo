@@ -111,4 +111,4 @@ class TaskModel {
   }
 }
 
-export default TaskModel; 
+export default TaskModel;

@@ -15,7 +15,11 @@ interface AuthenticatedUser {
   username: string;
 }
 
-type AuthenticatedRequest<P = Record<string, never>, ResBody = unknown, ReqBody = unknown> = Request<P, ResBody, ReqBody> & {
+type AuthenticatedRequest<
+  P = Record<string, never>,
+  ResBody = unknown,
+  ReqBody = unknown
+> = Request<P, ResBody, ReqBody> & {
   user: AuthenticatedUser;
 };
 
@@ -115,4 +119,4 @@ export default {
   createTask,
   updateTask,
   deleteTask
-}; 
+};

@@ -19,7 +19,11 @@ const mockUser: MockUser = {
 };
 
 // Login user
-const login = (req: Request<Record<string, never>, unknown, LoginRequestBody>, res: Response, next: NextFunction) => {
+const login = (
+  req: Request<Record<string, never>, unknown, LoginRequestBody>,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { username, password } = req.body;
 

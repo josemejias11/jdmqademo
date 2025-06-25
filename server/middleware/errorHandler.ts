@@ -9,12 +9,7 @@ interface ValidationError extends Error {
   }>;
 }
 
-const errorHandler = (
-  err: ValidationError,
-  _req: Request,
-  res: Response,
-  _next: NextFunction
-) => {
+const errorHandler = (err: ValidationError, _req: Request, res: Response, _next: NextFunction) => {
   console.error(err.stack);
 
   const statusCode = err.statusCode || 500;
@@ -30,4 +25,4 @@ const errorHandler = (
   });
 };
 
-export default errorHandler; 
+export default errorHandler;

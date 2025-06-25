@@ -44,7 +44,9 @@ const Login: React.FC = () => {
       navigate('/dashboard');
     } catch (error: Error | unknown) {
       // Prefer error from context if available
-      let errorMessage = authState.error || (error instanceof Error ? error.message : 'Login failed. Please try again.');
+      let errorMessage =
+        authState.error ||
+        (error instanceof Error ? error.message : 'Login failed. Please try again.');
       if (errorMessage === 'Request failed with status code 401') {
         errorMessage = 'Invalid username or password. Please try again.';
       }
@@ -56,14 +58,36 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="container vh-100 d-flex align-items-center justify-content-center bg-light" style={{ fontFamily: 'Inter, Roboto, Arial, sans-serif' }}>
+    <div
+      className="container vh-100 d-flex align-items-center justify-content-center bg-light"
+      style={{ fontFamily: 'Inter, Roboto, Arial, sans-serif' }}
+    >
       <div className="row w-100 justify-content-center">
         <div className="col-12 col-sm-10 col-md-8 col-lg-5">
           <div className="card shadow-lg border-0 rounded-4">
             <div className="card-body p-5">
               <div className="text-center mb-4">
-                <h1 className="fw-bold mb-1" style={{ color: '#1F75FE', fontSize: '2.2rem', letterSpacing: '1px', fontFamily: 'Montserrat, Poppins, Arial, sans-serif' }}>Task Manager</h1>
-                <p className="mb-0" style={{ color: '#2E2E2E', opacity: 0.7, fontFamily: 'Inter, Roboto, Arial, sans-serif' }}>Please login to your account.</p>
+                <h1
+                  className="fw-bold mb-1"
+                  style={{
+                    color: '#1F75FE',
+                    fontSize: '2.2rem',
+                    letterSpacing: '1px',
+                    fontFamily: 'Montserrat, Poppins, Arial, sans-serif'
+                  }}
+                >
+                  Task Manager
+                </h1>
+                <p
+                  className="mb-0"
+                  style={{
+                    color: '#2E2E2E',
+                    opacity: 0.7,
+                    fontFamily: 'Inter, Roboto, Arial, sans-serif'
+                  }}
+                >
+                  Please login to your account.
+                </p>
               </div>
               <Formik
                 initialValues={{ username: '', password: '' }}
@@ -73,7 +97,11 @@ const Login: React.FC = () => {
                 {({ errors, touched, isSubmitting }) => (
                   <Form>
                     <div className="mb-3">
-                      <label className="form-label fw-semibold" htmlFor="username" style={{ fontFamily: 'Montserrat, Poppins, Arial, sans-serif' }}>
+                      <label
+                        className="form-label fw-semibold"
+                        htmlFor="username"
+                        style={{ fontFamily: 'Montserrat, Poppins, Arial, sans-serif' }}
+                      >
                         Username
                       </label>
                       <Field
@@ -86,7 +114,11 @@ const Login: React.FC = () => {
                       <ErrorMessage className="invalid-feedback" component="div" name="username" />
                     </div>
                     <div className="mb-3">
-                      <label className="form-label fw-semibold" htmlFor="password" style={{ fontFamily: 'Montserrat, Poppins, Arial, sans-serif' }}>
+                      <label
+                        className="form-label fw-semibold"
+                        htmlFor="password"
+                        style={{ fontFamily: 'Montserrat, Poppins, Arial, sans-serif' }}
+                      >
                         Password
                       </label>
                       <Field
@@ -127,9 +159,19 @@ const Login: React.FC = () => {
                   <Modal.Title>Login Error</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                  <div className="d-flex align-items-center text-danger border border-2 border-danger rounded p-3" style={{ fontWeight: 'bold', fontSize: '1.1rem', background: '#fff8f8' }}>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" className="bi bi-exclamation-triangle-fill me-2" viewBox="0 0 16 16">
-                      <path d="M8.982 1.566a1.13 1.13 0 0 0-1.964 0L.165 13.233c-.457.778.091 1.767.982 1.767h13.707c.89 0 1.438-.99.982-1.767L8.982 1.566zm-.982 4.905a.905.905 0 1 1 1.81 0l-.35 3.507a.552.552 0 0 1-1.11 0L8 6.47zm.002 6.002a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+                  <div
+                    className="d-flex align-items-center text-danger border border-2 border-danger rounded p-3"
+                    style={{ fontWeight: 'bold', fontSize: '1.1rem', background: '#fff8f8' }}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      fill="currentColor"
+                      className="bi bi-exclamation-triangle-fill me-2"
+                      viewBox="0 0 16 16"
+                    >
+                      <path d="M8.982 1.566a1.13 1.13 0 0 0-1.964 0L.165 13.233c-.457.778.091 1.767.982 1.767h13.707c.89 0 1.438-.99.982-1.767L8.982 1.566zm-.982 4.905a.905.905 0 1 1 1.81 0l-.35 3.507a.552.552 0 0 1-1.11 0L8 6.47zm.002 6.002a1 1 0 1 1-2 0 1 1 0 0 1 2 0z" />
                     </svg>
                     <span>{loginError}</span>
                   </div>

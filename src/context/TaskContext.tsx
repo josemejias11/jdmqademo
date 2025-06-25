@@ -3,7 +3,6 @@ import { Task } from '../types';
 import { getAuthConfig } from '../utils/authUtils';
 import { getTasks, createTask, updateTask, deleteTask } from '../services/taskService';
 
-
 interface TaskContextType {
   tasks: Task[];
   task: string;

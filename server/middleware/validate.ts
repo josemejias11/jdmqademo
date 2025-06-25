@@ -1,13 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
-import { validationResult } from 'express-validator';
+import { validationResult, ValidationError as ExpressValidationError } from 'express-validator';
 
 interface ValidationError extends Error {
   statusCode?: number;
-  data?: Array<{
-    msg: string;
-    param: string;
-    location: string;
-  }>;
+  data?: ExpressValidationError[];
 }
 
 const validate = (req: Request, res: Response, next: NextFunction) => {
@@ -21,4 +17,4 @@ const validate = (req: Request, res: Response, next: NextFunction) => {
   next();
 };
 
-export default validate; 
+export default validate;

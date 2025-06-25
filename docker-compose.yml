@@ -1,4 +1,4 @@
-version: "3.9"
+version: '3.9'
 
 services:
   app:
@@ -6,8 +6,8 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "3000:3000"  # React frontend
-      - "3001:3001"  # Express backend
+      - '3000:3000' # React frontend
+      - '3001:3001' # Express backend
     volumes:
       - .:/app
       - /app/node_modules
@@ -28,7 +28,7 @@ services:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: jdmqademo
     ports:
-      - "5432:5432"
+      - '5432:5432'
     volumes:
       - pgdata:/var/lib/postgresql/data
 

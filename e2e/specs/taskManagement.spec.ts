@@ -23,7 +23,7 @@ test.describe('Task Management', () => {
   test('should add a new task', async ({ page }) => {
     const taskTitle = 'Test task';
     const taskDescription = 'This is a test task';
-    
+
     await dashboardPage.addTask(taskTitle, taskDescription);
     await expect(page.getByText(taskTitle)).toBeVisible();
     await expect(page.getByText(taskDescription)).toBeVisible();
@@ -61,4 +61,4 @@ test.describe('Task Management', () => {
       await expect(page.getByText(task.title)).toBeVisible();
     }
   });
-}); 
+});

@@ -10,4 +10,4 @@ const notFound = (req: Request, _res: Response, next: NextFunction) => {
   next(error);
 };
 
-export default notFound; 
+export default notFound;

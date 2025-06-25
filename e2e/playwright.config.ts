@@ -14,26 +14,26 @@ export default defineConfig({
     ignoreHTTPSErrors: true,
     video: 'retain-on-failure',
     screenshot: 'only-on-failure',
-    trace: 'retain-on-failure',
+    trace: 'retain-on-failure'
   },
   expect: {
     toHaveScreenshot: {
       maxDiffPixels: 100,
-      threshold: 0.2,
-    },
+      threshold: 0.2
+    }
   },
   projects: [
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      use: { ...devices['Desktop Chrome'] }
     },
     {
       name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
+      use: { ...devices['Desktop Firefox'] }
     },
     {
       name: 'webkit',
-      use: { ...devices['Desktop Safari'] },
-    },
-  ],
+      use: { ...devices['Desktop Safari'] }
+    }
+  ]
 });

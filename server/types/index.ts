@@ -23,4 +23,4 @@ export type AuthenticatedRequest<
   ReqBody = unknown
 > = Request<P, ResBody, ReqBody> & {
   user: AuthenticatedUser;
-}; 
+};

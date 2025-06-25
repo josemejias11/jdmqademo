@@ -102,7 +102,15 @@ const Tasks: React.FC = () => {
   return (
     <div className="container mt-4" style={{ fontFamily: 'Inter, Roboto, Arial, sans-serif' }}>
       <div className="d-flex justify-content-between align-items-center mb-4">
-        <h2 style={{ fontFamily: 'Montserrat, Poppins, Arial, sans-serif', color: '#1F75FE', fontWeight: 700 }}>My Tasks</h2>
+        <h2
+          style={{
+            fontFamily: 'Montserrat, Poppins, Arial, sans-serif',
+            color: '#1F75FE',
+            fontWeight: 700
+          }}
+        >
+          My Tasks
+        </h2>
         <Link className="btn btn-primary" to="/tasks/new">
           <FaPlus className="me-2" />
           New Task
@@ -176,7 +184,12 @@ const Tasks: React.FC = () => {
       ) : filteredTasks.length === 0 ? (
         <div className="card shadow-sm">
           <div className="card-body text-center py-5">
-            <h5 className="text-muted mb-3" style={{ fontFamily: 'Montserrat, Poppins, Arial, sans-serif', fontWeight: 700 }}>No tasks found</h5>
+            <h5
+              className="text-muted mb-3"
+              style={{ fontFamily: 'Montserrat, Poppins, Arial, sans-serif', fontWeight: 700 }}
+            >
+              No tasks found
+            </h5>
             <p className="text-muted" style={{ fontFamily: 'Inter, Roboto, Arial, sans-serif' }}>
               {searchTerm || filter !== 'all'
                 ? 'Try changing your search or filter criteria'

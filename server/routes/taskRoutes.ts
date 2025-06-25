@@ -26,8 +26,18 @@ const taskValidationRules = [
 // Routes
 router.get('/', taskController.getTasks as unknown as express.RequestHandler);
 router.get('/:id', taskController.getTaskById as unknown as express.RequestHandler);
-router.post('/', taskValidationRules, validate, taskController.createTask as unknown as express.RequestHandler);
-router.put('/:id', taskValidationRules, validate, taskController.updateTask as unknown as express.RequestHandler);
+router.post(
+  '/',
+  taskValidationRules,
+  validate,
+  taskController.createTask as unknown as express.RequestHandler
+);
+router.put(
+  '/:id',
+  taskValidationRules,
+  validate,
+  taskController.updateTask as unknown as express.RequestHandler
+);
 router.delete('/:id', taskController.deleteTask as unknown as express.RequestHandler);
 
-export default router; 
+export default router;

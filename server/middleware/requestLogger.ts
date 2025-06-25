@@ -30,4 +30,4 @@ const requestLogger = (req: Request, _res: Response, next: NextFunction) => {
   next();
 };
 
-export default requestLogger; 
+export default requestLogger;

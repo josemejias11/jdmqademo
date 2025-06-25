@@ -121,7 +121,16 @@ const TaskForm: React.FC<TaskFormProps> = ({ task, onSubmitSuccess }) => {
   return (
     <div className="card shadow-sm" style={{ fontFamily: 'Inter, Roboto, Arial, sans-serif' }}>
       <div className="card-body">
-        <h3 className="card-title mb-4" style={{ fontFamily: 'Montserrat, Poppins, Arial, sans-serif', color: '#1F75FE', fontWeight: 700 }}>{isEditMode ? 'Edit Task' : 'Create New Task'}</h3>
+        <h3
+          className="card-title mb-4"
+          style={{
+            fontFamily: 'Montserrat, Poppins, Arial, sans-serif',
+            color: '#1F75FE',
+            fontWeight: 700
+          }}
+        >
+          {isEditMode ? 'Edit Task' : 'Create New Task'}
+        </h3>
 
         {error && (
           <div className="alert alert-danger" role="alert">
@@ -143,7 +152,11 @@ const TaskForm: React.FC<TaskFormProps> = ({ task, onSubmitSuccess }) => {
           }) => (
             <Form>
               <div className="mb-3">
-                <label className="form-label" htmlFor="title" style={{ fontFamily: 'Montserrat, Poppins, Arial, sans-serif', fontWeight: 700 }}>
+                <label
+                  className="form-label"
+                  htmlFor="title"
+                  style={{ fontFamily: 'Montserrat, Poppins, Arial, sans-serif', fontWeight: 700 }}
+                >
                   Title <span className="text-danger">*</span>
                 </label>
                 <Field
@@ -157,7 +170,11 @@ const TaskForm: React.FC<TaskFormProps> = ({ task, onSubmitSuccess }) => {
               </div>
 
               <div className="mb-3">
-                <label className="form-label" htmlFor="description" style={{ fontFamily: 'Montserrat, Poppins, Arial, sans-serif', fontWeight: 700 }}>
+                <label
+                  className="form-label"
+                  htmlFor="description"
+                  style={{ fontFamily: 'Montserrat, Poppins, Arial, sans-serif', fontWeight: 700 }}
+                >
                   Description
                 </label>
                 <Field
@@ -180,7 +197,11 @@ const TaskForm: React.FC<TaskFormProps> = ({ task, onSubmitSuccess }) => {
                   name="completed"
                   type="checkbox"
                 />
-                <label className="form-check-label" htmlFor="completed" style={{ fontFamily: 'Montserrat, Poppins, Arial, sans-serif', fontWeight: 700 }}>
+                <label
+                  className="form-check-label"
+                  htmlFor="completed"
+                  style={{ fontFamily: 'Montserrat, Poppins, Arial, sans-serif', fontWeight: 700 }}
+                >
                   Mark as completed
                 </label>
               </div>

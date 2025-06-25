@@ -25,11 +25,11 @@ test.describe('Visual Regression Tests', () => {
   test('Dashboard with tasks visual comparison', async ({ page }) => {
     await loginPage.goto();
     await loginPage.login('admin', 'changeme');
-    
+
     // Add some tasks
     await dashboardPage.addTask('Task 1', 'First task');
     await dashboardPage.addTask('Task 2', 'Second task');
-    
+
     // Take screenshot of the dashboard with tasks
     await expect(page).toHaveScreenshot('dashboard-with-tasks.png');
   });
@@ -37,7 +37,7 @@ test.describe('Visual Regression Tests', () => {
   test('Task form visual comparison', async ({ page }) => {
     await loginPage.goto();
     await loginPage.login('admin', 'changeme');
-    
+
     // Focus on the task form
     await page.getByLabel('Title').click();
     await expect(page.locator('[data-testid="task-form"]')).toHaveScreenshot('task-form.png');
@@ -48,4 +48,4 @@ test.describe('Visual Regression Tests', () => {
     await loginPage.login('wrong', 'wrong');
     await expect(page).toHaveScreenshot('login-error.png');
   });
-}); 
+});

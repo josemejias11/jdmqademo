@@ -1,15 +1,4 @@
-import { ReportHandler } from 'web-vitals';
-
-const reportWebVitals = (onPerfEntry?: ReportHandler) => {
-  if (onPerfEntry && typeof onPerfEntry === 'function') {
-    import('web-vitals').then(({ getCLS, getFID, getFCP, getLCP, getTTFB }) => {
-      getCLS(onPerfEntry);
-      getFID(onPerfEntry);
-      getFCP(onPerfEntry);
-      getLCP(onPerfEntry);
-      getTTFB(onPerfEntry);
-    });
-  }
-};
-
+// Web Vitals reporting is disabled or not supported in this version.
+// This file is a no-op to prevent TypeScript errors.
+const reportWebVitals = () => {};
 export default reportWebVitals;

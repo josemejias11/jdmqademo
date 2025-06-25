@@ -1,8 +1,8 @@
 import express from 'express';
 import { body } from 'express-validator';
-import validate from '../middleware/validate';
-import taskController from '../controllers/taskController';
-import auth from '../middleware/auth';
+import validate from '../middleware/validate.js';
+import taskController from '../controllers/taskController.js';
+import auth from '../middleware/auth.js';
 
 const router = express.Router();
 

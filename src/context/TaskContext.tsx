@@ -1,27 +1,18 @@
 import React, { createContext, useState, useEffect, useCallback } from 'react';
-import apiClient from '../utils/apiClient.js';
-import { Task } from '../types.js';
+import { Task } from '../types';
+import { getAuthConfig } from '../utils/authUtils';
+import { getTasks, createTask, updateTask, deleteTask } from '../services/taskService';
 
-import { getAuthConfig } from '../utils/authUtils.js';
 
-interface ApiError {
-  response?: {
-    status?: number;
-    data?: {
-      message?: string;
-    };
-  };
-}
-
-const API_URL = '/api/tasks';
+const API_URL = '/tasks';
 
 interface TaskContextType {
   tasks: Task[];
   task: string;
   setTask: (task: string) => void;
   handleAddTask: (e: React.FormEvent<HTMLFormElement>) => void;
-  toggleTaskDone: (id: number) => void;
-  deleteTask: (id: number) => void;
+  toggleTaskDone: (id: string) => void;
+  deleteTask: (id: string) => void;
   loading: boolean;
   error: string | null;
 }
@@ -50,50 +41,30 @@ const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
     const fetchTasks = async (): Promise<void> => {
       setLoading(true);
       setError(null);
-
       try {
-        const response = await apiClient.get(API_URL, getConfig());
+        const response = await getTasks();
         setTasks(response.data);
       } catch (err) {
-        const apiError = err as ApiError;
-        console.error('Error fetching tasks:', JSON.stringify(apiError, null, 2));
-
-        // Special handling for 431 errors (Request Header Fields Too Large)
-        if (apiError.response?.status === 431) {
-          // This could be caused by a token that's too large
-          setError('Session expired or invalid. Please log out and log in again.');
-        } else {
-          setError(
-            apiError.response?.data?.message || 'Failed to load tasks. Please try again later.'
-          );
-        }
+        const apiError = err as { message?: string };
+        setError(apiError.message || 'Failed to load tasks. Please try again later.');
       } finally {
         setLoading(false);
       }
     };
-
     void fetchTasks();
-  }, [getConfig]);
+  }, []);
 
   // Add a new task via API
   const addTask = async (text: string): Promise<void> => {
     if (text.trim() === '') return;
-
     setLoading(true);
     setError(null);
-
     try {
-      const response = await apiClient.post(
-        API_URL,
-        { title: text.trim(), description: '' },
-        getConfig()
-      );
-
+      const response = await createTask({ title: text.trim(), description: '', completed: false });
       setTasks([...tasks, response.data]);
     } catch (err) {
-      const apiError = err as ApiError;
-      console.error('Error adding task:', apiError);
-      setError(apiError.response?.data?.message || 'Failed to add task. Please try again later.');
+      const apiError = err as { message?: string };
+      setError(apiError.message || 'Failed to add task. Please try again later.');
     } finally {
       setLoading(false);
     }
@@ -107,53 +78,35 @@ const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
   };
 
   // Toggle the 'done' status of a task via API
-  const toggleTaskDone = async (id: number): Promise<void> => {
+  const toggleTaskDone = async (id: string): Promise<void> => {
     setLoading(true);
     setError(null);
-
     try {
-      // Find the task to toggle
       const taskToToggle = tasks.find(t => t.id === id);
       if (!taskToToggle) {
-        console.error('Task not found');
         setError('Task not found');
         return;
       }
-
-      // Update the task via API
-      const response = await apiClient.put(
-        `${API_URL}/${id}`,
-        { completed: !taskToToggle.completed },
-        getConfig()
-      );
-
-      // Update local state
+      const response = await updateTask(id, { completed: !taskToToggle.completed });
       setTasks(tasks.map(t => (t.id === id ? response.data : t)));
     } catch (err) {
-      const apiError = err as ApiError;
-      console.error('Error toggling task:', apiError);
-      setError(
-        apiError.response?.data?.message || 'Failed to update task. Please try again later.'
-      );
+      const apiError = err as { message?: string };
+      setError(apiError.message || 'Failed to update task. Please try again later.');
     } finally {
       setLoading(false);
     }
   };
 
   // Delete a task via API
-  const deleteTask = async (id: number): Promise<void> => {
+  const removeTask = async (id: string): Promise<void> => {
     setLoading(true);
     setError(null);
-
     try {
-      await apiClient.delete(`${API_URL}/${id}`, getConfig());
+      await deleteTask(id);
       setTasks(tasks.filter(t => t.id !== id));
     } catch (err) {
-      const apiError = err as ApiError;
-      console.error('Error deleting task:', apiError);
-      setError(
-        apiError.response?.data?.message || 'Failed to delete task. Please try again later.'
-      );
+      const apiError = err as { message?: string };
+      setError(apiError.message || 'Failed to delete task. Please try again later.');
     } finally {
       setLoading(false);
     }
@@ -166,7 +119,7 @@ const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
     setTask,
     handleAddTask,
     toggleTaskDone,
-    deleteTask,
+    deleteTask: removeTask,
     loading,
     error
   };

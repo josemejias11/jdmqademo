@@ -3,6 +3,10 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { logout } from '../services/authService';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import '@fontsource/montserrat/700.css';
+import '@fontsource/poppins/700.css';
+import '@fontsource/inter/400.css';
+import '@fontsource/roboto/400.css';
 
 const Navigation: React.FC = () => {
   const { authState, setAuthState } = useAuth();
@@ -30,9 +34,9 @@ const Navigation: React.FC = () => {
   };
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
+    <nav className="navbar navbar-expand-lg navbar-dark bg-primary" style={{ fontFamily: 'Montserrat, Poppins, Arial, sans-serif', fontWeight: 700 }}>
       <div className="container">
-        <Link className="navbar-brand" to="/dashboard">
+        <Link className="navbar-brand" to="/dashboard" style={{ fontFamily: 'Montserrat, Poppins, Arial, sans-serif', fontWeight: 700, letterSpacing: '1px', fontSize: '1.5rem' }}>
           Task Manager
         </Link>
 
@@ -63,7 +67,7 @@ const Navigation: React.FC = () => {
           </ul>
 
           <div className="d-flex">
-            <span className="navbar-text me-3">Welcome, {authState.user?.username}</span>
+            <span className="navbar-text me-3" style={{ fontFamily: 'Inter, Roboto, Arial, sans-serif' }}>Welcome, {authState.user?.username}</span>
             <button className="btn btn-outline-light" onClick={handleLogout}>
               Logout
             </button>

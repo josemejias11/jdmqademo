@@ -2,17 +2,7 @@
 
 import apiClient from '../utils/apiClient';
 import { getAuthConfig } from '../utils/authUtils';
-
-// Task interface
-export interface Task {
-  id: string;
-  title: string;
-  description: string;
-  completed: boolean;
-  userId: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
+import { Task } from '../types';
 
 // Task form values interface
 export interface TaskFormValues {

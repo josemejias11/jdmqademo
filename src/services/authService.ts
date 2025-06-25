@@ -40,7 +40,6 @@ const login = async (
     };
   } catch (err) {
     const apiError = err as ApiError;
-    console.error('Login failed:', apiError);
     throw apiError;
   }
 };

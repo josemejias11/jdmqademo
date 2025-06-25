@@ -1,11 +1,12 @@
 // Task related types
 export interface Task {
-  id: number;
+  id: string;
   title: string;
   completed: boolean;
-  description?: string;
-  createdAt?: string;
-  updatedAt?: string;
+  description: string;
+  userId: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 // Auth related types

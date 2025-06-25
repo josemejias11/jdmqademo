@@ -1,8 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { getTaskById, deleteTask, Task } from '../services/taskService';
+import { getTaskById, deleteTask } from '../services/taskService';
+import { Task } from '../types';
 import { FaArrowLeft, FaEdit, FaTrash, FaCheck, FaHourglassHalf } from 'react-icons/fa';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import '@fontsource/montserrat/700.css';
+import '@fontsource/poppins/700.css';
+import '@fontsource/inter/400.css';
+import '@fontsource/roboto/400.css';
 
 const TaskDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -53,7 +58,7 @@ const TaskDetail: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="container mt-4">
+      <div className="container mt-4" style={{ fontFamily: 'Inter, Roboto, Arial, sans-serif' }}>
         <div className="d-flex justify-content-center my-5">
           <div className="spinner-border text-primary" role="status">
             <span className="visually-hidden">Loading...</span>
@@ -65,7 +70,7 @@ const TaskDetail: React.FC = () => {
 
   if (error || !task) {
     return (
-      <div className="container mt-4">
+      <div className="container mt-4" style={{ fontFamily: 'Inter, Roboto, Arial, sans-serif' }}>
         <div className="alert alert-danger" role="alert">
           {error || 'Task not found'}
         </div>
@@ -77,14 +82,14 @@ const TaskDetail: React.FC = () => {
     );
   }
 
-  const formattedDate = (date: Date) => {
+  const formattedDate = (date: string) => {
     return new Date(date).toLocaleString();
   };
 
   return (
-    <div className="container mt-4">
+    <div className="container mt-4" style={{ fontFamily: 'Inter, Roboto, Arial, sans-serif' }}>
       <div className="d-flex justify-content-between align-items-center mb-4">
-        <h2>Task Details</h2>
+        <h2 style={{ fontFamily: 'Montserrat, Poppins, Arial, sans-serif', color: '#1F75FE', fontWeight: 700 }}>Task Details</h2>
         <div>
           <Link className="btn btn-outline-secondary me-2" to="/tasks">
             <FaArrowLeft className="me-2" />
@@ -103,7 +108,7 @@ const TaskDetail: React.FC = () => {
 
       <div className="card shadow-sm mb-4">
         <div className="card-header d-flex align-items-center">
-          <div className={`me-3 badge ${task.completed ? 'bg-success' : 'bg-warning'}`}>
+          <div className={`me-3 badge ${task.completed ? 'bg-success' : 'bg-warning'}`} style={{ fontFamily: 'Montserrat, Poppins, Arial, sans-serif', fontWeight: 700 }}>
             {task.completed ? (
               <>
                 <FaCheck className="me-1" /> Completed
@@ -114,12 +119,12 @@ const TaskDetail: React.FC = () => {
               </>
             )}
           </div>
-          <h5 className="card-title mb-0">{task.title}</h5>
+          <h5 className="card-title mb-0" style={{ fontFamily: 'Montserrat, Poppins, Arial, sans-serif', fontWeight: 700 }}>{task.title}</h5>
         </div>
         <div className="card-body">
           <div className="mb-4">
-            <h6 className="card-subtitle mb-2 text-muted">Description</h6>
-            <p className="card-text">
+            <h6 className="card-subtitle mb-2 text-muted" style={{ fontFamily: 'Montserrat, Poppins, Arial, sans-serif', fontWeight: 700 }}>Description</h6>
+            <p className="card-text" style={{ fontFamily: 'Inter, Roboto, Arial, sans-serif' }}>
               {task.description || (
                 <span className="text-muted fst-italic">No description provided</span>
               )}
@@ -128,12 +133,12 @@ const TaskDetail: React.FC = () => {
 
           <div className="row">
             <div className="col-md-6 mb-3">
-              <h6 className="card-subtitle mb-2 text-muted">Created At</h6>
-              <p className="card-text">{formattedDate(task.createdAt)}</p>
+              <h6 className="card-subtitle mb-2 text-muted" style={{ fontFamily: 'Montserrat, Poppins, Arial, sans-serif', fontWeight: 700 }}>Created At</h6>
+              <p className="card-text" style={{ fontFamily: 'Inter, Roboto, Arial, sans-serif' }}>{formattedDate(task.createdAt)}</p>
             </div>
             <div className="col-md-6 mb-3">
-              <h6 className="card-subtitle mb-2 text-muted">Last Updated</h6>
-              <p className="card-text">{formattedDate(task.updatedAt)}</p>
+              <h6 className="card-subtitle mb-2 text-muted" style={{ fontFamily: 'Montserrat, Poppins, Arial, sans-serif', fontWeight: 700 }}>Last Updated</h6>
+              <p className="card-text" style={{ fontFamily: 'Inter, Roboto, Arial, sans-serif' }}>{formattedDate(task.updatedAt)}</p>
             </div>
           </div>
         </div>

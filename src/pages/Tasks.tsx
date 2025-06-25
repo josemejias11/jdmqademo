@@ -3,6 +3,10 @@ import { Link, useNavigate } from 'react-router-dom';
 import * as taskService from '../services/taskService';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { FaCheck, FaEdit, FaEye, FaPlus, FaTrash } from 'react-icons/fa';
+import '@fontsource/montserrat/700.css';
+import '@fontsource/poppins/700.css';
+import '@fontsource/inter/400.css';
+import '@fontsource/roboto/400.css';
 
 // Task type definition
 interface Task {
@@ -79,7 +83,13 @@ const Tasks: React.FC = () => {
     try {
       setIsLoading(true);
       const response = await taskService.getTasks();
-      setTasks(response.data);
+      setTasks(
+        response.data.map((task: any) => ({
+          ...task,
+          createdAt: new Date(task.createdAt),
+          updatedAt: new Date(task.updatedAt),
+        }))
+      );
       setError(null);
     } catch (error: Error | unknown) {
       const errorMessage = error instanceof Error ? error.message : 'Failed to fetch tasks';
@@ -119,9 +129,9 @@ const Tasks: React.FC = () => {
   };
 
   return (
-    <div className="container mt-4">
+    <div className="container mt-4" style={{ fontFamily: 'Inter, Roboto, Arial, sans-serif' }}>
       <div className="d-flex justify-content-between align-items-center mb-4">
-        <h2>My Tasks</h2>
+        <h2 style={{ fontFamily: 'Montserrat, Poppins, Arial, sans-serif', color: '#1F75FE', fontWeight: 700 }}>My Tasks</h2>
         <Link className="btn btn-primary" to="/tasks/new">
           <FaPlus className="me-2" />
           New Task
@@ -195,8 +205,8 @@ const Tasks: React.FC = () => {
       ) : filteredTasks.length === 0 ? (
         <div className="card shadow-sm">
           <div className="card-body text-center py-5">
-            <h5 className="text-muted mb-3">No tasks found</h5>
-            <p className="text-muted">
+            <h5 className="text-muted mb-3" style={{ fontFamily: 'Montserrat, Poppins, Arial, sans-serif', fontWeight: 700 }}>No tasks found</h5>
+            <p className="text-muted" style={{ fontFamily: 'Inter, Roboto, Arial, sans-serif' }}>
               {searchTerm || filter !== 'all'
                 ? 'Try changing your search or filter criteria'
                 : 'Click the "New Task" button to create your first task'}

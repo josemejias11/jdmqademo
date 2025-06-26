@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
-import { createTask, getTaskById, updateTask } from '../services/taskService';
+import { getTaskById, updateTask, TaskFormValues } from '../services/taskService';
 import { Task } from '../types';
+import { TaskContext } from '../context/TaskContext';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '@fontsource/montserrat/700.css';
 import '@fontsource/poppins/700.css';
@@ -14,13 +15,6 @@ import '@fontsource/roboto/400.css';
 interface TaskFormProps {
   task?: Task; // Optional - if provided, we're in edit mode
   onSubmitSuccess?: () => void; // Optional callback after successful submission
-}
-
-// Form values interface
-interface TaskFormValues {
-  title: string;
-  description: string;
-  completed: boolean;
 }
 
 const TaskForm: React.FC<TaskFormProps> = ({ task, onSubmitSuccess }) => {
@@ -34,6 +28,12 @@ const TaskForm: React.FC<TaskFormProps> = ({ task, onSubmitSuccess }) => {
     description: task?.description || '',
     completed: task?.completed || false
   });
+  
+  const taskContext = useContext(TaskContext);
+  if (!taskContext) {
+    throw new Error('TaskForm must be used within a TaskProvider');
+  }
+  const { addTaskObject } = taskContext;
 
   // Validation schema (aligned with backend)
   const TaskSchema = Yup.object().shape({
@@ -85,7 +85,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ task, onSubmitSuccess }) => {
         await updateTask(id, values);
       } else {
         // Create new task
-        await createTask(values);
+        await addTaskObject(values);
       }
 
       // Call success callback if provided

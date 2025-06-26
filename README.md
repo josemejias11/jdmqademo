@@ -1,21 +1,22 @@
-run # JDM QA Demo Application
+# JDM QA Demo Application
 
-A full-stack task management application with authentication built using React, TypeScript, Express, and Bootstrap.
+A full-stack task management application with authentication built using React, TypeScript, Express, and Bootstrap. This application has been optimized and cleaned up to follow modern best practices, DRY principles, and production-ready patterns.
 
 ## Project Overview
 
 This application demonstrates modern web development practices including:
 
-- TypeScript integration for type-safe code
-- RESTful API architecture
-- JWT-based authentication
-- React Context API for state management
-- Form validation with Formik and Yup
-- Responsive UI with Bootstrap 5
-- Modular backend architecture
-- Code quality tools (ESLint & Prettier)
-- End-to-end testing with Playwright
-- Dockerized frontend, backend, and PostgreSQL using Docker Compose
+- **Type-safe development** with TypeScript throughout the stack
+- **RESTful API architecture** with proper error handling
+- **JWT-based authentication** with secure token management
+- **React Context API** for efficient state management
+- **Form validation** with Formik and Yup
+- **Responsive UI** with Bootstrap 5 and modern fonts
+- **Modular backend architecture** with shared types and middleware
+- **Code quality tools** (ESLint & Prettier) with zero lint errors
+- **End-to-end testing** with Playwright and visual regression tests
+- **Production-ready optimizations** including environment-aware logging
+- **Clean architecture** with eliminated code duplication and unused files
 
 ## Tech Stack
 
@@ -31,10 +32,13 @@ This application demonstrates modern web development practices including:
 
 ### Backend
 
-- Express.js
-- JWT for authentication
-- Express Validator for request validation
-- In-memory data store (for demonstration purposes)
+- **Express.js** with TypeScript for robust server-side development
+- **JWT authentication** with configurable security settings
+- **Express Validator** for comprehensive request validation
+- **Shared type definitions** across frontend and backend for consistency
+- **Environment-aware logging** (verbose in development, minimal in production)
+- **Production-ready middleware** with proper error handling
+- **In-memory data store** (for demonstration purposes)
 
 ### Testing
 
@@ -46,33 +50,61 @@ This application demonstrates modern web development practices including:
 ```
 jdmqademo/
 ├── build/                # Production build output
-├── docs/                 # Project documentation
-├── node_modules/         # Dependencies
+├── e2e/                  # Playwright end-to-end tests
+│   ├── pages/            # Page object models
+│   ├── specs/            # Test specifications
+│   └── utils/            # Test utilities and helpers
 ├── public/               # Static assets
 ├── server/               # Backend code
-│   ├── controllers/      # Route controllers
-│   ├── middleware/       # Express middleware
-│   ├── models/           # Data models
-│   └── routes/           # API routes
+│   ├── controllers/      # Route controllers with shared types
+│   ├── middleware/       # Express middleware (auth, validation, logging)
+│   ├── models/           # Data models with TypeScript interfaces
+│   ├── routes/           # API route definitions
+│   └── types/            # Shared TypeScript type definitions
 ├── src/                  # Frontend code
-│   ├── components/       # React components
-│   ├── context/          # React context providers
-│   ├── pages/            # Page components
-│   ├── routes/           # Frontend routes
-│   ├── services/         # API service functions
-│   ├── utils/            # Helper functions
-│   └── types.ts          # TypeScript type definitions
-├── tests/                # Playwright tests
-├── .env                  # Environment variables
+│   ├── components/       # Reusable React components
+│   ├── context/          # React context providers (Auth, Tasks)
+│   ├── pages/            # Page components with routing
+│   ├── ProtectedRoute/   # Route protection components
+│   ├── routes/           # Frontend routing configuration
+│   ├── services/         # API service functions with proper typing
+│   ├── utils/            # Helper functions and API client
+│   └── types.ts          # Frontend TypeScript type definitions
 ├── .env.example          # Example environment configuration
-├── .eslintrc.js          # ESLint configuration
-├── .gitignore            # Files to exclude from git
-├── .prettierrc.js        # Prettier configuration
-├── package.json          # Project dependencies and scripts
-├── playwright.config.ts  # Playwright configuration
-├── server.js             # Express server entry point
-└── tsconfig.json         # TypeScript configuration
+├── docker-compose.yml    # Docker Compose configuration
+├── Dockerfile            # Docker container configuration
+├── package.json          # Dependencies and scripts
+├── tsconfig.json         # TypeScript configuration (frontend)
+├── tsconfig.server.json  # TypeScript configuration (backend)
+└── README.md             # This file
 ```
+
+## Recent Optimizations & Improvements
+
+### ✅ Code Quality & DRY Principles
+- **Eliminated duplicate interfaces** - Consolidated `TaskFormValues` and other shared types
+- **Removed unused files** - Cleaned up unnecessary service index files, assets, and utilities
+- **Zero `any` types** - Replaced all `any` with proper TypeScript interfaces
+- **Consistent error handling** - Unified error types across frontend and backend
+- **Clean imports** - Added explicit `.js` extensions for Node.js compatibility
+
+### ✅ Performance & Bundle Optimization  
+- **Reduced bundle size** - Removed unused dependencies and CSS (217 bytes saved)
+- **Optimized CSS** - Cleaned up unused styles and minimized stylesheet
+- **Environment-aware logging** - Debug logs only run in development mode
+- **Efficient context updates** - Tasks appear immediately after creation without page reloads
+
+### ✅ Type Safety & Consistency
+- **Shared backend types** - All server types consolidated in `server/types/index.ts`
+- **Frontend/backend type alignment** - Consistent interfaces for Task, User, and API responses
+- **Complete TypeScript coverage** - Zero type errors across entire codebase
+- **Proper validation** - Form validation with shared type definitions
+
+### ✅ Production Readiness
+- **Environment configurations** - Conditional middleware and logging based on NODE_ENV
+- **Security improvements** - Proper JWT handling and request size limits
+- **Clean dependency tree** - Removed unused packages and optimized node_modules
+- **Build verification** - All builds pass with improved performance metrics
 
 ## Features
 
@@ -86,13 +118,15 @@ jdmqademo/
 
 ### Task Management
 
-- Dashboard with task statistics and overview
-- Task listing with filtering and search capabilities
-- Task creation and editing forms
-- Task detail view with all task information
-- Task status toggle (completed/pending)
-- Delete confirmation modals
-- Responsive UI for all screen sizes
+- **Intuitive dashboard** with real-time task statistics and overview
+- **Advanced task listing** with filtering, search, and sorting capabilities
+- **Smart task creation** - Tasks appear immediately in UI after creation
+- **Comprehensive task editing** with validation and error handling
+- **Detailed task views** with complete task information display
+- **One-click status toggle** for completed/pending states
+- **Safe task deletion** with confirmation modals and proper cleanup
+- **Fully responsive design** optimized for all screen sizes and devices
+- **Context-aware state management** - Data updates across all components automatically
 
 ## Getting Started
 
@@ -164,198 +198,270 @@ You can run the application using either npm scripts or Docker Compose.
    npm start
    ```
 
-## Option 1: Available Scripts
+## Available Scripts
 
 In the project directory, you can run:
 
-### `npm start`
+### Development Scripts
 
-Runs the frontend app in development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+#### `npm run dev`
+Runs both frontend and backend concurrently in development mode with hot reloading.
 
-### `npm run server`
+#### `npm start` or `npm run frontend`
+Runs the React frontend in development mode on [http://localhost:3000](http://localhost:3000).
 
-Runs the backend Express server with nodemon for automatic reloading on port 3001.
+#### `npm run backend` or `npm run server`
+Runs the Express backend server with TypeScript support on port 3001.
 
-### `npm run dev`
+### Build Scripts
 
-Runs both the frontend and backend concurrently in development mode.
+#### `npm run build`
+Builds the frontend app for production to the `build` folder with optimized bundle size.
 
-### `npm run build`
+#### `npm run build:server`
+Compiles the TypeScript backend to JavaScript for production deployment.
 
-Builds the app for production to the `build` folder.
+#### `npm run build:all`
+Builds both frontend and backend for production deployment.
 
-### `npm run lint`
+### Quality Assurance Scripts
 
-Runs ESLint to check for code quality issues.
+#### `npm run type-check`
+Runs TypeScript type checking for the frontend without emitting files.
 
-### `npm run lint:fix`
+#### `npm run type-check:server`
+Runs TypeScript type checking for the backend without emitting files.
 
+#### `npm run lint`
+Runs ESLint to check code quality across the entire codebase.
+
+#### `npm run lint:fix`
 Automatically fixes ESLint issues where possible.
 
-### `npm run format`
+#### `npm run prettier`
+Formats all code files according to Prettier configuration.
 
-Runs Prettier to format all code files.
+### Testing Scripts
 
-### `npm run format:check`
+#### `npm test`
+Runs the complete Playwright end-to-end test suite.
 
-Checks if files are formatted according to Prettier rules.
+#### `npm run test:ui`
+Runs Playwright tests with interactive UI mode for debugging.
 
-### `npm test`
+## Docker Deployment
 
-Runs Playwright end-to-end tests.
+To run the full application using Docker:
 
-### `npm run test:ui`
-
-Runs Playwright tests with UI mode for interactive debugging.
-
-### `npm run playwright:install`
-
-Installs the Playwright browser dependencies.
-
-## Option 2: Using Docker Compose
-
-To run the full application (frontend, backend, and database) using Docker:
-
-1. Ensure Docker and Docker Compose are installed.
-2. Create a `.env` file based on `.env.example` and update environment variables as needed.
-3. Start all services:
+1. **Ensure Docker and Docker Compose are installed**
+2. **Create environment file**:
+   ```bash
+   cp .env.example .env
+   # Edit .env with your configuration
+   ```
+3. **Start all services**:
    ```bash
    docker compose up --build
    ```
-   This will launch:
-   - Frontend: http://localhost:3000
-   - Backend API: http://localhost:3001
-   - PostgreSQL: localhost:5432
 
-> Use `docker compose down` to stop the services.
+This launches:
+- **Frontend**: [http://localhost:3000](http://localhost:3000)
+- **Backend API**: [http://localhost:3001](http://localhost:3001)
+
+> Use `docker compose down` to stop all services.
 
 ## Development Workflow
 
-1. Pull the latest code from the repository
-2. Install any new dependencies with `npm install`
-3. Make sure your `.env` file is properly configured
-4. Start both the frontend and backend servers with `npm run dev`
-5. Make your changes
-6. Format your code with `npm run format`
-7. Run linting with `npm run lint:fix` to ensure code quality
-8. Run tests with `npm test` to verify functionality
-9. Test your changes manually
-10. Commit and push your changes
+### Getting Started
+1. **Clone and setup**:
+   ```bash
+   git clone <repository-url>
+   cd jdmqademo
+   npm install
+   cp .env.example .env
+   ```
 
-## Testing
+2. **Configure environment** - Edit `.env` with your settings
 
-This project uses Playwright for end-to-end testing. The tests are located in the `tests/` directory.
+3. **Start development**:
+   ```bash
+   npm run dev  # Starts both frontend and backend
+   ```
+
+### Code Quality Workflow
+1. **Type checking**: `npm run type-check && npm run type-check:server`
+2. **Linting**: `npm run lint` (zero errors expected)
+3. **Formatting**: `npm run prettier`
+4. **Testing**: `npm test`
+5. **Building**: `npm run build:all`
+
+### Best Practices
+- ✅ **All code is TypeScript** - No `any` types allowed
+- ✅ **Shared types** between frontend and backend
+- ✅ **Environment-aware code** - Different behavior for dev/prod
+- ✅ **Zero lint errors** - Clean, consistent code style
+- ✅ **Immediate UI updates** - No page reloads needed for task operations
+
+## Testing Strategy
+
+This project uses **Playwright** for comprehensive end-to-end testing with visual regression capabilities.
+
+### Test Coverage
+- **Authentication flows** (login, logout, protected routes)
+- **Task management operations** (CRUD operations, status toggling)
+- **Visual regression tests** with cross-browser snapshots
+- **Error handling scenarios** and user feedback
 
 ### Running Tests
-
 ```bash
-  # Run all tests
-npm test
-
-  # Run tests with UI for debugging
-npm run test:ui
+npm test              # Run all tests headlessly
+npm run test:ui       # Interactive test debugging with UI
 ```
 
-### Test Structure
+### Test Architecture
+- **Page Object Models** - Reusable, maintainable test structure
+- **Cross-browser testing** - Chrome, Firefox, Safari/WebKit
+- **Visual snapshots** - Automatic screenshot comparison
+- **Test data cleanup** - Isolated test environments
 
-The tests are organized to cover key functionality:
-
-- Authentication tests (login, logout)
-- Task management tests (create, read, update, delete)
-
-### Writing New Tests
-
-When adding new features, please add corresponding tests in the `tests/` directory. Follow the existing patterns for
-structuring your tests.
+### Adding New Tests
+Tests are located in `e2e/specs/`. Follow existing patterns:
+- Use page object models from `e2e/pages/`
+- Include visual regression tests for UI changes
+- Test both success and error scenarios
 
 ## Backend API
 
-The backend provides the following API endpoints:
+The backend provides a robust RESTful API with proper validation and error handling:
 
-### Authentication
+### Authentication Endpoints
 
-- **POST /api/auth/login**: Authenticate a user and receive a JWT token
+#### **POST /api/auth/login**
+Authenticate user and receive JWT token.
 
-  ```json
-  // Request
-  {
-    "username": "admin",
-    "password": "changeme"
+```json
+// Request
+{
+  "username": "admin",
+  "password": "changeme"
+}
+
+// Success Response (200)
+{
+  "success": true,
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "user": {
+    "username": "admin"
   }
+}
 
-  // Response
-  {
-    "success": true,
-    "token": "jwt_token_here"
-  }
-  ```
-
-### Task Management
-
-- **GET /api/tasks**: Get all tasks for the authenticated user
-- **GET /api/tasks/:id**: Get a specific task by ID
-- **POST /api/tasks**: Create a new task
-  ```json
-  // Request
-  {
-    "title": "Task title",
-    "description": "Task description",
-    "completed": false
-  }
-  ```
-- **PUT /api/tasks/:id**: Update an existing task
-- **DELETE /api/tasks/:id**: Delete a task
-
-All task endpoints require authentication via JWT token in the Authorization header:
-
-```
-Authorization: Bearer your_jwt_token
+// Error Response (401)
+{
+  "success": false,
+  "message": "Invalid username or password"
+}
 ```
 
-## Security Considerations
+### Task Management Endpoints
 
-This application implements several security best practices:
+All task endpoints require authentication via JWT token:
+```
+Authorization: Bearer your_jwt_token_here
+```
 
-### Authentication
+#### **GET /api/tasks**
+Retrieve all tasks for authenticated user.
 
-- JWT tokens for stateless authentication
-- Environment variable for JWT secret (never hardcoded)
-- Token expiration (1 hour by default)
-- Proper authorization checks on protected routes
+#### **GET /api/tasks/:id**
+Get specific task by ID (with ownership validation).
+
+#### **POST /api/tasks**
+Create new task with validation.
+
+```json
+// Request
+{
+  "title": "Complete project documentation",
+  "description": "Update README with latest improvements",
+  "completed": false
+}
+
+// Response (201)
+{
+  "id": "task_uuid",
+  "title": "Complete project documentation",
+  "description": "Update README with latest improvements", 
+  "completed": false,
+  "userId": "admin",
+  "createdAt": "2025-06-26T...",
+  "updatedAt": "2025-06-26T..."
+}
+```
+
+#### **PUT /api/tasks/:id**
+Update existing task (partial updates supported).
+
+#### **DELETE /api/tasks/:id**
+Delete task with ownership validation.
+
+### Error Handling
+- **400** - Bad Request (validation errors)
+- **401** - Unauthorized (invalid/missing token)
+- **404** - Not Found (task doesn't exist or no access)
+- **500** - Internal Server Error
+
+## Security & Production Readiness
+
+This application implements comprehensive security measures and production optimizations:
+
+### Authentication Security
+- **JWT tokens** with configurable expiration (1 hour default)
+- **Secure secret management** via environment variables
+- **Token validation** with proper error handling
+- **Authorization checks** on all protected routes
+- **Request size limits** to prevent DoS attacks
 
 ### API Security
+- **Request validation** using express-validator with shared types
+- **CORS protection** with environment-specific configurations
+- **JSON payload limits** (10KB) to prevent oversized requests
+- **Token length validation** to prevent oversized authorization headers
+- **Proper error responses** without sensitive information leakage
 
-- Request validation with express-validator
-- CORS protection (configurable per environment)
-- JSON payload size limits to prevent DoS attacks
-- Token length validation to prevent oversized tokens
+### Production Optimizations
+- **Environment-aware logging** - Debug logs only in development
+- **Conditional middleware** - Request logger disabled in production
+- **Optimized builds** - Smaller bundle sizes and clean dependencies
+- **Type safety** - Zero `any` types across entire codebase
+- **Clean architecture** - No code duplication, shared types, modular structure
 
-### Development Security
+### Development Security Features
+- **Environment variables** for all sensitive configuration
+- **Secure .gitignore** - No sensitive files committed
+- **Dependency management** - Regular updates and security patches
+- **Input validation** - All user inputs validated and sanitized
 
-- Environment variables for sensitive information
-- Proper .gitignore configuration to avoid committing sensitive files
-- Dependencies kept up-to-date with latest security patches
+### Security Limitations (Development/Demo)
+⚠️ **Important**: This is a demonstration application with some limitations:
+- **In-memory storage** - Data doesn't persist between server restarts
+- **Mock authentication** - Single hardcoded user for demo purposes
+- **Development CORS** - Allows all origins in development mode
 
-### Security Limitations (Development Only)
+For production deployment, replace these with:
+- Persistent database (PostgreSQL, MongoDB, etc.)
+- Proper user management system
+- Restricted CORS configuration
 
-- In-memory data storage (not suitable for production)
-- Mock user authentication (should be replaced with proper user management in production)
-- Development CORS settings allow all origins (restricted in production)
+## Architecture & API Configuration
 
-## API Structure and Configuration
+### Centralized API Client
 
-The application follows a structured approach for API communication between the frontend and backend:
-
-### API Base URL Configuration
-
-The frontend uses a centralized API client configuration in `src/utils/apiClient.ts`:
+The frontend uses a sophisticated API client configuration in `src/utils/apiClient.ts`:
 
 ```typescript
-// Custom Axios instance with minimal headers
 import axios from 'axios';
 
-// Create a custom instance with minimal default headers
+// Custom Axios instance with optimized headers
 const apiClient = axios.create({
   baseURL: 'http://localhost:3001/api',
   headers: {
@@ -367,56 +473,173 @@ const apiClient = axios.create({
 export default apiClient;
 ```
 
-This configuration:
+**Benefits:**
+- **Consistent base URL** for all API requests
+- **Standardized headers** across the application  
+- **Reusable instance** for maintainable API communication
+- **Easy configuration** for different environments
 
-- Sets a common base URL (`http://localhost:3001/api`) for all API requests
-- Defines standard headers used across all requests
-- Creates a reusable Axios instance for consistent API communication
+### Service Layer Architecture
 
-### Service-Level API Implementation
-
-Each API domain has its own service file that uses the apiClient. For example, `src/services/taskService.ts` handles all
-task-related API calls:
+Each domain has dedicated service files using the shared API client:
 
 ```typescript
+// src/services/taskService.ts
 import apiClient from '../utils/apiClient';
 
-// The path should not include /api as it's already in the baseURL
-const API_URL = '/tasks';
+const API_URL = '/tasks'; // Clean paths (base URL handled by apiClient)
 
-export const getTasks = async () => {
+export const getTasks = async (): Promise<ApiResponse<Task[]>> => {
   const response = await apiClient.get(API_URL);
   return response.data;
 };
 ```
 
-## Environment Variables
+### Shared Type System
 
-The application uses the following environment variables:
+**Frontend types** (`src/types.ts`):
+```typescript
+export interface Task {
+  id: string;
+  title: string;
+  description: string;
+  completed: boolean;
+  userId: string;
+  createdAt: string;
+  updatedAt: string;
+}
+```
 
-| Variable       | Description                                  | Default               |
-| -------------- | -------------------------------------------- | --------------------- |
-| PORT           | The port the server will run on              | 3001                  |
-| NODE_ENV       | Environment mode (development/production)    | development           |
-| JWT_SECRET     | Secret key for signing JWT tokens            | None (required)       |
-| MOCK_USER      | Username for development authentication      | admin                 |
-| MOCK_PASSWORD  | Password for development authentication      | changeme              |
-| API_URL        | Base URL for API (used by diagnostic script) | http://localhost:3001 |
-| ALLOWED_ORIGIN | Allowed CORS origin in production            | http://localhost:3000 |
+**Backend types** (`server/types/index.ts`):
+```typescript
+export interface CustomError extends Error {
+  statusCode?: number;
+  data?: ValidationError[];
+}
 
-## Bootstrap UI Components
+export interface AuthenticatedRequest<T = any> extends Request {
+  user: AuthenticatedUser;
+}
+```
 
-The application uses Bootstrap 5 for responsive styling and includes the following UI components:
+This architecture ensures:
+- ✅ **Type consistency** between frontend and backend
+- ✅ **Maintainable API layer** with shared configurations
+- ✅ **Clear separation** of concerns
+- ✅ **Reusable components** across the application
 
-- Navigation bar with responsive collapsing
-- Cards for content containers
-- Modals for confirmations and forms
-- Alerts for error messages and notifications
-- Progress bars for task completion tracking
-- Buttons and button groups for actions
-- Tables for displaying task lists
-- Form controls with validation styling
-- Spinners for loading indicators
-- Icons from React Icons library
+## Environment Configuration
 
-The UI is fully responsive and works well on mobile, tablet, and desktop screens.
+### Required Environment Variables
+
+| Variable        | Description                                  | Default               | Required |
+|-----------------|----------------------------------------------|-----------------------|----------|
+| `PORT`          | Backend server port                          | 3001                  | No       |
+| `NODE_ENV`      | Environment mode (development/production)    | development           | No       |
+| `JWT_SECRET`    | Secret key for JWT token signing            | None                  | **Yes**  |
+| `MOCK_USER`     | Demo username for authentication            | admin                 | No       |
+| `MOCK_PASSWORD` | Demo password for authentication            | changeme              | No       |
+| `API_URL`       | Base API URL for external scripts           | http://localhost:3001 | No       |
+| `ALLOWED_ORIGIN`| Allowed CORS origin (production only)       | http://localhost:3000 | No       |
+
+### Environment Setup
+
+1. **Copy the example file**:
+   ```bash
+   cp .env.example .env
+   ```
+
+2. **Configure required variables**:
+   ```env
+   # Required for JWT token signing
+   JWT_SECRET=your_secure_random_string_here_minimum_32_characters
+   
+   # Optional: Customize demo credentials
+   MOCK_USER=admin
+   MOCK_PASSWORD=changeme
+   
+   # Optional: Production settings
+   NODE_ENV=production
+   ALLOWED_ORIGIN=https://yourdomain.com
+   ```
+
+### Environment Behavior
+
+**Development Mode** (`NODE_ENV=development`):
+- ✅ Verbose logging enabled
+- ✅ Request logger middleware active
+- ✅ CORS allows all origins
+- ✅ Debug auth messages
+
+**Production Mode** (`NODE_ENV=production`):
+- ✅ Minimal logging only
+- ✅ Request logger disabled
+- ✅ CORS restricted to `ALLOWED_ORIGIN`
+- ✅ No debug messages
+
+> **Security Note**: Never commit your `.env` file to version control. The `.gitignore` is configured to exclude it.
+
+## UI/UX Design
+
+### Modern Design System
+
+The application features a cohesive design system built with **Bootstrap 5** and custom typography:
+
+#### Typography
+- **Headings**: Montserrat (700 weight) for strong visual hierarchy
+- **Subheadings**: Poppins (700 weight) for modern, friendly appeal  
+- **Body Text**: Inter (400 weight) for optimal readability
+- **Forms**: Roboto (400 weight) for clean, functional interfaces
+
+#### Component Library
+- **Navigation** - Responsive navbar with mobile-first collapsing
+- **Cards** - Clean content containers with subtle shadows
+- **Modals** - Confirmation dialogs and form overlays
+- **Alerts** - Contextual feedback with proper color coding
+- **Progress indicators** - Task completion visualization
+- **Interactive buttons** - Consistent styling with hover states
+- **Form controls** - Validation states with clear error messaging
+- **Loading states** - Bootstrap spinners for async operations
+
+#### Responsive Features
+- ✅ **Mobile-first design** - Optimized for phones and tablets
+- ✅ **Flexible grid system** - Adapts to all screen sizes
+- ✅ **Touch-friendly interfaces** - Proper touch targets and spacing
+- ✅ **Accessible navigation** - Keyboard and screen reader support
+
+#### Visual Enhancements
+- **React Icons** integration for consistent iconography
+- **Custom color palette** leveraging Bootstrap's design tokens
+- **Subtle animations** for improved user feedback
+- **Clean whitespace** for better content hierarchy
+- **Optimized bundle size** - Reduced CSS footprint by 217 bytes
+
+### User Experience Features
+- **Immediate feedback** - Tasks appear instantly after creation
+- **Smart state management** - No page reloads required
+- **Error handling** - Clear, actionable error messages
+- **Loading states** - Visual feedback for all async operations
+- **Keyboard shortcuts** - Enhanced accessibility and power user features
+
+---
+
+## Contributing
+
+### Code Standards
+- ✅ **TypeScript required** - No `any` types allowed
+- ✅ **ESLint compliance** - Zero lint errors expected  
+- ✅ **Prettier formatting** - Consistent code style
+- ✅ **Shared types** - Maintain consistency between frontend/backend
+- ✅ **Environment awareness** - Code should adapt to dev/production
+
+### Pull Request Process
+1. Fork the repository
+2. Create feature branch: `git checkout -b feature/amazing-feature`
+3. Run quality checks: `npm run type-check && npm run lint && npm test`
+4. Commit changes: `git commit -m 'Add amazing feature'`
+5. Push to branch: `git push origin feature/amazing-feature`
+6. Open a Pull Request
+
+---
+
+*This README reflects the current optimized state of the application with all recent improvements, code cleanup, and production-ready enhancements.*

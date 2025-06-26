@@ -1,15 +1,7 @@
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response } from 'express';
+import { CustomError } from '../types/index.js';
 
-interface ValidationError extends Error {
-  statusCode?: number;
-  data?: Array<{
-    msg: string;
-    param: string;
-    location: string;
-  }>;
-}
-
-const errorHandler = (err: ValidationError, _req: Request, res: Response, _next: NextFunction) => {
+const errorHandler = (err: CustomError, _req: Request, res: Response) => {
   console.error(err.stack);
 
   const statusCode = err.statusCode || 500;

@@ -1,12 +1,9 @@
 import { Request } from 'express';
+import { ValidationError } from 'express-validator';
 
 export interface CustomError extends Error {
   statusCode?: number;
-  data?: Array<{
-    msg: string;
-    param: string;
-    location: string;
-  }>;
+  data?: ValidationError[];
 }
 
 export interface JwtPayload {

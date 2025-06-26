@@ -1,5 +1,6 @@
-import { Request, Response, NextFunction } from 'express';
+import { Response, NextFunction } from 'express';
 import Task from '../models/Task.js';
+import { AuthenticatedRequest, CustomError } from '../types/index.js';
 
 interface TaskRequestBody {
   title: string;
@@ -10,18 +11,6 @@ interface TaskRequestBody {
 interface TaskParams {
   id: string;
 }
-
-interface AuthenticatedUser {
-  username: string;
-}
-
-type AuthenticatedRequest<
-  P = Record<string, never>,
-  ResBody = unknown,
-  ReqBody = unknown
-> = Request<P, ResBody, ReqBody> & {
-  user: AuthenticatedUser;
-};
 
 // Get all tasks for the authenticated user
 const getTasks = (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
@@ -39,8 +28,8 @@ const getTaskById = (req: AuthenticatedRequest<TaskParams>, res: Response, next:
     const task = Task.findById(req.params.id, req.user.username);
 
     if (!task) {
-      const error = new Error('Task not found');
-      (error as any).statusCode = 404;
+      const error = new Error('Task not found') as CustomError;
+      error.statusCode = 404;
       return next(error);
     }
 
@@ -85,8 +74,8 @@ const updateTask = (
     });
 
     if (!task) {
-      const error = new Error('Task not found');
-      (error as any).statusCode = 404;
+      const error = new Error('Task not found') as CustomError;
+      error.statusCode = 404;
       return next(error);
     }
 
@@ -102,8 +91,8 @@ const deleteTask = (req: AuthenticatedRequest<TaskParams>, res: Response, next: 
     const deleted = Task.delete(req.params.id, req.user.username);
 
     if (!deleted) {
-      const error = new Error('Task not found');
-      (error as any).statusCode = 404;
+      const error = new Error('Task not found') as CustomError;
+      error.statusCode = 404;
       return next(error);
     }
 

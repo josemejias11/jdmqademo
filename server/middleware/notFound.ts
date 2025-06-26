@@ -1,8 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-
-interface CustomError extends Error {
-  statusCode?: number;
-}
+import { CustomError } from '../types/index.js';
 
 const notFound = (req: Request, _res: Response, next: NextFunction) => {
   const error = new Error(`Not Found - ${req.originalUrl}`) as CustomError;

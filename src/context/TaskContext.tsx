@@ -1,7 +1,6 @@
-import React, { createContext, useState, useEffect, useCallback } from 'react';
+import React, { createContext, useState, useEffect } from 'react';
 import { Task } from '../types';
-import { getAuthConfig } from '../utils/authUtils';
-import { getTasks, createTask, updateTask, deleteTask } from '../services/taskService';
+import { getTasks, createTask, updateTask, deleteTask, TaskFormValues } from '../services/taskService';
 import { useAuth } from './AuthContext';
 
 interface TaskContextType {
@@ -9,6 +8,7 @@ interface TaskContextType {
   task: string;
   setTask: (task: string) => void;
   handleAddTask: (e: React.FormEvent<HTMLFormElement>) => void;
+  addTaskObject: (taskData: TaskFormValues) => Promise<void>;
   toggleTaskDone: (id: string) => void;
   deleteTask: (id: string) => void;
   loading: boolean;
@@ -29,11 +29,6 @@ const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const { authState } = useAuth();
-
-  // Use the getAuthConfig from authUtils
-  const getConfig = useCallback(() => {
-    return getAuthConfig();
-  }, []);
 
   // Load tasks from API on initial load and when auth changes
   useEffect(() => {
@@ -68,6 +63,22 @@ const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
     } catch (err) {
       const apiError = err as { message?: string };
       setError(apiError.message || 'Failed to add task. Please try again later.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Add a new task via API with full task object
+  const addTaskObject = async (taskData: TaskFormValues): Promise<void> => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await createTask(taskData);
+      setTasks([...tasks, response.data]);
+    } catch (err) {
+      const apiError = err as { message?: string };
+      setError(apiError.message || 'Failed to add task. Please try again later.');
+      throw err; // Re-throw so the form can handle the error
     } finally {
       setLoading(false);
     }
@@ -125,6 +136,7 @@ const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
     task,
     setTask,
     handleAddTask,
+    addTaskObject,
     toggleTaskDone,
     deleteTask: removeTask,
     loading,

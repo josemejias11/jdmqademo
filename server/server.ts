@@ -47,8 +47,10 @@ console.log(
 // Parse JSON with a limit to prevent large payloads
 app.use(express.json({ limit: '10kb' }));
 
-// Request logging for debugging
-app.use(requestLogger);
+// Request logging for debugging (only in development)
+if (process.env.NODE_ENV !== 'production') {
+  app.use(requestLogger);
+}
 
 // Health check root route
 app.get('/', (_req: Request, res: Response) => {

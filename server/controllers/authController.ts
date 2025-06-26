@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
+import { CustomError } from '../types/index.js';
 
 interface LoginRequestBody {
   username: string;
@@ -31,8 +32,8 @@ const login = (
     if (username === mockUser.username && password === mockUser.password) {
       // Check if JWT_SECRET is configured
       if (!process.env.JWT_SECRET) {
-        const error = new Error('JWT secret not configured');
-        (error as any).statusCode = 500;
+        const error = new Error('JWT secret not configured') as CustomError;
+        error.statusCode = 500;
         return next(error);
       }
 
@@ -45,8 +46,8 @@ const login = (
     }
 
     // Invalid credentials
-    const error = new Error('Invalid username or password');
-    (error as any).statusCode = 401;
+    const error = new Error('Invalid username or password') as CustomError;
+    error.statusCode = 401;
     return next(error);
   } catch (err) {
     next(err);

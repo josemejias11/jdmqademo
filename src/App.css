@@ -6,19 +6,6 @@
   background-color: #f8f9fa;
 }
 
-/* Utility Classes */
-.cursor-pointer {
-  cursor: pointer;
-}
-
-.text-truncate-2 {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
 /* Bootstrap Overrides */
 .btn-primary {
   background-color: #0d6efd;
@@ -38,42 +25,4 @@
 
 .card:hover {
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
-}
-
-/* Custom Styles */
-.auth-container {
-  max-width: 400px;
-  margin: 2rem auto;
-}
-
-.task-item {
-  transition: background-color 0.2s ease;
-}
-
-.task-item:hover {
-  background-color: rgba(13, 110, 253, 0.05);
-}
-
-.task-completed {
-  text-decoration: line-through;
-  color: #6c757d;
-}
-
-/* Animation classes */
-.fade-enter {
-  opacity: 0;
-}
-
-.fade-enter-active {
-  opacity: 1;
-  transition: opacity 300ms;
-}
-
-.fade-exit {
-  opacity: 1;
-}
-
-.fade-exit-active {
-  opacity: 0;
-  transition: opacity 300ms;
 }

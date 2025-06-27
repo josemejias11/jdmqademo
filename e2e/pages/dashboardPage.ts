@@ -6,7 +6,11 @@ export class DashboardPage {
   async goto() {
     try {
       await this.page.goto('/dashboard');
+      // Wait for React app to load
       await this.page.waitForLoadState('networkidle');
+      await this.page.waitForSelector('#root', { timeout: 10000 });
+      // Small additional wait for React components to mount
+      await this.page.waitForTimeout(1000);
       await this.verifyOnDashboard();
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : String(error);
@@ -16,25 +20,22 @@ export class DashboardPage {
 
   async verifyOnDashboard() {
     await expect(this.page).toHaveURL(/dashboard/);
-    await expect(this.page.getByRole('heading', { name: /dashboard/i })).toBeVisible();
+    // Look for the welcome message heading that contains the username
+    await expect(this.page.getByRole('heading', { name: /Welcome.*!/ })).toBeVisible();
     await this.verifyDashboardComponents();
   }
 
   async verifyDashboardComponents() {
-    // Use name attribute selectors for Formik fields
-    const titleInput = this.page.locator('input[name="title"]');
-    const descriptionInput = this.page.locator('textarea[name="description"]');
-    const addButton = this.page.getByRole('button', { name: /add/i });
-
-    await expect(titleInput).toBeVisible();
-    await expect(titleInput).toBeEnabled();
-    await expect(descriptionInput).toBeVisible();
-    await expect(descriptionInput).toBeEnabled();
-    await expect(addButton).toBeVisible();
-    await expect(addButton).toBeEnabled();
-
-    // Task list: use a class or wrapper selector
-    await expect(this.page.locator('.list-group')).toBeVisible();
+    // Check for the key dashboard elements: statistics cards and navigation links
+    
+    // Statistics cards
+    await expect(this.page.getByText('Total Tasks')).toBeVisible();
+    await expect(this.page.getByText('Completed')).toBeVisible();
+    await expect(this.page.getByText('Pending')).toBeVisible();
+    
+    // Navigation links - be more specific to avoid conflicts
+    await expect(this.page.getByRole('link', { name: 'Tasks', exact: true })).toBeVisible();
+    await expect(this.page.getByRole('link', { name: 'Create Task', exact: true })).toBeVisible();
   }
 
   async verifyTaskListState(expectedTasks: { title: string; description: string }[]) {
@@ -58,11 +59,19 @@ export class DashboardPage {
 
   async addTask(title: string, description: string) {
     try {
+      // Navigate to task creation page from dashboard
+      await this.page.getByRole('link', { name: 'Create Task', exact: true }).click();
+      await this.page.waitForLoadState('networkidle');
+      
+      // Wait for task form to be visible
       await this.page.locator('input[name="title"]').waitFor({ state: 'visible' });
       await this.page.locator('input[name="title"]').fill(title);
       await this.page.locator('textarea[name="description"]').fill(description);
       await this.page.getByRole('button', { name: /add/i }).click();
       await this.page.waitForLoadState('networkidle');
+      
+      // Navigate back to dashboard to verify
+      await this.goto();
       await this.verifyTaskAdded(title);
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : String(error);

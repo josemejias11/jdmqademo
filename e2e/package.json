@@ -2,8 +2,22 @@
   "name": "playwright-e2e-framework",
   "version": "1.0.0",
   "private": true,
+  "description": "Comprehensive E2E testing framework for task management application",
   "scripts": {
-    "test": "npx playwright test"
+    "test": "npx playwright test",
+    "test:headed": "npx playwright test --headed",
+    "test:ui": "npx playwright test --ui",
+    "test:debug": "npx playwright test --debug",
+    "test:chromium": "npx playwright test --project=chromium",
+    "test:firefox": "npx playwright test --project=firefox",
+    "test:webkit": "npx playwright test --project=webkit",
+    "test:mobile": "npx playwright test --project=\"Mobile Safari\" --project=\"Mobile Chrome\"",
+    "test:visual": "npx playwright test visual.spec.ts",
+    "test:smoke": "npx playwright test login.spec.ts dashboard.spec.ts",
+    "report": "npx playwright show-report",
+    "install": "npx playwright install",
+    "type-check": "tsc --noEmit",
+    "clean": "rm -rf test-results playwright-report"
   },
   "devDependencies": {
     "@playwright/test": "^1.53.0",

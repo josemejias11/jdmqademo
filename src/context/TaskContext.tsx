@@ -1,6 +1,12 @@
 import React, { createContext, useState, useEffect } from 'react';
 import { Task } from '../types';
-import { getTasks, createTask, updateTask, deleteTask, TaskFormValues } from '../services/taskService';
+import {
+  getTasks,
+  createTask,
+  updateTask,
+  deleteTask,
+  TaskFormValues
+} from '../services/taskService';
 import { useAuth } from './AuthContext';
 
 interface TaskContextType {

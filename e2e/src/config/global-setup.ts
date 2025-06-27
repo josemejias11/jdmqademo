@@ -18,7 +18,7 @@ async function globalSetup(config: FullConfig): Promise<void> {
   // - Set up test data in the database
   // - Set up authentication state to share
   // - Prepare external APIs needed for tests
-  
+
   console.log('Global setup complete');
 }
 

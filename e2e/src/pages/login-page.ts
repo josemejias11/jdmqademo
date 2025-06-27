@@ -46,9 +46,9 @@ export class LoginPage implements BasePage {
       await waitForStableElement(this.page, this.selectors.usernameInput);
       await this.page.fill(this.selectors.usernameInput, username);
       await this.page.fill(this.selectors.passwordInput, password);
-      
+
       await this.page.click(this.selectors.loginButton);
-      
+
       // Wait for navigation to complete
       await this.page.waitForLoadState('networkidle');
     });
@@ -58,20 +58,14 @@ export class LoginPage implements BasePage {
    * Login with default test user credentials
    */
   async loginWithDefaultUser(): Promise<void> {
-    await this.login(
-      config.users.standard.username,
-      config.users.standard.password
-    );
+    await this.login(config.users.standard.username, config.users.standard.password);
   }
 
   /**
    * Login as admin user
    */
   async loginAsAdmin(): Promise<void> {
-    await this.login(
-      config.users.admin.username,
-      config.users.admin.password
-    );
+    await this.login(config.users.admin.username, config.users.admin.password);
   }
 
   /**
@@ -89,11 +83,11 @@ export class LoginPage implements BasePage {
    */
   async verifyLoginError(errorMessage?: string): Promise<void> {
     await expect(this.page.locator(this.selectors.errorMessage)).toBeVisible();
-    
+
     if (errorMessage) {
       await expect(this.page.locator(this.selectors.errorMessage)).toContainText(errorMessage);
     }
-    
+
     // Should still be on login page
     await expect(this.page).toHaveURL(/login/);
   }

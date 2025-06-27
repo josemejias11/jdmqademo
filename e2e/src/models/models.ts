@@ -6,7 +6,7 @@ export interface BasePage {
    * Navigate to the page
    */
   goto(): Promise<void>;
-  
+
   /**
    * Verify page is loaded correctly
    */
@@ -23,7 +23,7 @@ export enum ElementState {
   DETACHED = 'detached',
   ENABLED = 'enabled',
   DISABLED = 'disabled',
-  STABLE = 'stable',
+  STABLE = 'stable'
 }
 
 /**

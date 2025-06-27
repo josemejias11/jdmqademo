@@ -19,9 +19,11 @@ export class ApiClient {
    * @returns Authentication token
    */
   async login(username: string, password: string): Promise<string> {
-    const apiContext = this.apiContext || await request.newContext({
-      baseURL: this.baseUrl,
-    });
+    const apiContext =
+      this.apiContext ||
+      (await request.newContext({
+        baseURL: this.baseUrl
+      }));
 
     const response = await apiContext.post('/auth/login', {
       data: {
@@ -36,7 +38,7 @@ export class ApiClient {
 
     const data = await response.json();
     this.token = data.token;
-    
+
     return this.token;
   }
 
@@ -51,12 +53,14 @@ export class ApiClient {
       throw new Error('Must be authenticated to create tasks. Call login() first.');
     }
 
-    const apiContext = this.apiContext || await request.newContext({
-      baseURL: this.baseUrl,
-      extraHTTPHeaders: {
-        'Authorization': `Bearer ${this.token}`
-      }
-    });
+    const apiContext =
+      this.apiContext ||
+      (await request.newContext({
+        baseURL: this.baseUrl,
+        extraHTTPHeaders: {
+          Authorization: `Bearer ${this.token}`
+        }
+      }));
 
     const response = await apiContext.post('/tasks', {
       data: {
@@ -67,7 +71,9 @@ export class ApiClient {
     });
 
     if (!response.ok()) {
-      throw new Error(`Failed to create task with status ${response.status()}: ${await response.text()}`);
+      throw new Error(
+        `Failed to create task with status ${response.status()}: ${await response.text()}`
+      );
     }
 
     return await response.json();
@@ -82,17 +88,21 @@ export class ApiClient {
       throw new Error('Must be authenticated to get tasks. Call login() first.');
     }
 
-    const apiContext = this.apiContext || await request.newContext({
-      baseURL: this.baseUrl,
-      extraHTTPHeaders: {
-        'Authorization': `Bearer ${this.token}`
-      }
-    });
+    const apiContext =
+      this.apiContext ||
+      (await request.newContext({
+        baseURL: this.baseUrl,
+        extraHTTPHeaders: {
+          Authorization: `Bearer ${this.token}`
+        }
+      }));
 
     const response = await apiContext.get('/tasks');
 
     if (!response.ok()) {
-      throw new Error(`Failed to get tasks with status ${response.status()}: ${await response.text()}`);
+      throw new Error(
+        `Failed to get tasks with status ${response.status()}: ${await response.text()}`
+      );
     }
 
     return await response.json();
@@ -107,12 +117,14 @@ export class ApiClient {
       throw new Error('Must be authenticated to delete tasks. Call login() first.');
     }
 
-    const apiContext = this.apiContext || await request.newContext({
-      baseURL: this.baseUrl,
-      extraHTTPHeaders: {
-        'Authorization': `Bearer ${this.token}`
-      }
-    });
+    const apiContext =
+      this.apiContext ||
+      (await request.newContext({
+        baseURL: this.baseUrl,
+        extraHTTPHeaders: {
+          Authorization: `Bearer ${this.token}`
+        }
+      }));
 
     const tasks = await this.getTasks();
     const testTasks = tasks.filter(task => task.title.includes('Test'));
@@ -120,7 +132,7 @@ export class ApiClient {
 
     for (const task of testTasks) {
       const response = await apiContext.delete(`/tasks/${task.id}`);
-      
+
       if (response.ok()) {
         deleted++;
       }

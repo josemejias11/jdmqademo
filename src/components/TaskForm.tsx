@@ -28,7 +28,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ task, onSubmitSuccess }) => {
     description: task?.description || '',
     completed: task?.completed || false
   });
-  
+
   const taskContext = useContext(TaskContext);
   if (!taskContext) {
     throw new Error('TaskForm must be used within a TaskProvider');

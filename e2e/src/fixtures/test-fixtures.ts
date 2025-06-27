@@ -18,17 +18,17 @@ export const test = base.extend<{
     const loginPage = new LoginPage(page);
     await use(loginPage);
   },
-  
+
   dashboardPage: async ({ page }, use) => {
     const dashboardPage = new DashboardPage(page);
     await use(dashboardPage);
   },
-  
+
   tasksPage: async ({ page }, use) => {
     const tasksPage = new TasksPage(page);
     await use(tasksPage);
   },
-  
+
   cleanup: async ({ page }, use) => {
     const cleanup = new TestDataCleanup(page);
     await use(cleanup);
@@ -53,7 +53,7 @@ export const withLogin = test.extend<{
     await loginPage.goto();
     await loginPage.loginWithDefaultUser();
     await loginPage.verifySuccessfulLogin();
-    
+
     await use();
   }
 });

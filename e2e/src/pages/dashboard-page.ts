@@ -48,7 +48,7 @@ export class DashboardPage implements BasePage {
     await expect(this.page.locator(this.selectors.totalTasks)).toBeVisible();
     await expect(this.page.locator(this.selectors.completedTasks)).toBeVisible();
     await expect(this.page.locator(this.selectors.pendingTasks)).toBeVisible();
-    
+
     // Check for navigation elements
     await expect(this.page.locator(this.selectors.tasksNavLink)).toBeVisible();
     await expect(this.page.locator(this.selectors.createTaskBtn)).toBeVisible();
@@ -69,10 +69,22 @@ export class DashboardPage implements BasePage {
    * @returns Object containing total, completed, and pending task counts
    */
   async getTaskStatistics(): Promise<{ total: number; completed: number; pending: number }> {
-    const totalTasksText = await this.page.locator(this.selectors.totalTasks).locator('..').locator('h2').textContent();
-    const completedTasksText = await this.page.locator(this.selectors.completedTasks).locator('..').locator('h2').textContent();
-    const pendingTasksText = await this.page.locator(this.selectors.pendingTasks).locator('..').locator('h2').textContent();
-    
+    const totalTasksText = await this.page
+      .locator(this.selectors.totalTasks)
+      .locator('..')
+      .locator('h2')
+      .textContent();
+    const completedTasksText = await this.page
+      .locator(this.selectors.completedTasks)
+      .locator('..')
+      .locator('h2')
+      .textContent();
+    const pendingTasksText = await this.page
+      .locator(this.selectors.pendingTasks)
+      .locator('..')
+      .locator('h2')
+      .textContent();
+
     return {
       total: parseInt(totalTasksText || '0'),
       completed: parseInt(completedTasksText || '0'),
@@ -87,7 +99,7 @@ export class DashboardPage implements BasePage {
     await waitForStableElement(this.page, this.selectors.createTaskBtn);
     await this.page.click(this.selectors.createTaskBtn);
     await expect(this.page).toHaveURL(/tasks\/new/);
-    
+
     // Wait for form to be visible
     await expect(this.page.locator('input[name="title"]')).toBeVisible();
   }

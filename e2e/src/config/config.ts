@@ -4,18 +4,18 @@
 export const config = {
   baseUrl: process.env.BASE_URL || 'http://localhost:3000',
   apiUrl: process.env.API_URL || 'http://localhost:3001',
-  
+
   // Default test user
   users: {
     standard: {
       username: 'testuser',
       password: 'password123',
-      email: 'test@example.com',
+      email: 'test@example.com'
     },
     admin: {
       username: 'admin',
       password: 'adminpassword',
-      email: 'admin@example.com',
+      email: 'admin@example.com'
     }
   },
 

@@ -64,15 +64,15 @@ export class TasksPage implements BasePage {
     if (!this.page.url().includes('/new')) {
       await this.navigateToCreateTask();
     }
-    
+
     await waitForStableElement(this.page, this.selectors.taskTitleInput);
     await this.page.fill(this.selectors.taskTitleInput, taskData.title);
     await this.page.fill(this.selectors.taskDescriptionInput, taskData.description);
     await this.page.click(this.selectors.taskSubmitButton);
-    
+
     // Wait for redirect back to tasks list
     await expect(this.page).toHaveURL(/tasks$/);
-    
+
     // Verify the task was created successfully
     await this.verifyTaskExists(taskData.title);
   }
@@ -91,7 +91,7 @@ export class TasksPage implements BasePage {
    */
   async verifyTaskDoesNotExist(title: string): Promise<void> {
     const taskElement = this.page.locator(`${this.selectors.taskItems}:has-text("${title}")`);
-    await expect(taskElement).not.toBeVisible({ timeout: 5000 });
+    await expect(taskElement).toBeHidden({ timeout: 5000 });
   }
 
   /**
@@ -101,7 +101,7 @@ export class TasksPage implements BasePage {
   async toggleTaskCompletion(title: string): Promise<void> {
     const taskRow = this.page.locator(this.selectors.taskItems).filter({ hasText: title });
     await taskRow.locator(this.selectors.completeCheckbox).click();
-    
+
     // Wait for UI update
     await this.page.waitForTimeout(500);
   }
@@ -123,21 +123,21 @@ export class TasksPage implements BasePage {
    */
   async deleteTask(title: string): Promise<void> {
     const taskRow = this.page.locator(this.selectors.taskItems).filter({ hasText: title });
-    
+
     // Click delete button
     await taskRow.locator(this.selectors.deleteButton).click();
-    
+
     // Handle confirmation dialog if it appears
     const confirmButton = this.page.locator(this.selectors.confirmDeleteButton);
     if (await confirmButton.isVisible()) {
       await confirmButton.click();
     }
-    
+
     // Wait for UI update
     await this.page.waitForTimeout(500);
-    
+
     // Verify task was deleted
-    await expect(this.page.getByText(title)).not.toBeVisible();
+    await expect(this.page.getByText(title)).toBeHidden();
   }
 
   /**
@@ -156,7 +156,7 @@ export class TasksPage implements BasePage {
         await this.page.click(this.selectors.filterPendingButton);
         break;
     }
-    
+
     // Wait for UI update
     await this.page.waitForTimeout(500);
   }

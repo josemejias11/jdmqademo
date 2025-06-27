@@ -33,36 +33,40 @@ test.describe('Smoke Tests', () => {
 
   authenticatedTest('should create and delete a task', async ({ tasksPage }) => {
     await tasksPage.goto();
-
+    
     const uniqueTaskTitle = `Smoke Test Task ${generateUnique()}`;
-
+    
     // Create task
     await tasksPage.createTask({
       title: uniqueTaskTitle,
       description: 'Task created by smoke test'
     });
-
+    
     // Verify task exists
     await tasksPage.verifyTaskExists(uniqueTaskTitle);
-
+    
     // Delete task
     await tasksPage.deleteTask(uniqueTaskTitle);
-
+    
     // Verify task was deleted
-    await tasksPage.verifyTaskDoesNotExist(uniqueTaskTitle);
+    await expect(tasksPage.page.getByText(uniqueTaskTitle)).not.toBeVisible();
   });
 
   // Complete user journey test
-  test('should complete critical user journey', async ({ loginPage, dashboardPage, tasksPage }) => {
+  test('should complete critical user journey', async ({ 
+    loginPage, 
+    dashboardPage, 
+    tasksPage 
+  }) => {
     // 1. Login
     await loginPage.goto();
     await loginPage.loginWithDefaultUser();
     await loginPage.verifySuccessfulLogin();
-
+    
     // 2. View dashboard
     await dashboardPage.verifyDashboardComponents();
     const initialStats = await dashboardPage.getTaskStatistics();
-
+    
     // 3. Create a task
     await dashboardPage.navigateToCreateTask();
     const uniqueTaskTitle = `Journey Test ${generateUnique()}`;
@@ -70,25 +74,25 @@ test.describe('Smoke Tests', () => {
       title: uniqueTaskTitle,
       description: 'Task created during critical user journey'
     });
-
+    
     // 4. Verify task appears in list
     await tasksPage.verifyTaskExists(uniqueTaskTitle);
-
+    
     // 5. Mark task as completed
     await tasksPage.toggleTaskCompletion(uniqueTaskTitle);
     const isCompleted = await tasksPage.isTaskCompleted(uniqueTaskTitle);
     expect(isCompleted).toBeTruthy();
-
+    
     // 6. Return to dashboard and verify stats updated
     await tasksPage.navigateToDashboard();
     await dashboardPage.verifyPageLoaded();
     const updatedStats = await dashboardPage.getTaskStatistics();
-
+    
     expect(updatedStats.total).toBeGreaterThanOrEqual(initialStats.total + 1);
     expect(updatedStats.completed).toBeGreaterThanOrEqual(initialStats.completed + 1);
-
+    
     // 7. Logout
     await dashboardPage.logout();
-    await loginPage.verifyPageLoaded();
+    await expect(loginPage.page).toHaveURL(/login/);
   });
 });

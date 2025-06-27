@@ -1,6 +1,6 @@
-import { test, expect } from '../fixtures/test-fixtures';
-import { config } from '../config/config';
-import { generateUnique } from '../utils/helpers';
+import { test, expect } from '../../fixtures/test-fixtures';
+import { config } from '../../config/config';
+import { generateUnique } from '../../utils/helpers';
 
 /**
  * Authentication test suite
@@ -74,10 +74,10 @@ test.describe('Authentication Retention', () => {
     await dashboardPage.logout();
 
     // Verify redirect to login
-    await expect(loginPage.page).toHaveURL(/login/);
+    await loginPage.verifyLoggedOut();
 
     // Try to access dashboard again - should redirect to login
     await dashboardPage.goto();
-    await expect(loginPage.page).toHaveURL(/login/);
+    await loginPage.verifyLoggedOut();
   });
 });

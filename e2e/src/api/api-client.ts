@@ -18,7 +18,7 @@ export class ApiClient {
    * @param password Password for login
    * @returns Authentication token
    */
-  async login(username: string, password: string): Promise<string> {
+  async login(username: string, password: string): Promise<string | null> {
     const apiContext =
       this.apiContext ||
       (await request.newContext({

@@ -1,4 +1,4 @@
-import { test, expect } from '../fixtures/test-fixtures';
+import { test, expect } from '../../fixtures/test-fixtures';
 
 /**
  * Visual regression test suite
@@ -7,14 +7,7 @@ import { test, expect } from '../fixtures/test-fixtures';
 test.describe('Visual Regression', () => {
   // Configure screenshot comparisons to be more strict
   test.use({
-    screenshot: 'on',
-    // Configure visual comparison settings
-    expect: {
-      toHaveScreenshot: {
-        maxDiffPixelRatio: 0.01,
-        threshold: 0.2
-      }
-    }
+    screenshot: 'on'
   });
 
   test('login page visual appearance', async ({ loginPage, page }) => {

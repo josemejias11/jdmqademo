@@ -1,7 +1,7 @@
-import { test, expect } from '../fixtures/test-fixtures';
-import { ApiClient } from '../api/api-client';
-import { generateUnique } from '../utils/helpers';
-import { config } from '../config/config';
+import { test, expect } from '../../fixtures/test-fixtures';
+import { ApiClient } from '../../api/api-client';
+import { generateUnique } from '../../utils/helpers';
+import { config } from '../../config/config';
 
 /**
  * API Test Suite
@@ -15,10 +15,16 @@ test.describe('API Tests', () => {
 
     try {
       // Get auth token for subsequent requests
-      authToken = await apiClient.login(
+      const token = await apiClient.login(
         config.users.standard.username,
         config.users.standard.password
       );
+      
+      if (!token) {
+        throw new Error('Login returned null token');
+      }
+      
+      authToken = token;
 
       console.log('Successfully authenticated for API tests');
     } catch (error) {

@@ -1,5 +1,5 @@
-import { test, expect, withLogin } from '../fixtures/test-fixtures';
-import { generateUnique } from '../utils/helpers';
+import { test, expect, withLogin } from '../../fixtures/test-fixtures';
+import { generateUnique } from '../../utils/helpers';
 import { TaskData } from '../../models/models';
 
 /**
@@ -71,7 +71,7 @@ test.describe('Task Management', () => {
     await tasksPage.deleteTask(uniqueTaskTitle);
 
     // Verify task no longer exists
-    await expect(tasksPage.page.getByText(uniqueTaskTitle)).toBeHidden();
+    await tasksPage.verifyTaskDoesNotExist(uniqueTaskTitle);
   });
 
   authenticatedTest('should filter tasks by completion status', async ({ tasksPage, cleanup }) => {
@@ -99,14 +99,14 @@ test.describe('Task Management', () => {
 
     // Verify only completed task is visible
     await tasksPage.verifyTaskExists(completedTaskTitle);
-    await expect(tasksPage.page.getByText(pendingTaskTitle)).toBeHidden();
+    await tasksPage.verifyTaskDoesNotExist(pendingTaskTitle);
 
     // Filter by pending tasks
     await tasksPage.filterTasks('pending');
 
     // Verify only pending task is visible
     await tasksPage.verifyTaskExists(pendingTaskTitle);
-    await expect(tasksPage.page.getByText(completedTaskTitle)).toBeHidden();
+    await tasksPage.verifyTaskDoesNotExist(completedTaskTitle);
 
     // Filter by all tasks
     await tasksPage.filterTasks('all');

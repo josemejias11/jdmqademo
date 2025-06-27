@@ -86,6 +86,16 @@ export class TasksPage implements BasePage {
   }
 
   /**
+   * Verify a task does not exist
+   * @param title Task title to verify
+   */
+  async verifyTaskDoesNotExist(title: string): Promise<void> {
+    // Wait for a brief moment for UI to update and use toBeHidden instead of not.toBeVisible
+    const taskElement = this.page.getByText(title);
+    await expect(taskElement).toBeHidden({ timeout: 5000 });
+  }
+
+  /**
    * Toggle the completion status of a task
    * @param title Task title to toggle
    */
@@ -93,8 +103,6 @@ export class TasksPage implements BasePage {
     const taskRow = this.page.locator(this.selectors.taskItems).filter({ hasText: title });
     await taskRow.locator(this.selectors.completeCheckbox).click();
     
-    // Wait for UI update
-    await this.page.waitForTimeout(500);
   }
 
   /**
@@ -124,11 +132,8 @@ export class TasksPage implements BasePage {
       await confirmButton.click();
     }
     
-    // Wait for UI update
-    await this.page.waitForTimeout(500);
-    
     // Verify task was deleted
-    await expect(this.page.getByText(title)).not.toBeVisible();
+    await expect(this.page.getByText(title)).toBeHidden({ timeout: 5000 });
   }
 
   /**
@@ -148,8 +153,6 @@ export class TasksPage implements BasePage {
         break;
     }
     
-    // Wait for UI update
-    await this.page.waitForTimeout(500);
   }
 
   /**

@@ -91,4 +91,12 @@ export class LoginPage implements BasePage {
     // Should still be on login page
     await expect(this.page).toHaveURL(/login/);
   }
+
+  /**
+   * Verify user is logged out and on login page
+   */
+  async verifyLoggedOut(): Promise<void> {
+    await expect(this.page).toHaveURL(/login/);
+    await this.verifyPageLoaded();
+  }
 }

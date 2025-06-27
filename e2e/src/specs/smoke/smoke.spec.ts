@@ -7,15 +7,21 @@ import { generateUnique } from '../../utils/helpers';
 test.describe('Smoke Tests', () => {
   // Critical path tests for the application
 
-  test('should load the login page', async ({ loginPage }) => {
+  test('should load the login page', async ({ loginPage, page }) => {
     await loginPage.goto();
     await loginPage.verifyPageLoaded();
+    
+    // Add explicit assertion for the URL
+    await expect(page).toHaveURL(/login/);
   });
 
-  test('should login successfully', async ({ loginPage }) => {
+  test('should login successfully', async ({ loginPage, page }) => {
     await loginPage.goto();
     await loginPage.loginWithDefaultUser();
     await loginPage.verifySuccessfulLogin();
+    
+    // Add explicit assertion for successful login
+    await expect(page).toHaveURL(/dashboard/);
   });
 
   const authenticatedTest = withLogin;
@@ -49,7 +55,7 @@ test.describe('Smoke Tests', () => {
     await tasksPage.deleteTask(uniqueTaskTitle);
     
     // Verify task was deleted
-    await expect(tasksPage.page.getByText(uniqueTaskTitle)).not.toBeVisible();
+    await tasksPage.verifyTaskDoesNotExist(uniqueTaskTitle);
   });
 
   // Complete user journey test
@@ -93,6 +99,6 @@ test.describe('Smoke Tests', () => {
     
     // 7. Logout
     await dashboardPage.logout();
-    await expect(loginPage.page).toHaveURL(/login/);
+    await loginPage.verifyLoggedOut();
   });
 });

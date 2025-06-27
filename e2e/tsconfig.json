@@ -1,24 +1,26 @@
 {
   "compilerOptions": {
-    "target": "ES2022",
+    "target": "ESNext",
     "module": "ESNext",
     "moduleResolution": "node",
-    "lib": ["ES2022", "DOM"],
-    "strict": true,
     "esModuleInterop": true,
+    "sourceMap": true,
+    "outDir": "dist",
+    "strict": true,
+    "lib": ["ESNext", "dom"],
+    "types": ["node", "@playwright/test"],
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "declaration": false,
-    "noEmit": true,
-    "isolatedModules": true,
-    "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
-    "types": ["@playwright/test", "node"]
+    "baseUrl": ".",
+    "paths": {
+      "@pages/*": ["src/pages/*"],
+      "@fixtures/*": ["src/fixtures/*"],
+      "@utils/*": ["src/utils/*"],
+      "@config/*": ["src/config/*"],
+      "@models/*": ["src/models/*"],
+      "@api/*": ["src/api/*"]
+    }
   },
-  "include": ["./**/*.ts"],
-  "exclude": ["node_modules", "test-results", "playwright-report"]
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", "dist", "test-results", "playwright-report"]
 }

@@ -1,95 +1,111 @@
 import { defineConfig, devices } from '@playwright/test';
+import path from 'path';
+import dotenv from 'dotenv';
+
+// Read from environment or .env file
+dotenv.config({ path: path.join(__dirname, '.env') });
 
 /**
- * Comprehensive Playwright configuration for E2E testing
- * @see https://playwright.dev/docs/test-configuration
+ * See https://playwright.dev/docs/test-configuration
  */
 export default defineConfig({
-  testDir: './specs',
-  timeout: 30000,
-  expect: {
-    timeout: 10000,
-    toHaveScreenshot: {
-      maxDiffPixels: 100,
-      threshold: 0.2
-    }
-  },
-  retries: process.env.CI ? 2 : 0,
-  fullyParallel: true,
-  forbidOnly: !!process.env.CI,
-  workers: process.env.CI ? 2 : 4,
+  // Directory where tests are located
+  testDir: './src/specs',
   
-  // Reporting configuration
+  // Maximum time one test can run
+  timeout: 30 * 1000,
+  
+  // Fail the build on CI if you accidentally left test.only in the source code
+  forbidOnly: !!process.env.CI,
+  
+  // Retry tests on CI
+  retries: process.env.CI ? 2 : 0,
+  
+  // Opt out of parallel tests on CI
+  workers: process.env.CI ? 1 : undefined,
+  
+  // Reporter to use
   reporter: [
-    ['html', { outputFolder: 'playwright-report' }],
-    ['json', { outputFile: 'test-results/results.json' }],
-    ['junit', { outputFile: 'test-results/junit.xml' }],
-    process.env.CI ? ['github'] : ['list']
+    ['html', { open: 'never' }],
+    ['list']
   ],
 
-  // Global test settings
+  // Global setup for the entire test suite
+  globalSetup: './src/config/global-setup.ts',
+  
+  // Shared settings for all projects
   use: {
+    // Base URL for all tests
     baseURL: process.env.BASE_URL || 'http://localhost:3000',
-    headless: process.env.HEADED !== 'true',
-    ignoreHTTPSErrors: true,
-    video: 'retain-on-failure',
+    
+    // Capture screenshot only on failure
     screenshot: 'only-on-failure',
-    trace: 'retain-on-failure',
-    actionTimeout: 10000,
-    navigationTimeout: 30000
+    
+    // Record video only on failure
+    video: 'on-first-retry',
+    
+    // Record trace only on failure
+    trace: 'on-first-retry',
+    
+    // Set actionability checks
+    actionTimeout: 10 * 1000,
+    
+    // Browser viewport size
+    viewport: { width: 1280, height: 720 },
   },
 
-  // Test projects for different browsers and devices
+  // Test projects for different browsers
   projects: [
-    // Desktop browsers
     {
       name: 'chromium',
       use: { 
         ...devices['Desktop Chrome'],
-        viewport: { width: 1280, height: 720 }
-      }
+      },
     },
     {
       name: 'firefox',
       use: { 
         ...devices['Desktop Firefox'],
-        viewport: { width: 1280, height: 720 }
-      }
+      },
     },
     {
       name: 'webkit',
       use: { 
         ...devices['Desktop Safari'],
-        viewport: { width: 1280, height: 720 }
-      }
-    },
-
-    // Mobile devices
-    {
-      name: 'Mobile Safari',
-      use: { 
-        ...devices['iPhone 14'],
-        // Mobile-specific test settings
-        hasTouch: true
-      }
+      },
     },
     {
       name: 'Mobile Chrome',
       use: { 
-        ...devices['Pixel 7'],
-        hasTouch: true
-      }
-    }
+        ...devices['Pixel 5'],
+      },
+    },
+    {
+      name: 'Mobile Safari',
+      use: { 
+        ...devices['iPhone 13'],
+      },
+    },
+    {
+      name: 'smoke',
+      testMatch: /.*smoke\.spec\.ts/,
+      retries: 0,
+    },
+    {
+      name: 'visual',
+      testMatch: /.*visual\.spec\.ts/,
+    },
+    {
+      name: 'api',
+      testMatch: /.*api\.spec\.ts/,
+      use: { 
+        baseURL: process.env.API_URL || 'http://localhost:3001',
+        screenshot: 'off',
+        video: 'off',
+      },
+    },
   ],
-
-  // Web server configuration for local development
-  ...(process.env.CI ? {} : {
-    webServer: {
-      command: 'npm run dev',
-      port: 3000,
-      cwd: '..',
-      reuseExistingServer: true,
-      timeout: 120000
-    }
-  })
+  
+  // Folders to keep as test artifacts
+  outputDir: 'test-results/',
 });

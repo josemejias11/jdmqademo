@@ -43,14 +43,32 @@ export class LoginPage implements BasePage {
    */
   async login(username: string, password: string): Promise<void> {
     await retry(async () => {
+      // Wait for form to be ready
       await waitForStableElement(this.page, this.selectors.usernameInput);
+      await waitForStableElement(this.page, this.selectors.passwordInput);
+      
+      // Clear and fill the form fields
+      await this.page.fill(this.selectors.usernameInput, '');
       await this.page.fill(this.selectors.usernameInput, username);
+      
+      await this.page.fill(this.selectors.passwordInput, '');
       await this.page.fill(this.selectors.passwordInput, password);
 
-      await this.page.click(this.selectors.loginButton);
+      // Check if there's a modal blocking the form and close it
+      const modal = this.page.locator('.modal.show');
+      if (await modal.isVisible()) {
+        const closeButton = modal.locator('button:has-text("Close")');
+        if (await closeButton.isVisible()) {
+          await closeButton.click();
+          await modal.waitFor({ state: 'hidden', timeout: 2000 });
+        }
+      }
 
-      // Wait for navigation to complete
-      await this.page.waitForLoadState('networkidle');
+      // Click submit button
+      await this.page.click(this.selectors.loginButton);
+      
+      // Wait for navigation to dashboard
+      await this.page.waitForURL(/dashboard/, { timeout: config.timeouts.long });
     });
   }
 
@@ -72,9 +90,16 @@ export class LoginPage implements BasePage {
    * Verify login was successful by checking redirection to dashboard
    */
   async verifySuccessfulLogin(): Promise<void> {
+    // Wait for navigation to dashboard
     await expect(this.page).toHaveURL(/dashboard/, { timeout: config.timeouts.long });
+    
+    // Wait for the dashboard content to load
+    await this.page.waitForLoadState('domcontentloaded');
+    
     // Welcome heading that contains the username should be visible
-    await expect(this.page.getByRole('heading', { name: /Welcome.*!/ })).toBeVisible();
+    await expect(this.page.getByRole('heading', { name: /Welcome.*!/ })).toBeVisible({ 
+      timeout: config.timeouts.long 
+    });
   }
 
   /**

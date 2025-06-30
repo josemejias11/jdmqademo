@@ -1,14 +1,16 @@
 import { test, expect } from '../../fixtures/test-fixtures';
 
 /**
- * Visual regression test suite
+ * Visual regression tests using screenshot comparison
  * Compares screenshots of key pages against baseline images
  */
+
+// Configure screenshot comparisons to be more strict
+test.use({
+  screenshot: 'on'
+});
+
 test.describe('Visual Regression', () => {
-  // Configure screenshot comparisons to be more strict
-  test.use({
-    screenshot: 'on'
-  });
 
   test('login page visual appearance', async ({ loginPage, page }) => {
     await loginPage.goto();

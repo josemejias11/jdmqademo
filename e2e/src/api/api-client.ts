@@ -1,4 +1,5 @@
 import { APIRequestContext, request } from '@playwright/test';
+import { Task } from '../models/models';
 import { config } from '../config/config';
 
 /**
@@ -48,7 +49,7 @@ export class ApiClient {
    * @param description Task description
    * @returns Created task data
    */
-  async createTask(title: string, description: string): Promise<any> {
+  async createTask(title: string, description: string): Promise<Task> {
     if (!this.token) {
       throw new Error('Must be authenticated to create tasks. Call login() first.');
     }
@@ -83,7 +84,7 @@ export class ApiClient {
    * Get all tasks via API
    * @returns Array of tasks
    */
-  async getTasks(): Promise<any[]> {
+  async getTasks(): Promise<Task[]> {
     if (!this.token) {
       throw new Error('Must be authenticated to get tasks. Call login() first.');
     }

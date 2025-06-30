@@ -46,11 +46,11 @@ export class LoginPage implements BasePage {
       // Wait for form to be ready
       await waitForStableElement(this.page, this.selectors.usernameInput);
       await waitForStableElement(this.page, this.selectors.passwordInput);
-      
+
       // Clear and fill the form fields
       await this.page.fill(this.selectors.usernameInput, '');
       await this.page.fill(this.selectors.usernameInput, username);
-      
+
       await this.page.fill(this.selectors.passwordInput, '');
       await this.page.fill(this.selectors.passwordInput, password);
 
@@ -66,7 +66,7 @@ export class LoginPage implements BasePage {
 
       // Click submit button
       await this.page.click(this.selectors.loginButton);
-      
+
       // Wait for navigation to dashboard
       await this.page.waitForURL(/dashboard/, { timeout: config.timeouts.long });
     });
@@ -92,13 +92,13 @@ export class LoginPage implements BasePage {
   async verifySuccessfulLogin(): Promise<void> {
     // Wait for navigation to dashboard
     await expect(this.page).toHaveURL(/dashboard/, { timeout: config.timeouts.long });
-    
+
     // Wait for the dashboard content to load
     await this.page.waitForLoadState('domcontentloaded');
-    
+
     // Welcome heading that contains the username should be visible
-    await expect(this.page.getByRole('heading', { name: /Welcome.*!/ })).toBeVisible({ 
-      timeout: config.timeouts.long 
+    await expect(this.page.getByRole('heading', { name: /Welcome.*!/ })).toBeVisible({
+      timeout: config.timeouts.long
     });
   }
 

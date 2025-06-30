@@ -10,7 +10,7 @@ import path from 'path';
  * Global setup runs once for the entire test suite
  * Use it to set up environment, create shared data, etc.
  */
-async function globalSetup(config: FullConfig): Promise<void> {
+async function globalSetup(_config: FullConfig): Promise<void> {
   // Load environment variables from .env file
   dotenv.config({ path: path.join(__dirname, '../../.env') });
 

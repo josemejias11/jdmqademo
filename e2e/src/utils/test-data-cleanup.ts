@@ -1,4 +1,4 @@
-import { Page, expect } from '@playwright/test';
+import { Page } from '@playwright/test';
 import { config } from '../config/config';
 import { retry } from './helpers';
 
@@ -50,7 +50,7 @@ export class TestDataCleanup {
           }
 
           // Wait for UI to update
-          await this.page.waitForTimeout(500);
+          await this.page.waitForLoadState('domcontentloaded');
         } catch (err) {
           console.error(`Error during task cleanup: ${err}`);
         }

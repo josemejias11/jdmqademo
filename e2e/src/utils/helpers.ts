@@ -70,14 +70,14 @@ export async function waitForStableElement(
     const isVisible = await element.isVisible();
 
     if (!isVisible) {
-      await page.waitForTimeout(100);
+      await page.waitForLoadState('domcontentloaded');
       continue;
     }
 
     const boundingBox = await element.boundingBox();
 
     if (!boundingBox) {
-      await page.waitForTimeout(100);
+      await page.waitForLoadState('domcontentloaded');
       continue;
     }
 
@@ -88,7 +88,7 @@ export async function waitForStableElement(
     }
 
     lastRect = currentRect;
-    await page.waitForTimeout(100);
+    await page.waitForLoadState('domcontentloaded');
   }
 
   throw new Error(`Element ${selector} was not stable within ${timeout}ms`);

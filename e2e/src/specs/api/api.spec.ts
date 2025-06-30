@@ -19,11 +19,11 @@ test.describe('API Tests', () => {
         config.users.standard.username,
         config.users.standard.password
       );
-      
+
       if (!token) {
         throw new Error('Login returned null token');
       }
-      
+
       authToken = token;
 
       console.log('Successfully authenticated for API tests');
@@ -73,6 +73,6 @@ test.describe('API Tests', () => {
     // Find our test task
     const testTask = tasks.find(task => task.title === title);
     expect(testTask).toBeDefined();
-    expect(testTask.completed).toBe(false);
+    expect(testTask!.completed).toBe(false);
   });
 });

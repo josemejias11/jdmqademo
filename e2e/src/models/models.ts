@@ -45,3 +45,29 @@ export interface TaskData {
   dueDate?: Date;
   priority?: 'low' | 'medium' | 'high';
 }
+
+/**
+ * Interface for complete task object from API
+ */
+export interface Task {
+  id: string;
+  title: string;
+  description: string;
+  completed: boolean;
+  createdAt: string;
+  updatedAt: string;
+  dueDate?: string;
+  priority?: 'low' | 'medium' | 'high';
+}
+
+/**
+ * Interface for API login response
+ */
+export interface LoginResponse {
+  token: string;
+  user: {
+    id: string;
+    username: string;
+    email?: string;
+  };
+}

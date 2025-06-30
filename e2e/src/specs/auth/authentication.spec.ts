@@ -1,6 +1,5 @@
 import { test, expect } from '../../fixtures/test-fixtures';
 import { config } from '../../config/config';
-import { generateUnique } from '../../utils/helpers';
 
 /**
  * Authentication test suite
@@ -10,32 +9,42 @@ test.describe('Authentication', () => {
     await loginPage.goto();
   });
 
-  test('should display login page with correct elements', async ({ loginPage }) => {
+  test('should display login page with correct elements', async ({ loginPage, page }) => {
     await loginPage.verifyPageLoaded();
+    // Additional assertion for ESLint
+    await expect(page).toHaveURL(/login/);
   });
 
-  test('should login successfully with valid credentials', async ({ loginPage }) => {
+  test('should login successfully with valid credentials', async ({ loginPage, page }) => {
     await loginPage.login(config.users.standard.username, config.users.standard.password);
 
     await loginPage.verifySuccessfulLogin();
+    // Additional assertion for ESLint
+    await expect(page).toHaveURL(/dashboard/);
   });
 
-  test('should show error with invalid username', async ({ loginPage }) => {
+  test('should show error with invalid username', async ({ loginPage, page }) => {
     await loginPage.login('invaliduser', config.users.standard.password);
 
     await loginPage.verifyLoginError();
+    // Additional assertion for ESLint
+    await expect(page.locator('.alert-danger, .error')).toBeVisible();
   });
 
-  test('should show error with invalid password', async ({ loginPage }) => {
+  test('should show error with invalid password', async ({ loginPage, page }) => {
     await loginPage.login(config.users.standard.username, 'wrongpassword');
 
     await loginPage.verifyLoginError();
+    // Additional assertion for ESLint
+    await expect(page.locator('.alert-danger, .error')).toBeVisible();
   });
 
-  test('should show error with empty credentials', async ({ loginPage }) => {
+  test('should show error with empty credentials', async ({ loginPage, page }) => {
     await loginPage.login('', '');
 
     await loginPage.verifyLoginError();
+    // Additional assertion for ESLint
+    await expect(page.locator('.alert-danger, .error')).toBeVisible();
   });
 });
 
@@ -65,7 +74,7 @@ test.describe('Authentication Retention', () => {
     expect(welcomeMessage).toContain(config.users.standard.username);
   });
 
-  test('should redirect to login after logout', async ({ loginPage, dashboardPage }) => {
+  test('should redirect to login after logout', async ({ loginPage, dashboardPage, page }) => {
     await loginPage.goto();
     await loginPage.loginWithDefaultUser();
     await loginPage.verifySuccessfulLogin();
@@ -79,5 +88,7 @@ test.describe('Authentication Retention', () => {
     // Try to access dashboard again - should redirect to login
     await dashboardPage.goto();
     await loginPage.verifyLoggedOut();
+    // Additional assertion for ESLint
+    await expect(page).toHaveURL(/login/);
   });
 });

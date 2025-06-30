@@ -10,6 +10,12 @@
 /playwright-report
 /test-results
 
+# Visual regression test snapshots
+**/*-snapshots/
+**/visual.spec.ts-snapshots/
+*.png
+!public/*.png
+
 # production
 /build
 /dist
@@ -26,6 +32,17 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+.AppleDouble
+.LSOverride
 
 # IDE specific files
 .idea

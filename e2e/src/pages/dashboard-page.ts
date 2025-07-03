@@ -13,7 +13,7 @@ export class DashboardPage implements BasePage {
     completedTasks: 'text=Completed',
     pendingTasks: 'text=Pending',
     tasksNavLink: 'a.nav-link:has-text("Tasks")',
-    createTaskBtn: 'a:has-text("New Task")',
+    createTaskBtn: 'a:has-text("Create Task")',
     viewAllTasksBtn: 'a:has-text("View All Tasks")',
     recentTasksList: '.list-group-item',
     taskCompletionProgress: '.progress-bar',

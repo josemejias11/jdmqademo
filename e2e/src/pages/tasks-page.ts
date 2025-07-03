@@ -14,11 +14,11 @@ export class TasksPage implements BasePage {
     taskTitleInput: 'input[name="title"]',
     taskDescriptionInput: 'textarea[name="description"]',
     taskSubmitButton: 'button[type="submit"]',
-    taskItems: '.task-item',
+    taskItems: 'tbody tr',
     taskTitle: '.task-title',
-    completeCheckbox: 'input[type="checkbox"]',
-    deleteButton: 'button:has-text("Delete")',
-    confirmDeleteButton: 'button:has-text("Confirm")',
+    completeCheckbox: 'button[title*="Mark as"]', // Button with title containing "Mark as"
+    deleteButton: 'button[title="Delete task"]',
+    confirmDeleteButton: '.modal-footer button:has-text("Delete")',
     filterAllButton: 'button:has-text("All")',
     filterCompletedButton: 'button:has-text("Completed")',
     filterPendingButton: 'button:has-text("Pending")',
@@ -112,8 +112,9 @@ export class TasksPage implements BasePage {
    */
   async isTaskCompleted(title: string): Promise<boolean> {
     const taskRow = this.page.locator(this.selectors.taskItems).filter({ hasText: title });
-    const checkbox = taskRow.locator(this.selectors.completeCheckbox);
-    return await checkbox.isChecked();
+    const completeButton = taskRow.locator(this.selectors.completeCheckbox);
+    const buttonClass = await completeButton.getAttribute('class') || '';
+    return buttonClass.includes('btn-success');
   }
 
   /**
@@ -126,11 +127,13 @@ export class TasksPage implements BasePage {
     // Click delete button
     await taskRow.locator(this.selectors.deleteButton).click();
 
-    // Handle confirmation dialog if it appears
+    // Wait for modal to appear and handle confirmation dialog
     const confirmButton = this.page.locator(this.selectors.confirmDeleteButton);
-    if (await confirmButton.isVisible()) {
-      await confirmButton.click();
-    }
+    await confirmButton.waitFor({ state: 'visible', timeout: 5000 });
+    await confirmButton.click();
+
+    // Wait for modal to disappear
+    await this.page.locator('.modal').waitFor({ state: 'hidden', timeout: 5000 });
 
     // Verify task was deleted
     await expect(this.page.getByText(title)).toBeHidden({ timeout: 5000 });

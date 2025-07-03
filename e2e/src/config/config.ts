@@ -7,15 +7,9 @@ export const config = {
 
   // Default test user
   users: {
-    standard: {
-      username: 'testuser',
-      password: 'password123',
-      email: 'test@example.com'
-    },
     admin: {
       username: 'admin',
-      password: 'adminpassword',
-      email: 'admin@example.com'
+      password: 'changeme',
     }
   },
 

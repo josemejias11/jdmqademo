@@ -16,7 +16,7 @@ test.describe('Authentication', () => {
   });
 
   test('should login successfully with valid credentials', async ({ loginPage, page }) => {
-    await loginPage.login(config.users.standard.username, config.users.standard.password);
+    await loginPage.login(config.users.admin.username, config.users.admin.password);
 
     await loginPage.verifySuccessfulLogin();
     // Additional assertion for ESLint
@@ -24,7 +24,7 @@ test.describe('Authentication', () => {
   });
 
   test('should show error with invalid username', async ({ loginPage, page }) => {
-    await loginPage.login('invaliduser', config.users.standard.password);
+    await loginPage.login('invaliduser', config.users.admin.password);
 
     await loginPage.verifyLoginError();
     // Additional assertion for ESLint
@@ -32,7 +32,7 @@ test.describe('Authentication', () => {
   });
 
   test('should show error with invalid password', async ({ loginPage, page }) => {
-    await loginPage.login(config.users.standard.username, 'wrongpassword');
+    await loginPage.login(config.users.admin.username, 'wrongpassword');
 
     await loginPage.verifyLoginError();
     // Additional assertion for ESLint
@@ -71,7 +71,7 @@ test.describe('Authentication Retention', () => {
 
     // Verify user is still logged in
     const welcomeMessage = await dashboardPage.getWelcomeMessage();
-    expect(welcomeMessage).toContain(config.users.standard.username);
+    expect(welcomeMessage).toContain(config.users.admin.username);
   });
 
   test('should redirect to login after logout', async ({ loginPage, dashboardPage, page }) => {

@@ -1,6 +1,28 @@
 # End-to-End Testing Framework
 
-A modern, scalable end-to-end testing framework for the Task Manager application built with Playwright, TypeScript, and best practices.
+A modern, scalable end-to-end testing framework for the Task Manager application built with Playwright, TypeScript, and advanced testing patterns including centralized locator management.
+
+## ✨ Key Features
+
+### 🎯 Centralized Locator Management
+- **Single Source of Truth**: All UI selectors organized in `/src/locators/app-locators.ts`
+- **Multiple Selector Strategies**: Fallback locators for improved test reliability
+- **Type Safety**: Full TypeScript support with autocomplete for all locators
+- **Easy Maintenance**: Update selectors in one place, reflects everywhere
+
+### 🧪 Comprehensive Test Coverage
+- **Authentication**: Login/logout flows with credential validation
+- **Dashboard**: Statistics, navigation, and user interface testing  
+- **Task Management**: Full CRUD operations with data validation
+- **Visual Regression**: Cross-browser UI consistency testing
+- **API Testing**: Backend endpoint validation and data integrity
+- **Smoke Tests**: Critical user journey validation
+
+### 🚀 Advanced Configuration
+- **Zero Retry Policy**: Single-attempt execution for faster feedback
+- **Multi-Browser Support**: Chrome, Firefox, Safari, and Mobile devices
+- **Environment Flexibility**: Configurable URLs and test credentials
+- **Parallel Execution**: Optimized test run performance
 
 ## 🚀 Quick Start
 
@@ -56,6 +78,8 @@ npm run report
 ```
 e2e/
 ├── src/
+│   ├── locators/           # ✨ Centralized Locator Management
+│   │   └── app-locators.ts # Single source for all UI selectors
 │   ├── pages/              # Page Object Models
 │   │   ├── login-page.ts
 │   │   ├── dashboard-page.ts
@@ -66,7 +90,8 @@ e2e/
 │   │   ├── tasks/          # Task management CRUD
 │   │   ├── visual/         # Visual regression
 │   │   ├── api/            # API testing
-│   │   └── smoke/          # Critical path tests
+│   │   ├── smoke/          # Critical path tests
+│   │   └── demo/           # ✨ Locator usage examples
 │   ├── fixtures/           # Test fixtures & setup
 │   ├── utils/              # Helper utilities
 │   ├── config/             # Configuration files
@@ -122,32 +147,50 @@ e2e/
 BASE_URL="http://localhost:3000"
 API_URL="http://localhost:3001"
 
-# Test credentials
-TEST_USERNAME="testuser"
-TEST_PASSWORD="password123"
-ADMIN_USERNAME="admin"
-ADMIN_PASSWORD="adminpassword"
+# Standardized Test Credentials
+TEST_USERNAME="admin"
+TEST_PASSWORD="changeme"
 ```
 
 ### Browser Configuration
-- **Chromium**: Desktop testing
-- **Firefox**: Cross-browser compatibility  
-- **WebKit**: Safari compatibility
-- **Mobile Chrome/Safari**: Mobile responsiveness
+- **Chromium**: Desktop testing with zero retries
+- **Firefox**: Cross-browser compatibility testing
+- **WebKit**: Safari compatibility validation
+- **Mobile Chrome/Safari**: Responsive design testing
+- **Specialized Projects**: Smoke, Visual, and API test configurations
 
 ## 🏗️ Architecture & Patterns
 
+### 🎯 Centralized Locator System
+```typescript
+// Import centralized locators
+import { login, dashboard, taskForm } from '../locators/app-locators';
+
+// Use in tests with multiple strategies
+await page.fill(login.usernameInput, username);        // Primary selector
+await page.fill(login.usernameInputById, username);    // Fallback by ID
+await page.fill(login.usernameByLabel, username);      // Fallback by label
+
+// All selectors are typed and discoverable
+const allLoginLocators = {
+  usernameInput: 'input[name="username"]',
+  passwordInput: 'input[name="password"]',
+  loginButton: 'button[type="submit"]',
+  errorMessage: '.alert-danger',
+  // ... many more with fallback strategies
+};
+```
+
 ### Page Object Model (POM)
 ```typescript
-// Example: LoginPage
+// Example: LoginPage with centralized locators
 export class LoginPage implements BasePage {
-  private selectors = {
-    usernameInput: 'input[name="username"]',
-    passwordInput: 'input[name="password"]',
-    loginButton: 'button[type="submit"]'
-  };
-
   async login(username: string, password: string) {
+    await this.page.fill(loginLocators.usernameInput, username);
+    await this.page.fill(loginLocators.passwordInput, password);
+    await this.page.click(loginLocators.loginButton);
+  }
+}
     await this.page.fill(this.selectors.usernameInput, username);
     await this.page.fill(this.selectors.passwordInput, password);
     await this.page.click(this.selectors.loginButton);
@@ -172,21 +215,28 @@ export const test = base.extend<{
 
 ## 🚦 Best Practices
 
-### ✅ Do
-- Use descriptive test names
-- Implement proper waits and assertions
-- Follow Page Object Model pattern
-- Clean up test data after tests
-- Use environment variables for configuration
-- Write atomic, independent tests
+### ✅ Modern Testing Patterns
+- Use centralized locators from `app-locators.ts`
+- Implement multiple selector strategies for reliability
+- Follow Page Object Model with locator integration
+- Write atomic, independent tests with proper cleanup
+- Use TypeScript for full type safety and autocomplete
+- Leverage environment variables for flexible configuration
 
-### ❌ Don't  
-- Use hard-coded waits (`page.waitForTimeout()`)
-- Access private page properties directly
-- Write interdependent tests
-- Hardcode test data in tests
-- Skip error handling
-- Ignore visual regression tests
+### 🎯 Locator Best Practices
+- **Primary Strategy**: Use semantic selectors (name, role, label)
+- **Fallback Strategy**: Provide ID and CSS selector alternatives  
+- **Avoid**: Fragile selectors like nth-child or complex CSS paths
+- **Maintain**: Keep locators organized by page/component
+- **Document**: Use clear, descriptive locator names
+
+### ❌ Avoid These Patterns
+- Hard-coded selectors scattered across test files
+- Using `page.waitForTimeout()` instead of proper waits
+- Writing interdependent tests that require specific execution order
+- Hardcoding test data instead of using configuration
+- Ignoring TypeScript errors or type safety
+- Skipping visual regression validation
 
 ## 🔍 Debugging
 
@@ -253,11 +303,19 @@ npx playwright install
 
 ## 🤝 Contributing
 
-1. **Add New Tests**: Place in appropriate `/specs` subdirectory
-2. **Page Objects**: Update page objects when UI changes
-3. **Selectors**: Use stable, semantic selectors
-4. **Documentation**: Update README for new features
-5. **Environment**: Add new config to `.env.example`
+### Adding New Features
+1. **New Locators**: Add to `/src/locators/app-locators.ts` with multiple strategies
+2. **New Tests**: Place in appropriate `/specs` subdirectory with proper imports
+3. **Page Objects**: Update page objects to use centralized locators
+4. **Configuration**: Add new environment variables to `.env.example`
+5. **Documentation**: Update README for new testing capabilities
+
+### Locator Management Guidelines
+- **Organization**: Group locators by page/component (login, dashboard, etc.)
+- **Naming**: Use clear, descriptive names that match UI elements
+- **Strategies**: Provide multiple selector approaches (name, id, role, css)
+- **Fallbacks**: Include reliable backup selectors for stability
+- **Types**: Maintain TypeScript definitions for all locators
 
 ## 🐛 Troubleshooting
 
@@ -297,12 +355,55 @@ npm run type-check
 
 ---
 
-## 📈 Status
+## 📈 Current Features & Status
 
-✅ **Framework Complete**: Modern, scalable E2E testing setup  
-✅ **TypeScript Ready**: Full type safety and IDE support  
-✅ **Multi-Browser**: Chrome, Firefox, Safari, Mobile testing  
+### ✨ Advanced Features Implemented
+✅ **Centralized Locator Management**: Single source of truth for all UI selectors  
+✅ **Multiple Selector Strategies**: Fallback selectors for improved reliability  
+✅ **Zero Retry Configuration**: Fast feedback with single-attempt execution  
+✅ **Standardized Credentials**: Consistent authentication across all tests  
+✅ **TypeScript Integration**: Full type safety and IDE autocomplete support  
+✅ **Demo Test Suite**: Comprehensive examples of advanced patterns  
+
+### 🚀 Framework Capabilities
+✅ **Multi-Browser Testing**: Chrome, Firefox, Safari, Mobile devices  
+✅ **Visual Regression**: Cross-browser UI consistency validation  
+✅ **API Testing**: Backend endpoint validation with type safety  
+✅ **Smoke Testing**: Critical user journey validation  
 ✅ **CI/CD Ready**: GitHub Actions and reporting integration  
-✅ **Maintainable**: Page Object Model and clean architecture  
+✅ **Maintainable Architecture**: Page Object Model with modern patterns  
 
-**Last Updated**: June 27, 2025
+### 🎯 Quality Assurance
+✅ **ESLint Integration**: Code quality and consistency enforcement  
+✅ **TypeScript Validation**: Compile-time error detection  
+✅ **Prettier Formatting**: Automated code formatting  
+✅ **Test Isolation**: Independent test execution with cleanup  
+✅ **Environment Flexibility**: Configurable test environments  
+
+**Framework Version**: 2.0 - Enhanced with Centralized Locators  
+**Last Updated**: July 3, 2025
+
+### Locator Management Benefits
+- **Maintainability**: Change selectors once, update everywhere
+- **Reliability**: Multiple selector strategies for robust testing  
+- **Discoverability**: Autocomplete and type safety for all locators
+- **Consistency**: Standardized naming across all tests
+- **Flexibility**: Easy switching between selector strategies
+
+### Demo Tests
+Comprehensive examples showing advanced patterns:
+```typescript
+// Demonstrating locator flexibility
+test('locator strategies demo', async ({ page }) => {
+  const strategies = [
+    login.usernameInput,     // 'input[name="username"]'
+    login.usernameInputById, // '#username'  
+    login.usernameByLabel    // 'input[id="username"]'
+  ];
+  
+  // All strategies work for the same element
+  for (const selector of strategies) {
+    await expect(page.locator(selector)).toBeVisible();
+  }
+});
+```

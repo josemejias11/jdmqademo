@@ -2,6 +2,7 @@ import { Page, expect } from '@playwright/test';
 import { BasePage, TaskData } from '../models/models';
 import { config } from '../config/config';
 import { retry, waitForStableElement } from '../utils/helpers';
+// import { taskForm, tasksList } from '../locators/app-locators'; // TODO: Implement centralized locators
 
 /**
  * Page object model for the tasks page

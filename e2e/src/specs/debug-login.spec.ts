@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { config } from '../config/config';
 
 test('Debug login form fields', async ({ page }) => {
   await page.goto('http://localhost:3000/login');
@@ -44,14 +45,14 @@ test('Debug login form fields', async ({ page }) => {
   console.log('=== Attempting to fill form ===');
 
   try {
-    await page.fill('#username', 'admin');
+    await page.fill('#username', config.users.admin.username);
     console.log('✓ Filled username field');
   } catch (e) {
     console.log('✗ Failed to fill username:', e instanceof Error ? e.message : String(e));
   }
 
   try {
-    await page.fill('#password', 'changeme');
+    await page.fill('#password', config.users.admin.password);
     console.log('✓ Filled password field');
   } catch (e) {
     console.log('✗ Failed to fill password:', e instanceof Error ? e.message : String(e));

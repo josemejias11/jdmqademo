@@ -1,4 +1,4 @@
-import { APIRequestContext, request } from '@playwright/test';
+import { request } from '@playwright/test';
 import { Task } from '../models/models';
 import { config } from '../config/config';
 
@@ -9,7 +9,7 @@ export class ApiClient {
   private baseUrl: string;
   private token: string | null = null;
 
-  constructor(private apiContext?: APIRequestContext) {
+  constructor() {
     this.baseUrl = config.apiUrl;
   }
 
@@ -20,13 +20,11 @@ export class ApiClient {
    * @returns Authentication token
    */
   async login(username: string, password: string): Promise<string | null> {
-    const apiContext =
-      this.apiContext ||
-      (await request.newContext({
-        baseURL: this.baseUrl
-      }));
+    const apiContext = await request.newContext({
+      baseURL: this.baseUrl
+    });
 
-    const response = await apiContext.post('/auth/login', {
+    const response = await apiContext.post('/api/auth/login', {
       data: {
         username,
         password
@@ -54,16 +52,14 @@ export class ApiClient {
       throw new Error('Must be authenticated to create tasks. Call login() first.');
     }
 
-    const apiContext =
-      this.apiContext ||
-      (await request.newContext({
-        baseURL: this.baseUrl,
-        extraHTTPHeaders: {
-          Authorization: `Bearer ${this.token}`
-        }
-      }));
+    const apiContext = await request.newContext({
+      baseURL: this.baseUrl,
+      extraHTTPHeaders: {
+        Authorization: `Bearer ${this.token}`
+      }
+    });
 
-    const response = await apiContext.post('/tasks', {
+    const response = await apiContext.post('/api/tasks', {
       data: {
         title,
         description,
@@ -77,7 +73,8 @@ export class ApiClient {
       );
     }
 
-    return await response.json();
+    const result = await response.json();
+    return result.data;
   }
 
   /**
@@ -89,16 +86,14 @@ export class ApiClient {
       throw new Error('Must be authenticated to get tasks. Call login() first.');
     }
 
-    const apiContext =
-      this.apiContext ||
-      (await request.newContext({
-        baseURL: this.baseUrl,
-        extraHTTPHeaders: {
-          Authorization: `Bearer ${this.token}`
-        }
-      }));
+    const apiContext = await request.newContext({
+      baseURL: this.baseUrl,
+      extraHTTPHeaders: {
+        Authorization: `Bearer ${this.token}`
+      }
+    });
 
-    const response = await apiContext.get('/tasks');
+    const response = await apiContext.get('/api/tasks');
 
     if (!response.ok()) {
       throw new Error(
@@ -106,7 +101,8 @@ export class ApiClient {
       );
     }
 
-    return await response.json();
+    const result = await response.json();
+    return result.data;
   }
 
   /**
@@ -118,21 +114,19 @@ export class ApiClient {
       throw new Error('Must be authenticated to delete tasks. Call login() first.');
     }
 
-    const apiContext =
-      this.apiContext ||
-      (await request.newContext({
-        baseURL: this.baseUrl,
-        extraHTTPHeaders: {
-          Authorization: `Bearer ${this.token}`
-        }
-      }));
+    const apiContext = await request.newContext({
+      baseURL: this.baseUrl,
+      extraHTTPHeaders: {
+        Authorization: `Bearer ${this.token}`
+      }
+    });
 
     const tasks = await this.getTasks();
     const testTasks = tasks.filter(task => task.title.includes('Test'));
     let deleted = 0;
 
     for (const task of testTasks) {
-      const response = await apiContext.delete(`/tasks/${task.id}`);
+      const response = await apiContext.delete(`/api/tasks/${task.id}`);
 
       if (response.ok()) {
         deleted++;

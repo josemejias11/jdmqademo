@@ -2,19 +2,12 @@ import { Page, expect } from '@playwright/test';
 import { BasePage } from '../models/models';
 import { config } from '../config/config';
 import { retry, waitForStableElement } from '../utils/helpers';
+import { login as loginLocators } from '../locators/app-locators';
 
 /**
  * Page object model for the login page
  */
 export class LoginPage implements BasePage {
-  private selectors = {
-    usernameInput: 'input[name="username"]',
-    passwordInput: 'input[name="password"]',
-    loginButton: 'button[type="submit"]',
-    appTitle: 'h4',
-    errorMessage: '.alert-danger'
-  };
-
   constructor(private page: Page) {}
 
   /**
@@ -30,9 +23,9 @@ export class LoginPage implements BasePage {
    */
   async verifyPageLoaded(): Promise<void> {
     await expect(this.page).toHaveURL(/login/);
-    await expect(this.page.locator(this.selectors.usernameInput)).toBeVisible();
-    await expect(this.page.locator(this.selectors.passwordInput)).toBeVisible();
-    await expect(this.page.locator(this.selectors.loginButton)).toBeVisible();
+    await expect(this.page.locator(loginLocators.usernameInput)).toBeVisible();
+    await expect(this.page.locator(loginLocators.passwordInput)).toBeVisible();
+    await expect(this.page.locator(loginLocators.loginButton)).toBeVisible();
     await expect(this.page.getByText('Task Manager')).toBeVisible();
   }
 
@@ -44,15 +37,15 @@ export class LoginPage implements BasePage {
   async login(username: string, password: string): Promise<void> {
     await retry(async () => {
       // Wait for form to be ready
-      await waitForStableElement(this.page, this.selectors.usernameInput);
-      await waitForStableElement(this.page, this.selectors.passwordInput);
+      await waitForStableElement(this.page, loginLocators.usernameInput);
+      await waitForStableElement(this.page, loginLocators.passwordInput);
 
       // Clear and fill the form fields
-      await this.page.fill(this.selectors.usernameInput, '');
-      await this.page.fill(this.selectors.usernameInput, username);
+      await this.page.fill(loginLocators.usernameInput, '');
+      await this.page.fill(loginLocators.usernameInput, username);
 
-      await this.page.fill(this.selectors.passwordInput, '');
-      await this.page.fill(this.selectors.passwordInput, password);
+      await this.page.fill(loginLocators.passwordInput, '');
+      await this.page.fill(loginLocators.passwordInput, password);
 
       // Check if there's a modal blocking the form and close it
       const modal = this.page.locator('.modal.show');
@@ -65,7 +58,7 @@ export class LoginPage implements BasePage {
       }
 
       // Click submit button
-      await this.page.click(this.selectors.loginButton);
+      await this.page.click(loginLocators.loginButton);
 
       // Wait for navigation to dashboard
       await this.page.waitForURL(/dashboard/, { timeout: config.timeouts.long });
@@ -73,10 +66,50 @@ export class LoginPage implements BasePage {
   }
 
   /**
+   * Attempt to login (may succeed or fail) - does not wait for navigation
+   * @param username Username to use for login
+   * @param password Password to use for login
+   */
+  async attemptLogin(username: string, password: string): Promise<void> {
+    await retry(async () => {
+      // Wait for form to be ready
+      await waitForStableElement(this.page, loginLocators.usernameInput);
+      await waitForStableElement(this.page, loginLocators.passwordInput);
+
+      // Clear and fill the form fields
+      await this.page.fill(loginLocators.usernameInput, '');
+      await this.page.fill(loginLocators.usernameInput, username);
+
+      await this.page.fill(loginLocators.passwordInput, '');
+      await this.page.fill(loginLocators.passwordInput, password);
+
+      // Check if there's a modal blocking the form and close it
+      const modal = this.page.locator('.modal.show');
+      if (await modal.isVisible()) {
+        const closeButton = modal.locator('button:has-text("Close")');
+        if (await closeButton.isVisible()) {
+          await closeButton.click();
+          await modal.waitFor({ state: 'hidden', timeout: 2000 });
+        }
+      }
+
+      // Click submit button
+      await this.page.click(loginLocators.loginButton);
+
+      // Wait a moment for the form submission to process
+      // Wait for either success navigation or error message to appear
+      await Promise.race([
+        this.page.waitForURL(/dashboard/, { timeout: 2000 }).catch(() => {}),
+        this.page.locator(loginLocators.errorMessage).waitFor({ timeout: 2000 }).catch(() => {})
+      ]);
+    });
+  }
+
+  /**
    * Login with default test user credentials
    */
   async loginWithDefaultUser(): Promise<void> {
-    await this.login(config.users.standard.username, config.users.standard.password);
+    await this.login(config.users.admin.username, config.users.admin.password);
   }
 
   /**
@@ -107,10 +140,10 @@ export class LoginPage implements BasePage {
    * @param errorMessage Expected error message text (optional)
    */
   async verifyLoginError(errorMessage?: string): Promise<void> {
-    await expect(this.page.locator(this.selectors.errorMessage)).toBeVisible();
+    await expect(this.page.locator(loginLocators.errorMessage)).toBeVisible();
 
     if (errorMessage) {
-      await expect(this.page.locator(this.selectors.errorMessage)).toContainText(errorMessage);
+      await expect(this.page.locator(loginLocators.errorMessage)).toContainText(errorMessage);
     }
 
     // Should still be on login page

@@ -10,14 +10,14 @@ test.describe('API Tests', () => {
   let apiClient: ApiClient;
   let authToken: string;
 
-  test.beforeAll(async ({ request }) => {
-    apiClient = new ApiClient(request);
+  test.beforeAll(async () => {
+    apiClient = new ApiClient();
 
     try {
       // Get auth token for subsequent requests
       const token = await apiClient.login(
-        config.users.standard.username,
-        config.users.standard.password
+        config.users.admin.username,
+        config.users.admin.password
       );
 
       if (!token) {

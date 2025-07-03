@@ -17,7 +17,7 @@ export const AppLocators = {
     appTitle: 'h4',
     loginButtonText: 'Login',
     loadingSpinner: '.spinner-border',
-    
+
     // Alternative selectors for different strategies
     usernameByLabel: 'input[id="username"]',
     passwordByLabel: 'input[id="password"]',
@@ -29,22 +29,22 @@ export const AppLocators = {
     welcomeMessage: 'h2.card-title',
     welcomeCard: '.card.shadow-sm',
     statsContainer: '.row.mb-4',
-    
+
     // Statistics cards
     totalTasksCard: '.col-md-3:nth-child(1) .card',
     completedTasksCard: '.col-md-3:nth-child(2) .card',
     pendingTasksCard: '.col-md-3:nth-child(3) .card',
     completionCard: '.col-md-3:nth-child(4) .card',
-    
+
     // Action buttons
     viewAllTasksButton: 'a[href="/tasks"]',
     createNewTaskButton: 'a[href="/tasks/new"]',
     quickActionsSection: '.row:last-child',
-    
+
     // Quick actions cards
     viewTasksCard: '.col-md-6:nth-child(1) .card',
     createTaskCard: '.col-md-6:nth-child(2) .card',
-    
+
     // Icons
     totalTasksIcon: '.fa-clipboard-list',
     completedTasksIcon: '.fa-check-circle',
@@ -64,16 +64,16 @@ export const AppLocators = {
     completedCheckbox: 'input[name="completed"]',
     completedCheckboxById: '#completed',
     completedLabel: 'label[for="completed"]',
-    
+
     // Form validation
     titleError: '.invalid-feedback',
     descriptionError: '.invalid-feedback',
-    
+
     // Form buttons
     submitButton: 'button[type="submit"]',
     cancelButton: 'a.btn-secondary',
     saveButton: 'button[type="submit"]',
-    
+
     // Form states
     loadingSpinner: '.spinner-border',
     errorAlert: '.alert-danger',
@@ -90,31 +90,31 @@ export const AppLocators = {
     allTasksFilter: 'button:contains("All")',
     completedFilter: 'button:contains("Completed")',
     pendingFilter: 'button:contains("Pending")',
-    
+
     // Task items
     taskCard: '.card.task-card',
     taskTitle: '.card-title',
     taskDescription: '.card-text',
     taskStatus: '.badge',
     taskActions: '.card-body .btn-group',
-    
+
     // Task actions
     viewButton: '.btn-primary',
     editButton: '.btn-secondary',
     deleteButton: '.btn-danger',
     toggleCompleteButton: '.btn-outline-success, .btn-outline-warning',
-    
+
     // Task status badges
     completedBadge: '.badge.bg-success',
     pendingBadge: '.badge.bg-warning',
-    
+
     // Empty state
     emptyState: '.text-center.py-5',
     noTasksMessage: 'p:contains("No tasks found")',
-    
+
     // Pagination (if exists)
     pagination: '.pagination',
-    
+
     // Create task button
     createTaskButton: 'a[href="/tasks/new"]'
   },
@@ -125,7 +125,7 @@ export const AppLocators = {
     backButton: 'a.btn-outline-secondary',
     editButton: 'a.btn-primary',
     deleteButton: 'button.btn-danger',
-    
+
     // Task information
     taskCard: '.card.shadow-sm',
     taskHeader: '.card-header',
@@ -133,15 +133,15 @@ export const AppLocators = {
     taskTitle: '.card-title',
     taskDescription: '.card-text',
     taskStatus: '.badge',
-    
+
     // Action buttons
     actionButtons: '.d-flex.justify-content-between',
-    
+
     // Delete confirmation modal
     deleteModal: '.modal',
     deleteConfirmButton: '.modal .btn-danger',
     deleteCancelButton: '.modal .btn-secondary',
-    
+
     // Loading and error states
     loadingSpinner: '.spinner-border',
     errorAlert: '.alert-danger'
@@ -153,15 +153,15 @@ export const AppLocators = {
     navbarBrand: '.navbar-brand',
     navbarToggler: '.navbar-toggler',
     navbarNav: '.navbar-nav',
-    
+
     // Navigation links
     dashboardLink: 'a[href="/dashboard"]',
     tasksLink: 'a[href="/tasks"]',
     logoutButton: 'button:contains("Logout")',
-    
+
     // User info
     userGreeting: '.navbar-text',
-    
+
     // Mobile navigation
     mobileMenu: '.navbar-collapse'
   },
@@ -174,31 +174,31 @@ export const AppLocators = {
     dangerButton: '.btn-danger',
     successButton: '.btn-success',
     warningButton: '.btn-warning',
-    
+
     // Alerts and notifications
     successAlert: '.alert-success',
     errorAlert: '.alert-danger',
     warningAlert: '.alert-warning',
     infoAlert: '.alert-info',
-    
+
     // Form elements
     formControl: '.form-control',
     formCheck: '.form-check',
     formCheckInput: '.form-check-input',
     formLabel: '.form-label',
     invalidFeedback: '.invalid-feedback',
-    
+
     // Loading states
     spinner: '.spinner-border',
     loadingText: ':contains("Loading")',
-    
+
     // Cards
     card: '.card',
     cardHeader: '.card-header',
     cardBody: '.card-body',
     cardTitle: '.card-title',
     cardText: '.card-text',
-    
+
     // Modals
     modal: '.modal',
     modalDialog: '.modal-dialog',
@@ -207,7 +207,7 @@ export const AppLocators = {
     modalBody: '.modal-body',
     modalFooter: '.modal-footer',
     modalCloseButton: '.btn-close',
-    
+
     // Icons (React Icons)
     checkIcon: '.fa-check',
     editIcon: '.fa-edit',
@@ -215,7 +215,7 @@ export const AppLocators = {
     backIcon: '.fa-arrow-left',
     homeIcon: '.fa-home',
     plusIcon: '.fa-plus',
-    
+
     // Layout
     container: '.container',
     row: '.row',
@@ -242,14 +242,14 @@ export const AppLocators = {
     button: '[role="button"]',
     alert: '[role="alert"]',
     status: '[role="status"]',
-    
+
     // ARIA labels
     usernameField: '[aria-label*="username" i], [aria-labelledby*="username" i]',
     passwordField: '[aria-label*="password" i], [aria-labelledby*="password" i]',
-    
+
     // Data test ids (if we add them)
     testId: (id: string) => `[data-testid="${id}"]`,
-    
+
     // Headings by level
     h1: 'h1',
     h2: 'h2',
@@ -259,4 +259,14 @@ export const AppLocators = {
 } as const;
 
 // Export individual sections for convenience
-export const { login, dashboard, taskForm, tasksList, taskDetail, navigation, common, errorPages, accessibility } = AppLocators;
+export const {
+  login,
+  dashboard,
+  taskForm,
+  tasksList,
+  taskDetail,
+  navigation,
+  common,
+  errorPages,
+  accessibility
+} = AppLocators;

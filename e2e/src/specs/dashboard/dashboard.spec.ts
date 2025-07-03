@@ -10,13 +10,13 @@ test.describe('Dashboard', () => {
 
   authenticatedTest(
     'should display dashboard with correct components',
-    async ({ dashboardPage }) => {
+    async ({ dashboardPage, authenticated: _authenticated }) => {
       await dashboardPage.goto();
       await dashboardPage.verifyDashboardComponents();
     }
   );
 
-  authenticatedTest('should show correct statistics data', async ({ dashboardPage }) => {
+  authenticatedTest('should show correct statistics data', async ({ dashboardPage, authenticated: _authenticated }) => {
     await dashboardPage.goto();
 
     const stats = await dashboardPage.getTaskStatistics();
@@ -30,7 +30,7 @@ test.describe('Dashboard', () => {
     expect(stats.completed + stats.pending).toBe(stats.total);
   });
 
-  authenticatedTest('should navigate to tasks page', async ({ dashboardPage, page }) => {
+  authenticatedTest('should navigate to tasks page', async ({ dashboardPage, page, authenticated: _authenticated }) => {
     await dashboardPage.goto();
     await dashboardPage.navigateToAllTasks();
 
@@ -38,7 +38,7 @@ test.describe('Dashboard', () => {
     await expect(page).toHaveURL(/tasks$/);
   });
 
-  authenticatedTest('should navigate to create task page', async ({ dashboardPage, page }) => {
+  authenticatedTest('should navigate to create task page', async ({ dashboardPage, page, authenticated: _authenticated }) => {
     await dashboardPage.goto();
     await dashboardPage.navigateToCreateTask();
 
@@ -56,7 +56,7 @@ test.describe('Dashboard - Task Management', () => {
 
   authenticatedTest(
     'should create a task and see it reflected in dashboard stats',
-    async ({ dashboardPage, tasksPage }) => {
+    async ({ dashboardPage, tasksPage, authenticated: _authenticated }) => {
       // Get initial stats
       await dashboardPage.goto();
       const initialStats = await dashboardPage.getTaskStatistics();

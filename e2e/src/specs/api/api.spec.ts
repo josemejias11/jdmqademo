@@ -15,10 +15,7 @@ test.describe('API Tests', () => {
 
     try {
       // Get auth token for subsequent requests
-      const token = await apiClient.login(
-        config.users.admin.username,
-        config.users.admin.password
-      );
+      const token = await apiClient.login(config.users.admin.username, config.users.admin.password);
 
       if (!token) {
         throw new Error('Login returned null token');

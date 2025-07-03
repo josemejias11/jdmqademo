@@ -100,7 +100,10 @@ export class LoginPage implements BasePage {
       // Wait for either success navigation or error message to appear
       await Promise.race([
         this.page.waitForURL(/dashboard/, { timeout: 2000 }).catch(() => {}),
-        this.page.locator(loginLocators.errorMessage).waitFor({ timeout: 2000 }).catch(() => {})
+        this.page
+          .locator(loginLocators.errorMessage)
+          .waitFor({ timeout: 2000 })
+          .catch(() => {})
       ]);
     });
   }

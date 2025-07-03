@@ -45,7 +45,7 @@ test.describe('Authentication', () => {
     // For empty credentials, check for client-side validation errors first
     const validationErrors = page.locator('.invalid-feedback');
     const modalError = page.locator('.modal.show .text-danger, .alert-danger, .error');
-    
+
     // Should show either client-side validation errors or server error
     await expect(
       Promise.race([

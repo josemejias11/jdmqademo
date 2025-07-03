@@ -9,7 +9,7 @@ export const config = {
   users: {
     admin: {
       username: 'admin',
-      password: 'changeme',
+      password: 'changeme'
     }
   },
 

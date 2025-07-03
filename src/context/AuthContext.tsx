@@ -2,6 +2,18 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import apiClient from '../utils/apiClient';
 import { getAuthToken, setAuthToken, removeAuthToken } from '../utils/authUtils';
 
+// Simple JWT decoder function
+const decodeJWT = (token: string): { username?: string } | null => {
+  try {
+    const payload = token.split('.')[1];
+    const decoded = JSON.parse(atob(payload));
+    return decoded;
+  } catch (error) {
+    console.error('Error decoding JWT:', error);
+    return null;
+  }
+};
+
 // Define types here to avoid dependency on external types file
 export interface User {
   username: string;
@@ -70,11 +82,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       try {
         const token = getAuthToken();
         if (token) {
-          // In a real app, you would validate the token here
-          // For now, we'll just assume it's valid if it exists
+          // Decode the JWT token to extract username
+          const decodedUser = decodeJWT(token);
+          const username = decodedUser?.username || 'user';
+          
           setAuthState({
             isAuthenticated: true,
-            user: { username: 'user' }, // Placeholder - in real app extract from token or API call
+            user: { username },
             loading: false
           });
         } else {

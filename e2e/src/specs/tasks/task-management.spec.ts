@@ -9,12 +9,12 @@ test.describe('Task Management', () => {
   // Use authentication fixture for all tests in this group
   const authenticatedTest = withLogin;
 
-  authenticatedTest.beforeEach(async ({ tasksPage }) => {
+  authenticatedTest.beforeEach(async ({ tasksPage, authenticated: _authenticated }) => {
     // Start from tasks page
     await tasksPage.goto();
   });
 
-  authenticatedTest('should create a new task successfully', async ({ tasksPage }) => {
+  authenticatedTest('should create a new task successfully', async ({ tasksPage, authenticated: _authenticated }) => {
     // Generate unique task title to avoid conflicts
     const uniqueTaskTitle = `Test Task ${generateUnique()}`;
     const taskDescription = 'Task created by automated test';
@@ -29,7 +29,7 @@ test.describe('Task Management', () => {
     await tasksPage.verifyTaskExists(uniqueTaskTitle);
   });
 
-  authenticatedTest('should toggle task completion status', async ({ tasksPage }) => {
+  authenticatedTest('should toggle task completion status', async ({ tasksPage, authenticated: _authenticated }) => {
     // Create a task first
     const uniqueTaskTitle = `Test Task ${generateUnique()}`;
     await tasksPage.createTask({
@@ -56,7 +56,7 @@ test.describe('Task Management', () => {
     expect(isCompleted).toBeFalsy();
   });
 
-  authenticatedTest('should delete a task successfully', async ({ tasksPage }) => {
+  authenticatedTest('should delete a task successfully', async ({ tasksPage, authenticated: _authenticated }) => {
     // Create a task first
     const uniqueTaskTitle = `Test Task ${generateUnique()}`;
     await tasksPage.createTask({
@@ -74,7 +74,7 @@ test.describe('Task Management', () => {
     await tasksPage.verifyTaskDoesNotExist(uniqueTaskTitle);
   });
 
-  authenticatedTest('should filter tasks by completion status', async ({ tasksPage, cleanup }) => {
+  authenticatedTest('should filter tasks by completion status', async ({ tasksPage, cleanup, authenticated: _authenticated }) => {
     // Create two tasks with different completion states
     const pendingTaskTitle = `Test Pending ${generateUnique()}`;
     const completedTaskTitle = `Test Completed ${generateUnique()}`;
@@ -119,7 +119,7 @@ test.describe('Task Management', () => {
     await cleanup.cleanupTasks();
   });
 
-  authenticatedTest('should create task with maximum length values', async ({ tasksPage }) => {
+  authenticatedTest('should create task with maximum length values', async ({ tasksPage, authenticated: _authenticated }) => {
     // Generate long title and description
     const longTitle = `Test Long Title ${generateUnique()} ${'A'.repeat(100)}`;
     const longDescription = 'Test Description\n' + 'A'.repeat(1000);

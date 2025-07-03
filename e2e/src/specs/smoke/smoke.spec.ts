@@ -26,18 +26,18 @@ test.describe('Smoke Tests', () => {
 
   const authenticatedTest = withLogin;
 
-  authenticatedTest('should display dashboard after login', async ({ dashboardPage }) => {
+  authenticatedTest('should display dashboard after login', async ({ dashboardPage, authenticated: _authenticated }) => {
     await dashboardPage.verifyPageLoaded();
     await dashboardPage.verifyDashboardComponents();
   });
 
-  authenticatedTest('should navigate to tasks page', async ({ dashboardPage, tasksPage }) => {
+  authenticatedTest('should navigate to tasks page', async ({ dashboardPage, tasksPage, authenticated: _authenticated }) => {
     await dashboardPage.goto();
     await dashboardPage.navigateToAllTasks();
     await tasksPage.verifyPageLoaded();
   });
 
-  authenticatedTest('should create and delete a task', async ({ tasksPage }) => {
+  authenticatedTest('should create and delete a task', async ({ tasksPage, authenticated: _authenticated }) => {
     await tasksPage.goto();
 
     const uniqueTaskTitle = `Smoke Test Task ${generateUnique()}`;

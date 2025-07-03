@@ -10,7 +10,7 @@ import { retry, waitForStableElement } from '../utils/helpers';
 export class TasksPage implements BasePage {
   private selectors = {
     pageTitle: 'h2:has-text("Tasks")',
-    createTaskButton: 'a:has-text("Create Task")',
+    createTaskButton: 'a:has-text("New Task")',
     taskTitleInput: 'input[name="title"]',
     taskDescriptionInput: 'textarea[name="description"]',
     taskSubmitButton: 'button[type="submit"]',

@@ -22,5 +22,11 @@ module.exports = {
   plugins: ['react', '@typescript-eslint'],
   rules: {
     // Your custom rules here
-  }
+  },
+  ignorePatterns: [
+    'e2e/**/*',  // Exclude e2e directory (has its own ESLint config)
+    'build/**/*',
+    'dist/**/*',
+    'node_modules/**/*'
+  ]
 };

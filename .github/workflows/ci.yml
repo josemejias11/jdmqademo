@@ -37,13 +37,18 @@ jobs:
       - name: Type check server
         run: npm run type-check:server
 
-      - name: Lint code
+      - name: Lint main project
         run: npm run lint
 
       - name: Install e2e dependencies
         run: |
           cd e2e
           npm ci --legacy-peer-deps
+
+      - name: Lint e2e tests
+        run: |
+          cd e2e
+          npm run lint
 
       - name: Type check e2e tests
         run: |

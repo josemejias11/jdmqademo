@@ -50,7 +50,9 @@ jobs:
       - name: Start app and server
         run: |
           npm run server &
+          npm start &
           npx wait-on http://localhost:3001/api/health
+          npx wait-on http://localhost:3000
 
       - name: Install e2e dependencies
         run: |

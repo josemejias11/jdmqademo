@@ -23,6 +23,11 @@ module.exports = {
   rules: {
     // Your custom rules here
   },
+  settings: {
+    react: {
+      version: 'detect'  // Automatically detect React version
+    }
+  },
   ignorePatterns: [
     'e2e/**/*',  // Exclude e2e directory (has its own ESLint config)
     'build/**/*',

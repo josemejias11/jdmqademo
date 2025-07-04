@@ -201,26 +201,57 @@ export class TasksPage implements BasePage {
    * Navigate back to dashboard using navbar
    */
   async navigateToDashboard(): Promise<void> {
-    // Check if navbar toggle is visible (mobile)
-    const navbarToggler = this.page.locator('.navbar-toggler');
-    if (await navbarToggler.isVisible()) {
-      // Check if navbar is already expanded
-      const isExpanded = await navbarToggler.getAttribute('aria-expanded') === 'true';
-      
-      if (!isExpanded) {
-        await navbarToggler.click();
-        
-        // Wait for the navbar to expand
-        await this.page.waitForFunction(() => {
-          const collapse = document.querySelector('#navbarNav');
-          return collapse && collapse.classList.contains('show');
-        }, { timeout: 5000 });
-      }
-    }
+    await this.handleMobileNavigation();
     
     // Click the Dashboard nav link
     await this.page.click('a.nav-link:has-text("Dashboard")');
     await expect(this.page).toHaveURL(/dashboard/);
+  }
+
+  /**
+   * Helper method to handle mobile navigation
+   */
+  private async handleMobileNavigation(): Promise<void> {
+    const navbarToggler = this.page.locator('.navbar-toggler');
+    
+    if (await navbarToggler.isVisible()) {
+      // Check if navigation links are already visible
+      const dashboardNavLink = this.page.locator('a.nav-link:has-text("Dashboard")');
+      
+      if (await dashboardNavLink.isVisible()) {
+        // Navigation is already expanded, no need to toggle
+        return;
+      }
+      
+      // Try to expand the navigation
+      await navbarToggler.click();
+      
+      // Wait for navigation links to become visible with multiple attempts
+      let attempts = 0;
+      const maxAttempts = 3;
+      
+      while (attempts < maxAttempts) {
+        try {
+          await expect(dashboardNavLink).toBeVisible({ timeout: 3000 });
+          return; // Success, navigation is now visible
+        } catch {
+          attempts++;
+          if (attempts < maxAttempts) {
+            // Try clicking the toggler again
+            console.log(`Attempt ${attempts}: Retrying navbar toggle...`);
+            await navbarToggler.click();
+          }
+        }
+      }
+      
+      // Final attempt with a longer timeout
+      try {
+        await expect(dashboardNavLink).toBeVisible({ timeout: 5000 });
+      } catch (error) {
+        console.warn('Mobile navigation failed to expand after multiple attempts. Continuing with test...');
+        // Don't throw error - let the test continue and fail naturally if navigation is needed
+      }
+    }
   }
 
   /**

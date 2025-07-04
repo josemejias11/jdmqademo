@@ -116,7 +116,23 @@ export class TasksPage implements BasePage {
    */
   async toggleTaskCompletion(title: string): Promise<void> {
     const taskRow = this.page.locator(this.selectors.taskItems).filter({ hasText: title });
-    await taskRow.locator(this.selectors.completeCheckbox).click();
+    const completeButton = taskRow.locator(this.selectors.completeCheckbox);
+    
+    // Get the current state before clicking
+    const currentClass = await completeButton.getAttribute('class') || '';
+    const wasCompleted = currentClass.includes('btn-success');
+    
+    // Click the button
+    await completeButton.click();
+    
+    // Wait for the state to change by waiting for the opposite class
+    if (wasCompleted) {
+      // Was completed, now should be pending (btn-outline-secondary)
+      await expect(completeButton).toHaveClass(/btn-outline-secondary/, { timeout: 10000 });
+    } else {
+      // Was pending, now should be completed (btn-success)
+      await expect(completeButton).toHaveClass(/btn-success/, { timeout: 10000 });
+    }
   }
 
   /**
@@ -127,6 +143,9 @@ export class TasksPage implements BasePage {
   async isTaskCompleted(title: string): Promise<boolean> {
     const taskRow = this.page.locator(this.selectors.taskItems).filter({ hasText: title });
     const completeButton = taskRow.locator(this.selectors.completeCheckbox);
+    
+    // Wait for the button to be stable and then check its class
+    await expect(completeButton).toBeVisible();
     const buttonClass = await completeButton.getAttribute('class') || '';
     return buttonClass.includes('btn-success');
   }

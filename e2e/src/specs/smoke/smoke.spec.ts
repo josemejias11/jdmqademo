@@ -33,12 +33,14 @@ test.describe('Smoke Tests', () => {
 
   authenticatedTest('should navigate to tasks page', async ({ dashboardPage, tasksPage, authenticated: _authenticated }) => {
     await dashboardPage.goto();
-    await dashboardPage.navigateToAllTasks();
+    await dashboardPage.navigateToTasksViaNavbar();
     await tasksPage.verifyPageLoaded();
   });
 
-  authenticatedTest('should create and delete a task', async ({ tasksPage, authenticated: _authenticated }) => {
-    await tasksPage.goto();
+  authenticatedTest('should create and delete a task', async ({ dashboardPage, tasksPage, authenticated: _authenticated }) => {
+    await dashboardPage.goto();
+    await dashboardPage.navigateToTasksViaNavbar();
+    await tasksPage.verifyPageLoaded();
 
     const uniqueTaskTitle = `Smoke Test Task ${generateUnique()}`;
 

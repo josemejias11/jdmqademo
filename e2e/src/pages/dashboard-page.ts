@@ -9,15 +9,17 @@ import { retry, waitForStableElement } from '../utils/helpers';
 export class DashboardPage implements BasePage {
   private selectors = {
     welcomeHeading: 'h2.card-title',
-    totalTasks: 'text=Total Tasks',
-    completedTasks: 'text=Completed',
-    pendingTasks: 'text=Pending',
+    totalTasks: '.card:has-text("Total Tasks") h5:has-text("Total Tasks")',
+    completedTasks: '.card:has-text("Completed") h5:has-text("Completed")',
+    pendingTasks: '.card:has-text("Pending") h5:has-text("Pending")',
     tasksNavLink: 'a.nav-link:has-text("Tasks")',
     createTaskBtn: 'a:has-text("Create Task")',
     viewAllTasksBtn: 'a:has-text("View All Tasks")',
     recentTasksList: '.list-group-item',
     taskCompletionProgress: '.progress-bar',
-    logoutButton: 'button:has-text("Logout")'
+    logoutButton: 'button:has-text("Logout")',
+    navbarToggler: '.navbar-toggler',
+    navbarCollapse: '#navbarNav'
   };
 
   constructor(private page: Page) {}
@@ -41,6 +43,39 @@ export class DashboardPage implements BasePage {
   }
 
   /**
+   * Helper method to handle mobile navigation
+   */
+  private async handleMobileNavigation(): Promise<void> {
+    const navbarToggler = this.page.locator(this.selectors.navbarToggler);
+    
+    if (await navbarToggler.isVisible()) {
+      const navbarCollapse = this.page.locator(this.selectors.navbarCollapse);
+      
+      // Check if navbar is already expanded by checking the classes
+      const collapseClass = await navbarCollapse.getAttribute('class') || '';
+      const isExpanded = collapseClass.includes('show');
+      
+      if (!isExpanded) {
+        await navbarToggler.click();
+        
+        // Wait for the collapse to get the 'show' class or become visible
+        try {
+          await expect(navbarCollapse).toHaveClass(/show/, { timeout: 5000 });
+        } catch {
+          // Fallback: try checking for nav items visibility or click toggler again
+          try {
+            await expect(this.page.locator(this.selectors.tasksNavLink)).toBeVisible({ timeout: 2000 });
+          } catch {
+            // Try clicking the toggler one more time
+            await navbarToggler.click();
+            await expect(this.page.locator(this.selectors.tasksNavLink)).toBeVisible({ timeout: 2000 });
+          }
+        }
+      }
+    }
+  }
+
+  /**
    * Verify all dashboard components are visible
    */
   async verifyDashboardComponents(): Promise<void> {
@@ -50,6 +85,8 @@ export class DashboardPage implements BasePage {
     await expect(this.page.locator(this.selectors.pendingTasks)).toBeVisible();
 
     // Check for navigation elements
+    await this.handleMobileNavigation();
+    
     await expect(this.page.locator(this.selectors.tasksNavLink)).toBeVisible();
     await expect(this.page.locator(this.selectors.createTaskBtn)).toBeVisible();
     await expect(this.page.locator(this.selectors.viewAllTasksBtn)).toBeVisible();
@@ -108,7 +145,17 @@ export class DashboardPage implements BasePage {
    * Navigate to all tasks page from dashboard
    */
   async navigateToAllTasks(): Promise<void> {
+    await this.handleMobileNavigation();
     await this.page.click(this.selectors.viewAllTasksBtn);
+    await expect(this.page).toHaveURL(/tasks$/);
+  }
+
+  /**
+   * Navigate to tasks page using navbar link
+   */
+  async navigateToTasksViaNavbar(): Promise<void> {
+    await this.handleMobileNavigation();
+    await this.page.click(this.selectors.tasksNavLink);
     await expect(this.page).toHaveURL(/tasks$/);
   }
 
@@ -116,6 +163,7 @@ export class DashboardPage implements BasePage {
    * Logout from the application
    */
   async logout(): Promise<void> {
+    await this.handleMobileNavigation();
     await this.page.click(this.selectors.logoutButton);
     await expect(this.page).toHaveURL(/login/);
   }

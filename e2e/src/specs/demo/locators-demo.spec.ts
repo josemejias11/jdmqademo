@@ -49,11 +49,12 @@ test.describe('Centralized Locators Demo', () => {
     await expect(createTaskButton).toBeVisible();
   });
 
-  test('should demonstrate task form locators usage', async ({ loginPage, page }) => {
+  test('should demonstrate task form locators usage', async ({ loginPage, dashboardPage, page }) => {
     // Login and navigate to task creation
     await loginPage.goto();
     await loginPage.loginWithDefaultUser();
-    await page.goto('/tasks/new');
+    await dashboardPage.goto();
+    await dashboardPage.navigateToCreateTask();
 
     // Use centralized locators for task form
     await expect(page.locator(taskForm.titleInput)).toBeVisible();

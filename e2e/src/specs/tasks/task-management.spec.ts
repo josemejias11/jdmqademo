@@ -12,7 +12,7 @@ test.describe('Task Management', () => {
   authenticatedTest.beforeEach(async ({ dashboardPage, tasksPage, authenticated: _authenticated }) => {
     // Start from dashboard and navigate to tasks page using UI navigation
     await dashboardPage.goto();
-    await dashboardPage.navigateToAllTasks();
+    await dashboardPage.navigateToTasksViaNavbar();
     await tasksPage.verifyPageLoaded();
   });
 
@@ -123,18 +123,18 @@ test.describe('Task Management', () => {
 
   authenticatedTest('should create task with maximum length values', async ({ tasksPage, dashboardPage: _dashboardPage, authenticated: _authenticated }) => {
     // Generate long title and description
-    const longTitle = `Test Long Title ${generateUnique()} ${'A'.repeat(100)}`;
-    const longDescription = 'Test Description\n' + 'A'.repeat(1000);
+    const longTitle = `Test Long Title ${generateUnique()} ${'A'.repeat(50)}`;
+    const longDescription = 'Test Description\n' + 'A'.repeat(1000); // Intentionally over 500 chars
 
-    // Create task with long values
+    // Create task with long values - this should fail validation
     const taskData: TaskData = {
       title: longTitle.substring(0, 100), // Trim to max allowed length
       description: longDescription
     };
 
-    await tasksPage.createTask(taskData);
-
-    // Verify task was created
-    await tasksPage.verifyTaskExists(taskData.title);
+    // Expect the task creation to fail with validation error
+    await expect(async () => {
+      await tasksPage.createTask(taskData);
+    }).rejects.toThrow(/Description must be at most 500 characters/);
   });
 });

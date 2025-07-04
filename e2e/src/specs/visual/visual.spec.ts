@@ -19,7 +19,7 @@ test.describe('Visual Regression', () => {
     await expect(page).toHaveScreenshot(`login-page-${test.info().project.name}.png`);
 
     // Test error state
-    await loginPage.login('wronguser', 'wrongpass');
+    await loginPage.attemptLogin('wronguser', 'wrongpass');
     await expect(page).toHaveScreenshot(`login-error-${test.info().project.name}.png`);
   });
 
@@ -39,7 +39,7 @@ test.describe('Visual Regression', () => {
     await expect(page).toHaveScreenshot(`dashboard-${test.info().project.name}.png`);
   });
 
-  test('empty tasks list visual appearance', async ({ loginPage, tasksPage, page, cleanup }) => {
+  test('empty tasks list visual appearance', async ({ loginPage, dashboardPage, tasksPage, page, cleanup }) => {
     // Login first
     await loginPage.goto();
     await loginPage.loginWithDefaultUser();
@@ -47,23 +47,24 @@ test.describe('Visual Regression', () => {
     // Clean up any existing tasks to ensure empty state
     await cleanup.cleanupTasks();
 
-    // Go to tasks page
-    await tasksPage.goto();
-
-    // Wait for tasks page to be fully loaded
-    await page.locator('[data-testid="tasks-container"], .tasks-list, h1').first().waitFor();
+    // Go to tasks page via dashboard navigation
+    await dashboardPage.goto();
+    await dashboardPage.navigateToTasksViaNavbar();
+    await tasksPage.verifyPageLoaded();
 
     // Take screenshot of empty tasks list
     await expect(page).toHaveScreenshot(`tasks-empty-${test.info().project.name}.png`);
   });
 
-  test('task creation form visual appearance', async ({ loginPage, tasksPage, page }) => {
+  test('task creation form visual appearance', async ({ loginPage, dashboardPage, tasksPage, page }) => {
     // Login first
     await loginPage.goto();
     await loginPage.loginWithDefaultUser();
 
-    // Go to tasks page and navigate to create task form
-    await tasksPage.goto();
+    // Go to tasks page via dashboard and navigate to create task form
+    await dashboardPage.goto();
+    await dashboardPage.navigateToTasksViaNavbar();
+    await tasksPage.verifyPageLoaded();
     await tasksPage.navigateToCreateTask();
 
     // Wait for form to be fully loaded

@@ -22,8 +22,7 @@ export class TasksPage implements BasePage {
     filterAllButton: 'button:has-text("All")',
     filterCompletedButton: 'button:has-text("Completed")',
     filterPendingButton: 'button:has-text("Pending")',
-    noTasksMessage: 'text=No tasks found',
-    backToDashboardButton: 'a:has-text("Back to Dashboard")'
+    noTasksMessage: 'text=No tasks found'
   };
 
   constructor(private page: Page) {}
@@ -69,10 +68,25 @@ export class TasksPage implements BasePage {
     await waitForStableElement(this.page, this.selectors.taskTitleInput);
     await this.page.fill(this.selectors.taskTitleInput, taskData.title);
     await this.page.fill(this.selectors.taskDescriptionInput, taskData.description);
-    await this.page.click(this.selectors.taskSubmitButton);
-
-    // Wait for redirect back to tasks list
-    await expect(this.page).toHaveURL(/tasks$/);
+    
+    // Submit the form and wait for navigation
+    try {
+      await Promise.all([
+        this.page.waitForURL(/tasks$/, { timeout: 10000 }),
+        this.page.click(this.selectors.taskSubmitButton)
+      ]);
+    } catch (error) {
+      // If navigation fails, check if we're still on the form page (validation error)
+      if (this.page.url().includes('/new')) {
+        // Check for any error messages on the form
+        const errorMessage = this.page.locator('.invalid-feedback').first();
+        if (await errorMessage.isVisible()) {
+          const errorText = await errorMessage.textContent();
+          throw new Error(`Task creation failed with validation error: ${errorText}`);
+        }
+      }
+      throw error;
+    }
 
     // Verify the task was created successfully
     await this.verifyTaskExists(taskData.title);
@@ -124,19 +138,26 @@ export class TasksPage implements BasePage {
   async deleteTask(title: string): Promise<void> {
     const taskRow = this.page.locator(this.selectors.taskItems).filter({ hasText: title });
 
-    // Click delete button
-    await taskRow.locator(this.selectors.deleteButton).click();
+    // Click delete button (3rd button in the button group)
+    await taskRow.locator('td:last-child div button:nth-child(3)').click();
 
-    // Wait for modal to appear and handle confirmation dialog
-    const confirmButton = this.page.locator(this.selectors.confirmDeleteButton);
+    // Wait for modal to appear - using the modal.show class selector
+    const modal = this.page.locator('.modal.show');
+    await modal.waitFor({ state: 'visible', timeout: 10000 });
+    
+    // Verify modal content is loaded
+    await expect(modal.locator('.modal-title')).toContainText('Confirm Delete');
+    
+    // Click the delete confirmation button (2nd button in modal footer)
+    const confirmButton = modal.locator('.modal-footer button:nth-child(2)');
     await confirmButton.waitFor({ state: 'visible', timeout: 5000 });
     await confirmButton.click();
 
     // Wait for modal to disappear
-    await this.page.locator('.modal').waitFor({ state: 'hidden', timeout: 5000 });
+    await expect(modal).toBeHidden({ timeout: 10000 });
 
-    // Verify task was deleted
-    await expect(this.page.getByText(title)).toBeHidden({ timeout: 5000 });
+    // Verify task was deleted by checking if it's no longer in the task list
+    await expect(this.page.locator(this.selectors.taskItems).filter({ hasText: title })).toHaveCount(0, { timeout: 10000 });
   }
 
   /**
@@ -158,10 +179,28 @@ export class TasksPage implements BasePage {
   }
 
   /**
-   * Navigate back to dashboard
+   * Navigate back to dashboard using navbar
    */
   async navigateToDashboard(): Promise<void> {
-    await this.page.click(this.selectors.backToDashboardButton);
+    // Check if navbar toggle is visible (mobile)
+    const navbarToggler = this.page.locator('.navbar-toggler');
+    if (await navbarToggler.isVisible()) {
+      // Check if navbar is already expanded
+      const isExpanded = await navbarToggler.getAttribute('aria-expanded') === 'true';
+      
+      if (!isExpanded) {
+        await navbarToggler.click();
+        
+        // Wait for the navbar to expand
+        await this.page.waitForFunction(() => {
+          const collapse = document.querySelector('#navbarNav');
+          return collapse && collapse.classList.contains('show');
+        }, { timeout: 5000 });
+      }
+    }
+    
+    // Click the Dashboard nav link
+    await this.page.click('a.nav-link:has-text("Dashboard")');
     await expect(this.page).toHaveURL(/dashboard/);
   }
 

@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useCallback, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import * as taskService from '../services/taskService';
 import { TaskContext } from '../context/TaskContext';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { FaCheck, FaEdit, FaEye, FaPlus, FaTrash } from 'react-icons/fa';
@@ -80,11 +79,11 @@ const Tasks: React.FC = () => {
     setShowDeleteModal(true);
   };
 
-  // Remove handleDelete's call to setTasks and setError from context
+  // Use context's deleteTask method for proper state management
   const handleDelete = async () => {
-    if (!taskToDelete) return;
+    if (!taskToDelete || !taskContext) return;
     try {
-      await taskService.deleteTask(taskToDelete);
+      taskContext.deleteTask(taskToDelete);
       setShowDeleteModal(false);
       setTaskToDelete(null);
     } catch (error: Error | unknown) {

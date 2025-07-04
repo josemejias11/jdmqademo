@@ -30,11 +30,11 @@ export const AppLocators = {
     welcomeCard: '.card.shadow-sm',
     statsContainer: '.row.mb-4',
 
-    // Statistics cards
-    totalTasksCard: '.col-md-3:nth-child(1) .card',
-    completedTasksCard: '.col-md-3:nth-child(2) .card',
-    pendingTasksCard: '.col-md-3:nth-child(3) .card',
-    completionCard: '.col-md-3:nth-child(4) .card',
+    // Statistics cards - updated to match actual HTML structure
+    totalTasksCard: '.card.bg-primary',
+    completedTasksCard: '.card.bg-success',
+    pendingTasksCard: '.card.bg-warning',
+    completionCard: '.col-12 .card.shadow-sm',
 
     // Action buttons
     viewAllTasksButton: 'a[href="/tasks"]',

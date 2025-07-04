@@ -60,9 +60,18 @@ jobs:
       - name: Set up e2e environment
         run: |
           cd e2e
-          cp .env.example .env
-          echo "BASE_URL=http://localhost:3000" >> .env
-          echo "API_URL=http://localhost:3001" >> .env
+          cat > .env << EOF
+          BASE_URL=http://localhost:3000
+          API_URL=http://localhost:3001
+          TEST_USERNAME=admin
+          TEST_PASSWORD=changeme
+          ADMIN_USERNAME=admin
+          ADMIN_PASSWORD=changeme
+          HEADLESS=true
+          RECORD_VIDEO_ON_FAILURE=true
+          SCREENSHOT_ON_FAILURE=true
+          DEFAULT_TIMEOUT=10000
+          EOF
 
       - name: Run Playwright tests
         run: |

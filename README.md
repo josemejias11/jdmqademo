@@ -14,7 +14,6 @@ A self-developed task management application demonstrating comprehensive QA auto
 ### 🧪 **Playwright Test Automation**
 
 - **Multi-Browser Testing**: Chrome, Firefox, Safari with parallel execution matrix
-- **Visual Regression**: Cross-browser screenshot comparison and validation
 - **API Testing**: Comprehensive backend endpoint testing with data consistency
 - **Performance Testing**: Lighthouse CI integration for web vitals monitoring
 - **Accessibility Testing**: Automated WCAG compliance validation
@@ -32,8 +31,8 @@ A self-developed task management application demonstrating comprehensive QA auto
 
 - Playwright + TypeScript
 - Page Object Model architecture
-- Visual testing & API integration
-- Performance & accessibility testing
+- API integration & performance testing
+- Accessibility & compliance validation
 
 **Infrastructure:**
 
@@ -96,7 +95,6 @@ e2e/
 # Test execution
 cd e2e && npm test              # Complete test suite
 cd e2e && npm run test:smoke    # Critical path tests
-cd e2e && npm run test:visual   # Visual regression tests
 
 # Development & debugging
 cd e2e && npm run test:ui       # Interactive test runner
@@ -139,11 +137,7 @@ cd e2e && npm run test:headed   # Run with browser UI
    - Web vitals monitoring
    - Accessibility compliance
 
-6. **👁️ Visual Regression**
-   - Cross-browser screenshot testing
-   - Visual diff artifacts on failure
-
-7. **📊 QA Summary**
+6. ** QA Summary**
    - Comprehensive test reporting
    - Quality gate validation
    - Deployment readiness check
@@ -151,7 +145,6 @@ cd e2e && npm run test:headed   # Run with browser UI
 ## 📊 Enterprise QA Capabilities
 
 ✅ **Multi-Browser E2E Testing** - Chrome, Firefox, Safari with matrix strategy  
-✅ **Visual Regression Testing** - Automated screenshot comparison across browsers  
 ✅ **API Testing Integration** - Backend endpoint validation and data consistency  
 ✅ **Performance Monitoring** - Lighthouse CI with web vitals tracking  
 ✅ **Accessibility Testing** - WCAG compliance validation  

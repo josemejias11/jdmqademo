@@ -271,14 +271,6 @@ jobs:
             e2e/playwright-report/
           retention-days: 7
 
-      - name: Upload JUnit results
-        if: always()
-        uses: dorny/test-reporter@v1
-        with:
-          name: E2E Tests (${{ matrix.browser }})
-          path: e2e/test-results/results.xml
-          reporter: java-junit
-
   # Performance and accessibility testing
   performance_tests:
     name: Performance & Accessibility

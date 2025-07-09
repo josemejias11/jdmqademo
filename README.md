@@ -16,7 +16,6 @@ A self-developed task management application demonstrating comprehensive QA auto
 - **Multi-Browser Testing**: Chrome, Firefox, Safari with parallel execution matrix
 - **API Testing**: Comprehensive backend endpoint testing with data consistency
 - **Performance Testing**: Lighthouse CI integration for web vitals monitoring
-- **Accessibility Testing**: Automated WCAG compliance validation
 
 ### 🔧 **Enterprise Infrastructure**
 
@@ -32,7 +31,6 @@ A self-developed task management application demonstrating comprehensive QA auto
 - Playwright + TypeScript
 - Page Object Model architecture
 - API integration & performance testing
-- Accessibility & compliance validation
 
 **Infrastructure:**
 
@@ -135,9 +133,8 @@ cd e2e && npm run test:headed   # Run with browser UI
 5. **⚡ Performance Testing**
    - Lighthouse CI integration
    - Web vitals monitoring
-   - Accessibility compliance
 
-6. ** QA Summary**
+6. **QA Summary**
    - Comprehensive test reporting
    - Quality gate validation
    - Deployment readiness check
@@ -147,7 +144,6 @@ cd e2e && npm run test:headed   # Run with browser UI
 ✅ **Multi-Browser E2E Testing** - Chrome, Firefox, Safari with matrix strategy  
 ✅ **API Testing Integration** - Backend endpoint validation and data consistency  
 ✅ **Performance Monitoring** - Lighthouse CI with web vitals tracking  
-✅ **Accessibility Testing** - WCAG compliance validation  
 ✅ **Security Scanning** - CodeQL analysis and dependency vulnerability checks  
 ✅ **CI/CD Integration** - Single, robust pipeline with comprehensive quality gates  
 ✅ **Test Reporting** - Automated artifacts and summary generation  

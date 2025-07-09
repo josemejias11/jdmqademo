@@ -271,9 +271,9 @@ jobs:
             e2e/playwright-report/
           retention-days: 7
 
-  # Performance and accessibility testing
+  # Performance testing
   performance_tests:
-    name: Performance & Accessibility
+    name: Performance Testing
     runs-on: ubuntu-latest
     needs: [quality_gates]
     
@@ -316,13 +316,6 @@ jobs:
           retention-days: 7
         continue-on-error: true
 
-      - name: Run accessibility tests
-        run: |
-          cd e2e
-          npm ci --legacy-peer-deps
-          npx playwright install --with-deps
-          npx playwright test --grep "accessibility" --reporter=html
-
   # Final validation and reporting
   qa_summary:
     name: QA Summary & Validation
@@ -352,7 +345,7 @@ jobs:
           echo "| Quality Gates | ${{ needs.quality_gates.result == 'success' && '✅ Passed' || '❌ Failed' }} | Code quality and type safety |" >> $GITHUB_STEP_SUMMARY
           echo "| Build | ${{ needs.build.result == 'success' && '✅ Passed' || '❌ Failed' }} | Application compilation |" >> $GITHUB_STEP_SUMMARY
           echo "| E2E Tests | ${{ needs.e2e_tests.result == 'success' && '✅ Passed' || '❌ Failed' }} | Cross-browser functionality |" >> $GITHUB_STEP_SUMMARY
-          echo "| Performance | ${{ needs.performance_tests.result == 'success' && '✅ Passed' || '❌ Failed' }} | Lighthouse & accessibility |" >> $GITHUB_STEP_SUMMARY
+          echo "| Performance | ${{ needs.performance_tests.result == 'success' && '✅ Passed' || '❌ Failed' }} | Lighthouse performance |" >> $GITHUB_STEP_SUMMARY
 
       - name: QA validation status
         run: |

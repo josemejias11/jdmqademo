@@ -88,13 +88,6 @@ test.describe('Centralized Locators Demo', () => {
     // Using common locators that work across pages
     await expect(page.locator(AppLocators.common.formControl)).toHaveCount(2); // username + password
     await expect(page.locator(AppLocators.common.primaryButton)).toBeVisible(); // login button
-
-    // Using accessibility selectors
-    // const usernameField = page.locator(AppLocators.accessibility.testId('username')); // If we add data-testid
-    // const mainContent = page.locator(AppLocators.accessibility.main); // If we add role="main"
-
-    // These would work if data-testid attributes were added to the application
-    // await expect(usernameField).toBeVisible();
   });
 
   test('should show locator flexibility and alternatives', async ({ page }) => {

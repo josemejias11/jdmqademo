@@ -232,29 +232,6 @@ export const AppLocators = {
     notFoundMessage: '.card-text.text-muted',
     homeButton: 'a[href="/dashboard"]',
     tasksButton: 'a[href="/tasks"]'
-  },
-
-  // === ACCESSIBILITY SELECTORS ===
-  accessibility: {
-    // ARIA roles
-    main: '[role="main"]',
-    navigation: '[role="navigation"]',
-    button: '[role="button"]',
-    alert: '[role="alert"]',
-    status: '[role="status"]',
-
-    // ARIA labels
-    usernameField: '[aria-label*="username" i], [aria-labelledby*="username" i]',
-    passwordField: '[aria-label*="password" i], [aria-labelledby*="password" i]',
-
-    // Data test ids (if we add them)
-    testId: (id: string) => `[data-testid="${id}"]`,
-
-    // Headings by level
-    h1: 'h1',
-    h2: 'h2',
-    h3: 'h3',
-    h4: 'h4'
   }
 } as const;
 
@@ -267,6 +244,5 @@ export const {
   taskDetail,
   navigation,
   common,
-  errorPages,
-  accessibility
+  errorPages
 } = AppLocators;

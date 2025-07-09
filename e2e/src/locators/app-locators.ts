@@ -236,13 +236,5 @@ export const AppLocators = {
 } as const;
 
 // Export individual sections for convenience
-export const {
-  login,
-  dashboard,
-  taskForm,
-  tasksList,
-  taskDetail,
-  navigation,
-  common,
-  errorPages
-} = AppLocators;
+export const { login, dashboard, taskForm, tasksList, taskDetail, navigation, common, errorPages } =
+  AppLocators;

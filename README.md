@@ -87,7 +87,7 @@ e2e/
 └── playwright.config.ts
 ```
 
-## 🔧 Testing Commands
+## 🔧 Testing & Quality Commands
 
 ```bash
 # Test execution
@@ -99,55 +99,68 @@ cd e2e && npm run test:ui       # Interactive test runner
 cd e2e && npm run test:debug    # Debug mode
 cd e2e && npm run test:headed   # Run with browser UI
 
+# Code quality & formatting
+npm run format                  # Auto-fix code formatting
+npm run format:check            # Check formatting without changes
+npm run lint                    # ESLint code quality checks
+npm run type-check              # TypeScript validation
+npm run type-check:server       # Server TypeScript validation
+
 # CI/CD test suites (via workflow_dispatch)
 # - smoke: Critical functionality
 # - regression: Full regression suite
 # - full: Complete test coverage
 ```
 
-## � CI/CD Pipeline
+## 🔄 CI/CD Pipeline
 
-**Single, Streamlined Workflow** (`.github/workflows/ci.yml`):
+**QA Automation Pipeline** (`.github/workflows/ci.yml`):
 
-1. **🔒 Security Scan**
-   - npm audit (dependency vulnerabilities)
-   - CodeQL static analysis
-   - Security report artifacts
+1. **🔒 Security & Dependency Scan**
+   - npm audit with vulnerability reporting
+   - CodeQL static security analysis
+   - Security audit artifacts
+   - Continue on dev dependency issues
 
-2. **✅ Quality Gates**
-   - TypeScript compilation (frontend & server)
-   - ESLint code quality checks
-   - Prettier formatting validation
-   - E2E test linting
+2. **✅ Code Quality & Type Safety**
+   - TypeScript compilation (frontend, server, e2e)
+   - ESLint code quality validation
+   - Prettier formatting enforcement
+   - Smart formatting: warnings on PRs, failures on main/develop
 
-3. **🏗️ Build**
-   - Frontend React build
+3. **🏗️ Build Application**
+   - Frontend React production build
    - Backend TypeScript compilation
-   - Build artifact upload
+   - Build artifacts upload for deployment
 
-4. **🧪 E2E Testing Matrix**
-   - Multi-browser: Chrome, Firefox, Safari
-   - Parallel execution with fail-fast disabled
-   - Test result artifacts & reports
+4. **🧪 E2E Tests (Multi-Browser Matrix)**
+   - **Browsers**: Chromium, Firefox, WebKit
+   - **Parallel execution** with fail-fast disabled
+   - **Test suites**: smoke, regression, full (workflow_dispatch)
+   - **Environment isolation** with configurable test data
+   - **Comprehensive reporting** with screenshots/videos on failure
 
 5. **⚡ Performance Testing**
-   - Lighthouse CI integration
-   - Web vitals monitoring
+   - **Lighthouse CI** integration
+   - **Web vitals** monitoring and reporting
+   - **Performance budget** enforcement
 
-6. **QA Summary**
-   - Comprehensive test reporting
-   - Quality gate validation
-   - Deployment readiness check
+6. **📊 QA Summary & Validation**
+   - **Comprehensive test reporting** in GitHub summary
+   - **Quality gate validation** with intelligent failure handling
+   - **Deployment readiness** assessment
+   - **Primary gates**: E2E tests, quality checks, build success
 
 ## 📊 Enterprise QA Capabilities
 
-✅ **Multi-Browser E2E Testing** - Chrome, Firefox, Safari with matrix strategy  
+✅ **Multi-Browser E2E Testing** - Chromium, Firefox, WebKit with matrix strategy  
 ✅ **API Testing Integration** - Backend endpoint validation and data consistency  
 ✅ **Performance Monitoring** - Lighthouse CI with web vitals tracking  
 ✅ **Security Scanning** - CodeQL analysis and dependency vulnerability checks  
-✅ **CI/CD Integration** - Single, robust pipeline with comprehensive quality gates  
-✅ **Test Reporting** - Automated artifacts and summary generation  
-✅ **Intelligent Validation** - Smart failure handling and deployment readiness checks
+✅ **Smart CI/CD Pipeline** - Single, robust workflow with intelligent quality gates  
+✅ **Comprehensive Reporting** - Automated artifacts, screenshots, and summary generation  
+✅ **Intelligent Validation** - Smart failure handling and deployment readiness checks  
+✅ **Developer-Friendly** - Formatting warnings on PRs, strict enforcement on main branches
 
 ## 🎯 Demo Application
 
@@ -188,6 +201,6 @@ cd e2e && npm run test:headed   # Run with browser UI
 
 ---
 
-**Version**: 4.0 - Streamlined QA Pipeline  
-**Last Updated**: July 9, 2025  
-**Single CI workflow with comprehensive quality automation and modern testing practices.**
+**Version**: 4.1 - Streamlined QA Pipeline  
+**Last Updated**: January 9, 2025  
+**Features**: Single CI workflow, accessibility testing removed, smart formatting enforcement, comprehensive multi-browser E2E testing with performance monitoring.

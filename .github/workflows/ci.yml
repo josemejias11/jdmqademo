@@ -1,20 +1,12 @@
-name: Enterprise QA Pipeline
+name: QA Automation Pipeline
 
 on:
   push:
-    branches: [main, develop, 'release/*']
+    branches: [main, develop]
   pull_request:
     branches: [main, develop]
   workflow_dispatch:
     inputs:
-      environment:
-        description: 'Environment to deploy to'
-        required: true
-        default: 'staging'
-        type: choice
-        options:
-        - staging
-        - production
       test_suite:
         description: 'Test suite to run'
         required: true
@@ -32,8 +24,6 @@ concurrency:
 
 env:
   NODE_VERSION: '20.11.1'
-  REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
 
 jobs:
   # Security and dependency scanning
@@ -113,19 +103,12 @@ jobs:
       - name: Code formatting check
         run: npx prettier --check "src/**/*.{ts,tsx,js,jsx}" "server/**/*.{ts,js}" "e2e/src/**/*.{ts,js}"
 
-  # Build and containerize application
-  build_and_package:
-    name: Build & Package
+  # Build application
+  build:
+    name: Build Application
     runs-on: ubuntu-latest
     needs: [security_scan, quality_gates]
-    outputs:
-      image-tag: ${{ steps.meta.outputs.tags }}
-      image-digest: ${{ steps.build.outputs.digest }}
     
-    permissions:
-      contents: read
-      packages: write
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -145,38 +128,6 @@ jobs:
       - name: Build server
         run: npm run build:server
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Log in to Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Extract metadata
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-          tags: |
-            type=ref,event=branch
-            type=ref,event=pr
-            type=sha,prefix={{branch}}-
-            type=raw,value=latest,enable={{is_default_branch}}
-
-      - name: Build and push Docker image
-        id: build
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -190,7 +141,7 @@ jobs:
   e2e_tests:
     name: E2E Tests (${{ matrix.browser }})
     runs-on: ubuntu-latest
-    needs: [security_scan, quality_gates, build_and_package]
+    needs: [quality_gates, build]
     
     strategy:
       fail-fast: false
@@ -264,7 +215,14 @@ jobs:
       - name: Run E2E tests
         run: |
           cd e2e
-          npx playwright test --project=${{ matrix.project }} --reporter=html,junit,json
+          TEST_SUITE="${{ github.event.inputs.test_suite || 'full' }}"
+          if [ "$TEST_SUITE" = "smoke" ]; then
+            npx playwright test --grep "smoke" --project=${{ matrix.project }}
+          elif [ "$TEST_SUITE" = "regression" ]; then
+            npx playwright test --grep "regression" --project=${{ matrix.project }}
+          else
+            npx playwright test --project=${{ matrix.project }}
+          fi
 
       - name: Upload test results
         if: always()
@@ -319,6 +277,8 @@ jobs:
       - name: Run accessibility tests
         run: |
           cd e2e
+          npm ci --legacy-peer-deps
+          npx playwright install --with-deps
           npx playwright test --grep "accessibility" --reporter=html
 
   # Visual regression testing
@@ -359,7 +319,7 @@ jobs:
       - name: Run visual regression tests
         run: |
           cd e2e
-          npx playwright test --grep "visual" --update-snapshots
+          npx playwright test --grep "visual" --reporter=html
 
       - name: Upload visual diffs
         if: failure()
@@ -369,54 +329,42 @@ jobs:
           path: e2e/test-results/
           retention-days: 7
 
-  # Integration with external systems
-  deployment_readiness:
-    name: Deployment Readiness Check
+  # Final validation and reporting
+  qa_summary:
+    name: QA Summary & Validation
     runs-on: ubuntu-latest
-    needs: [e2e_tests, performance_tests, visual_regression]
-    if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
+    needs: [security_scan, quality_gates, build, e2e_tests, performance_tests, visual_regression]
+    if: always()
     
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Check deployment readiness
+      - name: Check test results
         run: |
-          echo "✅ All quality gates passed"
-          echo "✅ Security scan completed"
-          echo "✅ E2E tests passed on all browsers"
-          echo "✅ Performance benchmarks met"
-          echo "✅ Visual regression tests passed"
-          echo "✅ Ready for deployment"
+          echo "🔍 QA Pipeline Results Summary"
+          echo "Security Scan: ${{ needs.security_scan.result }}"
+          echo "Quality Gates: ${{ needs.quality_gates.result }}"
+          echo "Build: ${{ needs.build.result }}"
+          echo "E2E Tests: ${{ needs.e2e_tests.result }}"
+          echo "Performance Tests: ${{ needs.performance_tests.result }}"
+          echo "Visual Regression: ${{ needs.visual_regression.result }}"
 
-      - name: Generate deployment summary
+      - name: Generate QA report
         run: |
-          echo "## 🚀 Deployment Summary" >> $GITHUB_STEP_SUMMARY
-          echo "| Check | Status |" >> $GITHUB_STEP_SUMMARY
-          echo "|-------|--------|" >> $GITHUB_STEP_SUMMARY
-          echo "| Security Scan | ✅ Passed |" >> $GITHUB_STEP_SUMMARY
-          echo "| Quality Gates | ✅ Passed |" >> $GITHUB_STEP_SUMMARY
-          echo "| E2E Tests | ✅ Passed |" >> $GITHUB_STEP_SUMMARY
-          echo "| Performance | ✅ Passed |" >> $GITHUB_STEP_SUMMARY
-          echo "| Visual Regression | ✅ Passed |" >> $GITHUB_STEP_SUMMARY
+          echo "## 🧪 QA Automation Report" >> $GITHUB_STEP_SUMMARY
+          echo "| Test Suite | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|------------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Security Scan | ${{ needs.security_scan.result == 'success' && '✅ Passed' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Quality Gates | ${{ needs.quality_gates.result == 'success' && '✅ Passed' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Build | ${{ needs.build.result == 'success' && '✅ Passed' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| E2E Tests | ${{ needs.e2e_tests.result == 'success' && '✅ Passed' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Performance | ${{ needs.performance_tests.result == 'success' && '✅ Passed' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Visual Regression | ${{ needs.visual_regression.result == 'success' && '✅ Passed' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
 
-      - name: Notify QA team on success
-        uses: 8398a7/action-slack@v3
-        with:
-          status: success
-          text: "🎉 All quality checks passed! Ready for deployment: ${{ github.sha }}"
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-
-      - name: Create release issue on success
-        if: github.ref == 'refs/heads/main'
-        uses: actions/github-script@v7
-        with:
-          script: |
-            github.rest.issues.create({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              title: `🚀 Ready for Release - ${context.sha.substring(0, 7)}`,
-              body: `✅ All quality gates passed for commit ${context.sha}\n\n**Quality Checks:**\n- ✅ Security scan\n- ✅ Code quality\n- ✅ E2E tests (Chrome, Firefox, Safari)\n- ✅ Performance tests\n- ✅ Visual regression tests\n\nReady for production deployment.`,
-              labels: ['deployment', 'ready-for-release']
-            })
+      - name: QA validation status
+        run: |
+          if [ "${{ needs.e2e_tests.result }}" = "success" ] && [ "${{ needs.quality_gates.result }}" = "success" ]; then
+            echo "✅ QA validation passed - Ready for review"
+            exit 0
+          else
+            echo "❌ QA validation failed - Review required"
+            exit 1
+          fi

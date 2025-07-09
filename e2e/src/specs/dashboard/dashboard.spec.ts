@@ -16,35 +16,44 @@ test.describe('Dashboard', () => {
     }
   );
 
-  authenticatedTest('should show correct statistics data', async ({ dashboardPage, authenticated: _authenticated }) => {
-    await dashboardPage.goto();
+  authenticatedTest(
+    'should show correct statistics data',
+    async ({ dashboardPage, authenticated: _authenticated }) => {
+      await dashboardPage.goto();
 
-    const stats = await dashboardPage.getTaskStatistics();
+      const stats = await dashboardPage.getTaskStatistics();
 
-    // Verify the stats object has the right structure
-    expect(stats).toHaveProperty('total');
-    expect(stats).toHaveProperty('completed');
-    expect(stats).toHaveProperty('pending');
+      // Verify the stats object has the right structure
+      expect(stats).toHaveProperty('total');
+      expect(stats).toHaveProperty('completed');
+      expect(stats).toHaveProperty('pending');
 
-    // Math should add up
-    expect(stats.completed + stats.pending).toBe(stats.total);
-  });
+      // Math should add up
+      expect(stats.completed + stats.pending).toBe(stats.total);
+    }
+  );
 
-  authenticatedTest('should navigate to tasks page', async ({ dashboardPage, page, authenticated: _authenticated }) => {
-    await dashboardPage.goto();
-    await dashboardPage.navigateToAllTasks();
+  authenticatedTest(
+    'should navigate to tasks page',
+    async ({ dashboardPage, page, authenticated: _authenticated }) => {
+      await dashboardPage.goto();
+      await dashboardPage.navigateToAllTasks();
 
-    // Verify we're on tasks page
-    await expect(page).toHaveURL(/tasks$/);
-  });
+      // Verify we're on tasks page
+      await expect(page).toHaveURL(/tasks$/);
+    }
+  );
 
-  authenticatedTest('should navigate to create task page', async ({ dashboardPage, page, authenticated: _authenticated }) => {
-    await dashboardPage.goto();
-    await dashboardPage.navigateToCreateTask();
+  authenticatedTest(
+    'should navigate to create task page',
+    async ({ dashboardPage, page, authenticated: _authenticated }) => {
+      await dashboardPage.goto();
+      await dashboardPage.navigateToCreateTask();
 
-    // Verify we're on task creation page
-    await expect(page).toHaveURL(/tasks\/new/);
-  });
+      // Verify we're on task creation page
+      await expect(page).toHaveURL(/tasks\/new/);
+    }
+  );
 });
 
 /**

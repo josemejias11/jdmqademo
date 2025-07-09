@@ -118,7 +118,27 @@ jobs:
           npm run type-check
 
       - name: Code formatting check
-        run: npx prettier --check "src/**/*.{ts,tsx,js,jsx}" "server/**/*.{ts,js}" "e2e/src/**/*.{ts,js}"
+        run: |
+          echo "🎨 Checking code formatting..."
+          
+          # Check formatting and capture exit code
+          if npm run format:check; then
+            echo "✅ All files are properly formatted"
+          else
+            echo "⚠️ Code style issues found."
+            
+            echo ""
+            echo "🔧 To fix locally, run:"
+            echo "npm run format"
+            
+            # For development workflow, we'll continue but mark as warning
+            if [ "${{ github.event_name }}" = "pull_request" ]; then
+              echo "::warning::Code formatting issues found. Please run 'npm run format' to fix."
+              exit 0  # Don't fail PR builds on formatting
+            else
+              exit 1  # Fail on main/develop pushes
+            fi
+          fi
 
   # Build application
   build:

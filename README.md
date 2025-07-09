@@ -1,40 +1,48 @@
 # Task Manager with Playwright Test Automation Framework
 
-A self-developed task management application demonstrating comprehensive QA automation practices. Features enterprise-grade Playwright testing framework with CI/CD integration, cloud deployment, and advanced testing patterns for web applications.
+A self-developed task management application demonstrating comprehensive QA automation practices. Features enterprise-grade Playwright testing framework with streamlined CI/CD integration and advanced testing patterns for web applications.
 
 ## 🚀 Key Features
 
 ### 🎯 **QA Automation Leadership**
+
 - **Test Strategy & Architecture**: Enterprise-grade automation framework design and implementation
 - **Requirements Analysis**: Participation in design reviews with testability focus
-- **CI/CD Pipeline Management**: Multi-cloud deployment with AWS/Azure and Kubernetes
+- **CI/CD Pipeline Management**: Single, streamlined pipeline with comprehensive quality gates
 - **Team Coordination**: Client QA interface and technical solution evaluation
 
 ### 🧪 **Playwright Test Automation**
-- **Multi-Browser Testing**: Chrome, Firefox, Safari with parallel execution
+
+- **Multi-Browser Testing**: Chrome, Firefox, Safari with parallel execution matrix
 - **Visual Regression**: Cross-browser screenshot comparison and validation
 - **API Testing**: Comprehensive backend endpoint testing with data consistency
-- **Mobile Testing**: Device emulation and responsive design validation
+- **Performance Testing**: Lighthouse CI integration for web vitals monitoring
+- **Accessibility Testing**: Automated WCAG compliance validation
 
 ### 🔧 **Enterprise Infrastructure**
-- **Docker & Kubernetes**: Containerized test environments with auto-scaling
-- **GitHub Actions**: Multi-stage CI/CD with quality gates and monitoring
-- **Test Management**: Requirement traceability and automated reporting
-- **Defect Triage**: Intelligent failure analysis and root cause identification
+
+- **GitHub Actions**: Single, robust CI/CD pipeline with security scanning
+- **Test Management**: Comprehensive reporting and artifact management
+- **Quality Gates**: Multi-stage validation with intelligent failure handling
+- **Security Integration**: CodeQL analysis and dependency vulnerability scanning
 
 ## 🛠 Tech Stack
 
 **Testing Framework:**
+
 - Playwright + TypeScript
 - Page Object Model architecture
 - Visual testing & API integration
+- Performance & accessibility testing
 
 **Infrastructure:**
-- Docker & Kubernetes
+
 - GitHub Actions CI/CD
-- AWS/Azure cloud deployment
+- Node.js 20.11.1 LTS
+- Artifact management & reporting
 
 **Application:**
+
 - React 18 + TypeScript frontend
 - Express.js + JWT backend
 - Bootstrap 5 responsive UI
@@ -44,17 +52,22 @@ A self-developed task management application demonstrating comprehensive QA auto
 ```bash
 # Clone and install
 git clone https://github.com/josemejias11/jdmqademo.git
-cd jdmqademo && npm install
+cd jdmqademo && npm install --legacy-peer-deps
 
 # Setup testing
-cd e2e && npm install && npx playwright install
+cd e2e && npm install --legacy-peer-deps && npx playwright install
 
 # Start application
 npm run dev  # Frontend: :3000, Backend: :3001
 
 # Run tests
-npm test                    # All tests
-cd e2e && npm run test:ui   # Interactive mode
+cd e2e && npm test              # All tests
+cd e2e && npm run test:ui       # Interactive mode
+
+# Code quality
+npm run format                  # Fix formatting
+npm run lint                    # Code linting
+npm run type-check              # TypeScript validation
 ```
 
 ## 🧪 Test Framework Structure
@@ -67,9 +80,12 @@ e2e/
 │   │   ├── auth/       # Authentication tests
 │   │   ├── tasks/      # Task management tests
 │   │   ├── api/        # API endpoint tests
-│   │   └── visual/     # Visual regression tests
+│   │   ├── dashboard/  # Dashboard functionality
+│   │   ├── smoke/      # Critical path tests
+│   │   └── demo/       # Feature demonstrations
 │   ├── locators/       # Centralized selectors
 │   ├── fixtures/       # Test data management
+│   ├── config/         # Test configuration
 │   └── utils/          # Helper functions
 └── playwright.config.ts
 ```
@@ -78,59 +94,111 @@ e2e/
 
 ```bash
 # Test execution
-npm test                    # Complete test suite
-npm run test:smoke         # Critical path tests
-npm run test:visual        # Visual regression
-npm run test:mobile        # Mobile device testing
+cd e2e && npm test              # Complete test suite
+cd e2e && npm run test:smoke    # Critical path tests
+cd e2e && npm run test:visual   # Visual regression tests
 
 # Development & debugging
-npm run test:ui            # Interactive test runner
-npm run test:debug         # Debug mode
-npm run test:trace         # Generate trace files
+cd e2e && npm run test:ui       # Interactive test runner
+cd e2e && npm run test:debug    # Debug mode
+cd e2e && npm run test:headed   # Run with browser UI
+
+# CI/CD test suites (via workflow_dispatch)
+# - smoke: Critical functionality
+# - regression: Full regression suite
+# - full: Complete test coverage
 ```
 
-## 🐳 Docker & Cloud Deployment
+## � CI/CD Pipeline
 
-```bash
-# Multi-environment deployment
-docker compose -f docker-compose.dev.yml up
-docker compose -f docker-compose.staging.yml up
-docker compose -f docker-compose.prod.yml up --scale playwright-runner=3
+**Single, Streamlined Workflow** (`.github/workflows/ci.yml`):
 
-# Kubernetes deployment
-kubectl apply -f k8s/playwright-deployment.yml
-```
+1. **🔒 Security Scan**
+   - npm audit (dependency vulnerabilities)
+   - CodeQL static analysis
+   - Security report artifacts
 
-**Cloud Integration:**
-- AWS ECS/EKS with auto-scaling
-- Azure Container Instances
-- GitHub Actions with multi-cloud support
+2. **✅ Quality Gates**
+   - TypeScript compilation (frontend & server)
+   - ESLint code quality checks
+   - Prettier formatting validation
+   - E2E test linting
+
+3. **🏗️ Build**
+   - Frontend React build
+   - Backend TypeScript compilation
+   - Build artifact upload
+
+4. **🧪 E2E Testing Matrix**
+   - Multi-browser: Chrome, Firefox, Safari
+   - Parallel execution with fail-fast disabled
+   - Test result artifacts & reports
+
+5. **⚡ Performance Testing**
+   - Lighthouse CI integration
+   - Web vitals monitoring
+   - Accessibility compliance
+
+6. **👁️ Visual Regression**
+   - Cross-browser screenshot testing
+   - Visual diff artifacts on failure
+
+7. **📊 QA Summary**
+   - Comprehensive test reporting
+   - Quality gate validation
+   - Deployment readiness check
 
 ## 📊 Enterprise QA Capabilities
 
-✅ **Multi-Browser E2E Testing** - Chrome, Firefox, Safari parallel execution  
-✅ **Visual Regression Testing** - Cross-browser screenshot validation  
-✅ **API Testing Integration** - Backend endpoint and data consistency  
-✅ **Mobile Testing Framework** - Device emulation and responsive validation  
-✅ **CI/CD Pipeline Integration** - Automated testing with quality gates  
-✅ **Cloud Infrastructure** - AWS/Azure deployment with Kubernetes  
-✅ **Test Management** - Requirement traceability and automated reporting  
-✅ **Defect Triage System** - Intelligent failure analysis and root cause identification  
+✅ **Multi-Browser E2E Testing** - Chrome, Firefox, Safari with matrix strategy  
+✅ **Visual Regression Testing** - Automated screenshot comparison across browsers  
+✅ **API Testing Integration** - Backend endpoint validation and data consistency  
+✅ **Performance Monitoring** - Lighthouse CI with web vitals tracking  
+✅ **Accessibility Testing** - WCAG compliance validation  
+✅ **Security Scanning** - CodeQL analysis and dependency vulnerability checks  
+✅ **CI/CD Integration** - Single, robust pipeline with comprehensive quality gates  
+✅ **Test Reporting** - Automated artifacts and summary generation  
+✅ **Intelligent Validation** - Smart failure handling and deployment readiness checks
 
 ## 🎯 Demo Application
 
 **Task Manager Features:**
+
 - JWT authentication with protected routes
 - CRUD operations for task management
 - Real-time UI updates and responsive design
 - RESTful API with comprehensive validation
 
 **Test Credentials:**
+
 - Username: `admin`
 - Password: `changeme`
 
+## 🔍 Quality Assurance
+
+**Code Quality:**
+
+- TypeScript strict mode
+- ESLint + Prettier formatting
+- Comprehensive error handling
+- Security best practices
+
+**Testing Strategy:**
+
+- Page Object Model architecture
+- Test data isolation
+- Cross-browser compatibility
+- Performance benchmarking
+
+**Pipeline Features:**
+
+- Security vulnerability scanning
+- Automated dependency updates
+- Quality gate enforcement
+- Comprehensive test reporting
+
 ---
 
-**Version**: 3.0 - Enterprise QA Ready  
+**Version**: 4.0 - Streamlined QA Pipeline  
 **Last Updated**: July 9, 2025  
-**Ready for enterprise QA leadership with comprehensive automation framework.**
+**Single CI workflow with comprehensive quality automation and modern testing practices.**

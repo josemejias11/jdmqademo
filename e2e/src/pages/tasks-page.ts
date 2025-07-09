@@ -68,7 +68,7 @@ export class TasksPage implements BasePage {
     await waitForStableElement(this.page, this.selectors.taskTitleInput);
     await this.page.fill(this.selectors.taskTitleInput, taskData.title);
     await this.page.fill(this.selectors.taskDescriptionInput, taskData.description);
-    
+
     // Submit the form and wait for navigation
     try {
       await Promise.all([
@@ -117,14 +117,14 @@ export class TasksPage implements BasePage {
   async toggleTaskCompletion(title: string): Promise<void> {
     const taskRow = this.page.locator(this.selectors.taskItems).filter({ hasText: title });
     const completeButton = taskRow.locator(this.selectors.completeCheckbox);
-    
+
     // Get the current state before clicking
-    const currentClass = await completeButton.getAttribute('class') || '';
+    const currentClass = (await completeButton.getAttribute('class')) || '';
     const wasCompleted = currentClass.includes('btn-success');
-    
+
     // Click the button
     await completeButton.click();
-    
+
     // Wait for the state to change by waiting for the opposite class
     if (wasCompleted) {
       // Was completed, now should be pending (btn-outline-secondary)
@@ -143,10 +143,10 @@ export class TasksPage implements BasePage {
   async isTaskCompleted(title: string): Promise<boolean> {
     const taskRow = this.page.locator(this.selectors.taskItems).filter({ hasText: title });
     const completeButton = taskRow.locator(this.selectors.completeCheckbox);
-    
+
     // Wait for the button to be stable and then check its class
     await expect(completeButton).toBeVisible();
-    const buttonClass = await completeButton.getAttribute('class') || '';
+    const buttonClass = (await completeButton.getAttribute('class')) || '';
     return buttonClass.includes('btn-success');
   }
 
@@ -163,10 +163,10 @@ export class TasksPage implements BasePage {
     // Wait for modal to appear - using the modal.show class selector
     const modal = this.page.locator('.modal.show');
     await modal.waitFor({ state: 'visible', timeout: 10000 });
-    
+
     // Verify modal content is loaded
     await expect(modal.locator('.modal-title')).toContainText('Confirm Delete');
-    
+
     // Click the delete confirmation button (2nd button in modal footer)
     const confirmButton = modal.locator('.modal-footer button:nth-child(2)');
     await confirmButton.waitFor({ state: 'visible', timeout: 5000 });
@@ -176,7 +176,9 @@ export class TasksPage implements BasePage {
     await expect(modal).toBeHidden({ timeout: 10000 });
 
     // Verify task was deleted by checking if it's no longer in the task list
-    await expect(this.page.locator(this.selectors.taskItems).filter({ hasText: title })).toHaveCount(0, { timeout: 10000 });
+    await expect(
+      this.page.locator(this.selectors.taskItems).filter({ hasText: title })
+    ).toHaveCount(0, { timeout: 10000 });
   }
 
   /**
@@ -202,7 +204,7 @@ export class TasksPage implements BasePage {
    */
   async navigateToDashboard(): Promise<void> {
     await this.handleMobileNavigation();
-    
+
     // Click the Dashboard nav link
     await this.page.click('a.nav-link:has-text("Dashboard")');
     await expect(this.page).toHaveURL(/dashboard/);
@@ -213,23 +215,23 @@ export class TasksPage implements BasePage {
    */
   private async handleMobileNavigation(): Promise<void> {
     const navbarToggler = this.page.locator('.navbar-toggler');
-    
+
     if (await navbarToggler.isVisible()) {
       // Check if navigation links are already visible
       const dashboardNavLink = this.page.locator('a.nav-link:has-text("Dashboard")');
-      
+
       if (await dashboardNavLink.isVisible()) {
         // Navigation is already expanded, no need to toggle
         return;
       }
-      
+
       // Try to expand the navigation
       await navbarToggler.click();
-      
+
       // Wait for navigation links to become visible with multiple attempts
       let attempts = 0;
       const maxAttempts = 3;
-      
+
       while (attempts < maxAttempts) {
         try {
           await expect(dashboardNavLink).toBeVisible({ timeout: 3000 });
@@ -243,12 +245,14 @@ export class TasksPage implements BasePage {
           }
         }
       }
-      
+
       // Final attempt with a longer timeout
       try {
         await expect(dashboardNavLink).toBeVisible({ timeout: 5000 });
       } catch (error) {
-        console.warn('Mobile navigation failed to expand after multiple attempts. Continuing with test...');
+        console.warn(
+          'Mobile navigation failed to expand after multiple attempts. Continuing with test...'
+        );
         // Don't throw error - let the test continue and fail naturally if navigation is needed
       }
     }

@@ -17,7 +17,9 @@
     "lint:fix": "eslint src server --ext .js,.jsx,.ts,.tsx --fix",
     "type-check": "tsc --noEmit",
     "type-check:server": "tsc -p tsconfig.server.json --noEmit",
-    "prettier": "prettier --write ."
+    "prettier": "prettier --write .",
+    "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx}\" \"server/**/*.{ts,js}\" \"e2e/src/**/*.{ts,js}\"",
+    "format:check": "prettier --check \"src/**/*.{ts,tsx,js,jsx}\" \"server/**/*.{ts,js}\" \"e2e/src/**/*.{ts,js}\""
   },
   "dependencies": {
     "@fontsource/inter": "^5.2.6",

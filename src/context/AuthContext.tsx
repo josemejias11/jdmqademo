@@ -85,7 +85,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           // Decode the JWT token to extract username
           const decodedUser = decodeJWT(token);
           const username = decodedUser?.username || 'user';
-          
+
           setAuthState({
             isAuthenticated: true,
             user: { username },

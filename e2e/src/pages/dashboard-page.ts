@@ -47,19 +47,19 @@ export class DashboardPage implements BasePage {
    */
   private async handleMobileNavigation(): Promise<void> {
     const navbarToggler = this.page.locator(this.selectors.navbarToggler);
-    
+
     if (await navbarToggler.isVisible()) {
       // Check if navigation links are already visible
       const tasksNavLink = this.page.locator(this.selectors.tasksNavLink);
-      
+
       if (await tasksNavLink.isVisible()) {
         // Navigation is already expanded, no need to toggle
         return;
       }
-      
+
       // Try multiple strategies to expand the navigation
       let success = false;
-      
+
       // Strategy 1: Click the toggler and wait for nav to expand
       try {
         await navbarToggler.click();
@@ -68,7 +68,7 @@ export class DashboardPage implements BasePage {
       } catch {
         console.log('Strategy 1 failed: Basic toggle click');
       }
-      
+
       // Strategy 2: Check collapse element and try again
       if (!success) {
         try {
@@ -81,7 +81,7 @@ export class DashboardPage implements BasePage {
           console.log('Strategy 2 failed: Click with collapse check');
         }
       }
-      
+
       // Strategy 3: Multiple clicks with brief waits
       if (!success) {
         try {
@@ -98,7 +98,7 @@ export class DashboardPage implements BasePage {
           console.log('Strategy 3 failed: Multiple clicks');
         }
       }
-      
+
       // Strategy 4: Direct navigation bypass for mobile
       if (!success) {
         console.warn('All mobile navigation strategies failed. Using direct navigation fallback.');
@@ -119,7 +119,7 @@ export class DashboardPage implements BasePage {
     // Check for navigation elements - skip for mobile if navbar toggle is visible
     const navbarToggler = this.page.locator(this.selectors.navbarToggler);
     const isMobile = await navbarToggler.isVisible();
-    
+
     if (!isMobile) {
       // Desktop view - navigation should be visible
       await expect(this.page.locator(this.selectors.tasksNavLink)).toBeVisible();
@@ -127,7 +127,7 @@ export class DashboardPage implements BasePage {
       // Mobile view - just verify the navbar toggler exists
       await expect(navbarToggler).toBeVisible();
     }
-    
+
     await expect(this.page.locator(this.selectors.createTaskBtn)).toBeVisible();
     await expect(this.page.locator(this.selectors.viewAllTasksBtn)).toBeVisible();
   }
@@ -195,7 +195,7 @@ export class DashboardPage implements BasePage {
    */
   async navigateToTasksViaNavbar(): Promise<void> {
     await this.handleMobileNavigation();
-    
+
     try {
       await this.page.click(this.selectors.tasksNavLink);
       await expect(this.page).toHaveURL(/tasks$/);
@@ -204,7 +204,9 @@ export class DashboardPage implements BasePage {
       // Fallback to direct navigation
       await this.page.goto(`${config.baseUrl}/tasks`);
       // Wait for specific tasks page content to be visible
-      await expect(this.page.locator('h1:has-text("Tasks"), h2:has-text("Tasks")')).toBeVisible({ timeout: 10000 });
+      await expect(this.page.locator('h1:has-text("Tasks"), h2:has-text("Tasks")')).toBeVisible({
+        timeout: 10000
+      });
       await expect(this.page).toHaveURL(/tasks$/, { timeout: 10000 });
     }
   }

@@ -67,6 +67,39 @@ npm run lint                    # Code linting
 npm run type-check              # TypeScript validation
 ```
 
+## 🐳 Docker Setup
+
+Run the entire application stack using Docker:
+
+```bash
+# Build and start the application
+docker-compose up --build
+
+# Run in detached mode
+docker-compose up -d
+
+# View logs
+docker-compose logs -f
+
+# Stop the application
+docker-compose down
+```
+
+**Docker Configuration:**
+- **Frontend**: React development server on port 3000
+- **Backend**: Express server on port 3001
+- **Live Reload**: Volume mounting for real-time code changes
+- **Environment**: Pre-configured with development settings
+
+**Environment Variables (Docker):**
+- `NODE_ENV=development`
+- `JWT_SECRET=devsecret`
+- `MOCK_USER=admin`
+- `MOCK_PASSWORD=changeme`
+- `API_URL=http://localhost:3001`
+
+For production deployment, update the environment variables in `docker-compose.yml` or use environment-specific compose files.
+
 ## 🧪 Test Framework Structure
 
 ```

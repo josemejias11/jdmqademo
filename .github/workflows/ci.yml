@@ -174,22 +174,33 @@ jobs:
         include:
           - browser: chromium
             project: chromium
+            backend_port: 3001
+            frontend_port: 3000
           - browser: firefox
             project: firefox
+            backend_port: 3011
+            frontend_port: 3010
           - browser: webkit
             project: webkit
+            backend_port: 3021
+            frontend_port: 3020
           - browser: mobile-chrome
             project: 'Mobile Chrome'
+            backend_port: 3031
+            frontend_port: 3030
           - browser: mobile-safari
             project: 'Mobile Safari'
+            backend_port: 3041
+            frontend_port: 3040
 
     env:
       NODE_ENV: test
       JWT_SECRET: dev-jwt-secret-key-change-in-production
       MOCK_USER: admin
       MOCK_PASSWORD: changeme
-      BACKEND_PORT: 3001
-      BASE_URL: http://localhost:3000
+      BACKEND_PORT: ${{ matrix.backend_port }}
+      FRONTEND_PORT: ${{ matrix.frontend_port }}
+      BASE_URL: http://localhost:${{ matrix.frontend_port }}
       CI: true
       BROWSER: ${{ matrix.browser }}
 
@@ -203,7 +214,7 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
 
-      - name: Install dependencies (unified)
+      - name: Install dependencies
         run: npm ci --legacy-peer-deps
 
       - name: Install Playwright browsers
@@ -212,27 +223,29 @@ jobs:
       - name: Set up test environment
         run: |
           cat > .env << EOF
-          BASE_URL=http://localhost:3000
-          BACKEND_PORT=3001
+          BASE_URL=http://localhost:${{ matrix.frontend_port }}
+          BACKEND_PORT=${{ matrix.backend_port }}
+          FRONTEND_PORT=${{ matrix.frontend_port }}
           JWT_SECRET=dev-jwt-secret-key-change-in-production
           MOCK_USER=admin
           MOCK_PASSWORD=changeme
           NODE_ENV=test
-          FRONTEND_URL=http://localhost:3000
+          FRONTEND_URL=http://localhost:${{ matrix.frontend_port }}
           EOF
 
       - name: Start backend server
         run: |
-          npm run backend &
-          npx wait-on http://localhost:3001 --timeout 30000
+          BACKEND_PORT=${{ matrix.backend_port }} npm run backend &
+          npx wait-on http://localhost:${{ matrix.backend_port }} --timeout 30000
 
-      - name: Start frontend application
+      - name: Start frontend application  
         run: |
-          npm run frontend &
-          npx wait-on http://localhost:3000 --timeout 60000
+          PORT=${{ matrix.frontend_port }} npm run frontend &
+          npx wait-on http://localhost:${{ matrix.frontend_port }} --timeout 60000
 
-      - name: Run E2E tests (unified)
+      - name: Run E2E tests with custom ports
         run: |
+          export BASE_URL=http://localhost:${{ matrix.frontend_port }}
           TEST_SUITE="${{ github.event.inputs.test_suite || 'full' }}"
           if [ "$TEST_SUITE" = "smoke" ]; then
             npm run test:e2e:smoke -- --project="${{ matrix.project }}"

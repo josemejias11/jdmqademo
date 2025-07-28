@@ -87,11 +87,11 @@ export default defineConfig({
     }
   ],
 
-  // Run your local dev server before starting the tests
-  webServer: {
+  // Run your local dev server before starting the tests (only for local development)
+  webServer: process.env.CI ? undefined : {
     command: 'npm run dev',
     url: 'http://localhost:3000',
-    reuseExistingServer: !process.env.CI,
+    reuseExistingServer: !process.env.CI || process.env.REUSE_SERVER === 'true',
     timeout: 120 * 1000
   }
 });

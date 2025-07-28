@@ -1,6 +1,4 @@
 module.exports = {
-  // Your ESLint configuration here
-  // For example:
   env: {
     browser: true,
     es2021: true,
@@ -9,7 +7,8 @@ module.exports = {
   extends: [
     'eslint:recommended',
     'plugin:react/recommended',
-    'plugin:@typescript-eslint/recommended'
+    'plugin:@typescript-eslint/recommended',
+    'prettier'
   ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
@@ -22,16 +21,37 @@ module.exports = {
   plugins: ['react', '@typescript-eslint'],
   rules: {
     // Your custom rules here
+    '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+    'react/react-in-jsx-scope': 'off'
   },
   settings: {
     react: {
-      version: 'detect'  // Automatically detect React version
+      version: 'detect'
     }
   },
   ignorePatterns: [
-    'e2e/**/*',  // Exclude e2e directory (has its own ESLint config)
     'build/**/*',
     'dist/**/*',
-    'node_modules/**/*'
+    'node_modules/**/*',
+    'test-results/**/*',
+    'playwright-report/**/*'
+  ],
+  overrides: [
+    {
+      // E2E test files configuration
+      files: ['e2e/**/*.ts'],
+      extends: [
+        'eslint:recommended',
+        'plugin:@typescript-eslint/recommended',
+        'plugin:playwright/recommended',
+        'prettier'
+      ],
+      env: {
+        node: true
+      },
+      rules: {
+        '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }]
+      }
+    }
   ]
 };

@@ -1,6 +1,11 @@
 import { defineConfig, devices } from '@playwright/test';
 import path from 'path';
+import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
+
+// Get __dirname equivalent in ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Read from environment or .env file
 dotenv.config({ path: path.join(__dirname, '.env') });
@@ -10,7 +15,7 @@ dotenv.config({ path: path.join(__dirname, '.env') });
  */
 export default defineConfig({
   // Directory where tests are located
-  testDir: './src/specs',
+  testDir: './e2e/src/specs',
 
   // Maximum time one test can run
   timeout: 30 * 1000,
@@ -28,7 +33,10 @@ export default defineConfig({
   reporter: [['html', { open: 'never' }], ['list']],
 
   // Global setup for the entire test suite
-  globalSetup: './src/config/global-setup.ts',
+  globalSetup: './e2e/src/config/global-setup.ts',
+
+  // Output directories
+  outputDir: 'test-results/',
 
   // Shared settings for all projects
   use: {
@@ -48,61 +56,42 @@ export default defineConfig({
     actionTimeout: 10 * 1000,
 
     // Browser viewport size
-    viewport: { width: 1280, height: 720 }
+    viewport: { width: 1280, height: 720 },
   },
 
-  // Test projects for different browsers
+  // Configure projects for essential browsers
   projects: [
     {
       name: 'chromium',
-      use: {
-        ...devices['Desktop Chrome']
-      }
+      use: { ...devices['Desktop Chrome'] },
     },
+
     {
       name: 'firefox',
-      use: {
-        ...devices['Desktop Firefox']
-      }
+      use: { ...devices['Desktop Firefox'] },
     },
+
     {
       name: 'webkit',
-      use: {
-        ...devices['Desktop Safari']
-      }
+      use: { ...devices['Desktop Safari'] },
     },
+
+    // Mobile testing
     {
       name: 'Mobile Chrome',
-      use: {
-        ...devices['Pixel 5']
-      }
+      use: { ...devices['Pixel 5'] },
     },
     {
       name: 'Mobile Safari',
-      use: {
-        ...devices['iPhone 13']
-      }
+      use: { ...devices['iPhone 12'] },
     },
-    {
-      name: 'smoke',
-      testMatch: /.*smoke\.spec\.ts/,
-      retries: 0
-    },
-    {
-      name: 'visual',
-      testMatch: /.*visual\.spec\.ts/
-    },
-    {
-      name: 'api',
-      testMatch: /.*api\.spec\.ts/,
-      use: {
-        baseURL: process.env.API_URL || 'http://localhost:3001',
-        screenshot: 'off',
-        video: 'off'
-      }
-    }
   ],
 
-  // Folders to keep as test artifacts
-  outputDir: 'test-results/'
+  // Run your local dev server before starting the tests
+  webServer: {
+    command: 'npm run dev',
+    url: 'http://localhost:3000',
+    reuseExistingServer: !process.env.CI,
+    timeout: 120 * 1000,
+  },
 });

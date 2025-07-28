@@ -3,8 +3,13 @@
  * This runs once before all tests
  */
 import { FullConfig } from '@playwright/test';
-import dotenv from 'dotenv';
-import path from 'path';
+import * as dotenv from 'dotenv';
+import * as path from 'path';
+import { fileURLToPath } from 'url';
+
+// Get __dirname equivalent in ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 /**
  * Global setup runs once for the entire test suite
@@ -12,7 +17,7 @@ import path from 'path';
  */
 async function globalSetup(_config: FullConfig): Promise<void> {
   // Load environment variables from .env file
-  dotenv.config({ path: path.join(__dirname, '../../.env') });
+  dotenv.config({ path: path.join(__dirname, '../../../.env') });
 
   // You can add more setup code here, for example:
   // - Set up test data in the database

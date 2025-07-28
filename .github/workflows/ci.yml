@@ -14,6 +14,8 @@ on:
         type: choice
         options:
         - smoke
+        - api
+        - visual
         - regression
         - full
 
@@ -93,29 +95,14 @@ jobs:
       - name: Install dependencies
         run: npm ci --legacy-peer-deps
 
+      - name: Lint all files (unified)
+        run: npm run lint
+
       - name: Type check frontend
         run: npm run type-check
 
       - name: Type check server
         run: npm run type-check:server
-
-      - name: Lint main project
-        run: npm run lint
-
-      - name: Install e2e dependencies
-        run: |
-          cd e2e
-          npm ci --legacy-peer-deps
-
-      - name: Lint e2e tests
-        run: |
-          cd e2e
-          npm run lint
-
-      - name: Type check e2e tests
-        run: |
-          cd e2e
-          npm run type-check
 
       - name: Code formatting check
         run: |
@@ -174,7 +161,7 @@ jobs:
             server/dist/
           retention-days: 1
 
-  # Multi-browser E2E testing with matrix strategy
+  # Optimized browser E2E testing with 5-browser matrix
   e2e_tests:
     name: E2E Tests (${{ matrix.browser }})
     runs-on: ubuntu-latest
@@ -183,7 +170,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        browser: [chromium, firefox, webkit]
+        browser: [chromium, firefox, webkit, mobile-chrome, mobile-safari]
         include:
           - browser: chromium
             project: chromium
@@ -191,11 +178,18 @@ jobs:
             project: firefox
           - browser: webkit
             project: webkit
+          - browser: mobile-chrome
+            project: "Mobile Chrome"
+          - browser: mobile-safari
+            project: "Mobile Safari"
 
     env:
       NODE_ENV: test
-      JWT_SECRET: devsecret
-      API_URL: http://localhost:3001
+      JWT_SECRET: dev-jwt-secret-key-change-in-production
+      MOCK_USER: admin
+      MOCK_PASSWORD: changeme
+      BACKEND_PORT: 3001
+      BASE_URL: http://localhost:3000
       CI: true
       BROWSER: ${{ matrix.browser }}
 
@@ -209,56 +203,47 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
 
-      - name: Install dependencies
+      - name: Install dependencies (unified)
         run: npm ci --legacy-peer-deps
 
-      - name: Install e2e dependencies
-        run: |
-          cd e2e
-          npm ci --legacy-peer-deps
-
       - name: Install Playwright browsers
-        run: |
-          cd e2e
-          npx playwright install ${{ matrix.browser }} --with-deps
+        run: npx playwright install --with-deps
 
       - name: Set up test environment
         run: |
-          cd e2e
           cat > .env << EOF
           BASE_URL=http://localhost:3000
-          API_URL=http://localhost:3001
-          TEST_USERNAME=admin
-          TEST_PASSWORD=changeme
-          ADMIN_USERNAME=admin
-          ADMIN_PASSWORD=changeme
-          HEADLESS=true
-          RECORD_VIDEO_ON_FAILURE=true
-          SCREENSHOT_ON_FAILURE=true
-          DEFAULT_TIMEOUT=10000
-          BROWSER=${{ matrix.browser }}
+          BACKEND_PORT=3001
+          JWT_SECRET=dev-jwt-secret-key-change-in-production
+          MOCK_USER=admin
+          MOCK_PASSWORD=changeme
+          NODE_ENV=test
+          FRONTEND_URL=http://localhost:3000
           EOF
 
       - name: Start backend server
         run: |
-          npm run server &
-          npx wait-on http://localhost:3001/api/health --timeout 30000
+          npm run backend &
+          npx wait-on http://localhost:3001 --timeout 30000
 
       - name: Start frontend application
         run: |
-          npm start &
+          npm run frontend &
           npx wait-on http://localhost:3000 --timeout 60000
 
-      - name: Run E2E tests
+      - name: Run E2E tests (unified)
         run: |
-          cd e2e
           TEST_SUITE="${{ github.event.inputs.test_suite || 'full' }}"
           if [ "$TEST_SUITE" = "smoke" ]; then
-            npx playwright test --grep "smoke" --project=${{ matrix.project }}
+            npm run test:e2e:smoke -- --project="${{ matrix.project }}"
+          elif [ "$TEST_SUITE" = "api" ]; then
+            npm run test:e2e:api -- --project="${{ matrix.project }}"
+          elif [ "$TEST_SUITE" = "visual" ]; then
+            npm run test:e2e:visual -- --project="${{ matrix.project }}"
           elif [ "$TEST_SUITE" = "regression" ]; then
-            npx playwright test --grep "regression" --project=${{ matrix.project }}
+            npm run test:e2e -- --project="${{ matrix.project }}"
           else
-            npx playwright test --project=${{ matrix.project }}
+            npm run test:e2e -- --project="${{ matrix.project }}"
           fi
 
       - name: Upload test results
@@ -267,8 +252,8 @@ jobs:
         with:
           name: playwright-results-${{ matrix.browser }}
           path: |
-            e2e/test-results/
-            e2e/playwright-report/
+            test-results/
+            playwright-report/
           retention-days: 7
 
   # Performance testing
@@ -292,8 +277,8 @@ jobs:
 
       - name: Start application for testing
         run: |
-          npm run server &
-          npm start &
+          npm run backend &
+          npm run frontend &
           npx wait-on http://localhost:3000 --timeout 60000
 
       - name: Run Lighthouse CI
@@ -342,10 +327,16 @@ jobs:
           echo "| Test Suite | Status | Notes |" >> $GITHUB_STEP_SUMMARY
           echo "|------------|--------|-------|" >> $GITHUB_STEP_SUMMARY
           echo "| Security Scan | ${{ needs.security_scan.result == 'success' && '✅ Passed' || '⚠️ See Details' }} | Dev dependencies may have known issues |" >> $GITHUB_STEP_SUMMARY
-          echo "| Quality Gates | ${{ needs.quality_gates.result == 'success' && '✅ Passed' || '❌ Failed' }} | Code quality and type safety |" >> $GITHUB_STEP_SUMMARY
+          echo "| Quality Gates | ${{ needs.quality_gates.result == 'success' && '✅ Passed' || '❌ Failed' }} | Unified code quality and type safety |" >> $GITHUB_STEP_SUMMARY
           echo "| Build | ${{ needs.build.result == 'success' && '✅ Passed' || '❌ Failed' }} | Application compilation |" >> $GITHUB_STEP_SUMMARY
-          echo "| E2E Tests | ${{ needs.e2e_tests.result == 'success' && '✅ Passed' || '❌ Failed' }} | Cross-browser functionality |" >> $GITHUB_STEP_SUMMARY
-          echo "| Performance | ${{ needs.performance_tests.result == 'success' && '✅ Passed' || '❌ Failed' }} | Lighthouse performance |" >> $GITHUB_STEP_SUMMARY
+          echo "| E2E Tests | ${{ needs.e2e_tests.result == 'success' && '✅ Passed' || '❌ Failed' }} | 5-browser matrix (Desktop + Mobile) |" >> $GITHUB_STEP_SUMMARY
+          echo "| Performance | ${{ needs.performance_tests.result == 'success' && '✅ Passed' || '❌ Failed' }} | Lighthouse performance audit |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 🚀 **Unified Architecture Benefits:**" >> $GITHUB_STEP_SUMMARY
+          echo "- **Single Dependency Management**: All dependencies in root package.json" >> $GITHUB_STEP_SUMMARY
+          echo "- **Optimized Browser Matrix**: Chromium, Firefox, WebKit, Mobile Chrome, Mobile Safari" >> $GITHUB_STEP_SUMMARY
+          echo "- **Mobile-First Testing**: Enhanced mobile navigation and visual regression" >> $GITHUB_STEP_SUMMARY
+          echo "- **Zero Configuration Conflicts**: Unified configs across all tools" >> $GITHUB_STEP_SUMMARY
 
       - name: QA validation status
         run: |

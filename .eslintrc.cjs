@@ -50,7 +50,10 @@ module.exports = {
         node: true
       },
       rules: {
-        '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }]
+        '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+        // Disable problematic Playwright rules that don't understand custom fixtures
+        'playwright/no-standalone-expect': 'off',
+        'playwright/expect-expect': 'off'
       }
     }
   ]

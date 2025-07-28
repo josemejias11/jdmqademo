@@ -34,42 +34,36 @@ test.describe('Smoke Tests', () => {
     }
   );
 
-  authenticatedTest(
-    'should navigate to tasks page',
-    async ({ dashboardPage, tasksPage }) => {
-      await dashboardPage.goto();
-      // Use direct navigation for mobile-friendly approach
-      await tasksPage.goto();
-      await tasksPage.verifyPageLoaded();
-    }
-  );
+  authenticatedTest('should navigate to tasks page', async ({ dashboardPage, tasksPage }) => {
+    await dashboardPage.goto();
+    // Use direct navigation for mobile-friendly approach
+    await tasksPage.goto();
+    await tasksPage.verifyPageLoaded();
+  });
 
-  authenticatedTest(
-    'should create and delete a task',
-    async ({ dashboardPage, tasksPage }) => {
-      await dashboardPage.goto();
-      // Use direct navigation for mobile-friendly approach
-      await tasksPage.goto();
-      await tasksPage.verifyPageLoaded();
+  authenticatedTest('should create and delete a task', async ({ dashboardPage, tasksPage }) => {
+    await dashboardPage.goto();
+    // Use direct navigation for mobile-friendly approach
+    await tasksPage.goto();
+    await tasksPage.verifyPageLoaded();
 
-      const uniqueTaskTitle = `Smoke Test Task ${generateUnique()}`;
+    const uniqueTaskTitle = `Smoke Test Task ${generateUnique()}`;
 
-      // Create task
-      await tasksPage.createTask({
-        title: uniqueTaskTitle,
-        description: 'Task created by smoke test'
-      });
+    // Create task
+    await tasksPage.createTask({
+      title: uniqueTaskTitle,
+      description: 'Task created by smoke test'
+    });
 
-      // Verify task exists
-      await tasksPage.verifyTaskExists(uniqueTaskTitle);
+    // Verify task exists
+    await tasksPage.verifyTaskExists(uniqueTaskTitle);
 
-      // Delete task
-      await tasksPage.deleteTask(uniqueTaskTitle);
+    // Delete task
+    await tasksPage.deleteTask(uniqueTaskTitle);
 
-      // Verify task was deleted
-      await tasksPage.verifyTaskDoesNotExist(uniqueTaskTitle);
-    }
-  );
+    // Verify task was deleted
+    await tasksPage.verifyTaskDoesNotExist(uniqueTaskTitle);
+  });
 
   // Complete user journey test
   test('should complete critical user journey', async ({ loginPage, dashboardPage, tasksPage }) => {

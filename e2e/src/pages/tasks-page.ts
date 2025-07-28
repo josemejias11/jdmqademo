@@ -205,17 +205,19 @@ export class TasksPage implements BasePage {
   async navigateToDashboard(): Promise<void> {
     const navbarToggler = this.page.locator('.navbar-toggler');
     const isMobile = await navbarToggler.isVisible();
-    
+
     if (isMobile) {
       // For mobile, use direct navigation to avoid Bootstrap collapse issues
       console.log('Mobile device detected, using direct navigation to dashboard');
       await this.page.goto(`${config.baseUrl}/dashboard`);
       await expect(this.page).toHaveURL(/dashboard/);
-      
+
       // Wait for dashboard content to load
-      await expect(this.page.locator('h1:has-text("Welcome"), h2:has-text("Welcome")')).toBeVisible({
-        timeout: 10000
-      });
+      await expect(this.page.locator('h1:has-text("Welcome"), h2:has-text("Welcome")')).toBeVisible(
+        {
+          timeout: 10000
+        }
+      );
       return;
     }
 

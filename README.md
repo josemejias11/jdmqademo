@@ -29,16 +29,19 @@ A modern full-stack task management application demonstrating comprehensive QA a
 ## 🛠 Tech Stack
 
 **Testing Framework:**
+
 - Playwright + TypeScript
 - Page Object Model architecture
 - API integration & performance testing
 
 **Infrastructure:**
+
 - GitHub Actions CI/CD
 - Node.js 20.11.1 LTS
 - Unified dependency management
 
 **Application:**
+
 - React 18 + TypeScript frontend
 - Express.js + JWT backend
 - Bootstrap 5 responsive UI
@@ -46,6 +49,7 @@ A modern full-stack task management application demonstrating comprehensive QA a
 ## 🚀 Quick Start
 
 ### Prerequisites
+
 - Node.js 20.11.1 LTS
 - npm 10.0.0+
 
@@ -118,16 +122,18 @@ docker-compose down
 ```
 
 **Docker Configuration:**
+
 - **Frontend**: React development server on port 3000
 - **Backend**: Express server on port 3001
 - **Live Reload**: Volume mounting for real-time code changes
 - **Environment**: Pre-configured with development settings
 
 **Environment Variables (Docker):**
+
 - `NODE_ENV=development`
 - `JWT_SECRET=devsecret`
 - `MOCK_USER=admin`
-**Environment Variables:**
+  **Environment Variables:**
 - `NODE_ENV=development`
 - `JWT_SECRET=dev-jwt-secret-key-change-in-production`
 - `MOCK_USER=admin`
@@ -140,6 +146,7 @@ For production deployment, update the environment variables in `docker-compose.y
 ## 🏗️ Unified Project Architecture
 
 ### **Revolutionary Consolidation**
+
 - ✅ **Single `package.json`**: All dependencies (React, Express, Playwright) in one place
 - ✅ **Unified Configuration**: One TypeScript config, one ESLint config, one Prettier config
 - ✅ **Root-Level Commands**: All scripts run from project root (no more `cd e2e`)
@@ -147,8 +154,9 @@ For production deployment, update the environment variables in `docker-compose.y
 - ✅ **Simplified Maintenance**: One source of truth for all tooling
 
 ### **Smart Configuration**
+
 - **TypeScript**: Root `tsconfig.json` with path mappings for e2e imports
-- **ESLint**: Single `.eslintrc.cjs` with overrides for different file types  
+- **ESLint**: Single `.eslintrc.cjs` with overrides for different file types
 - **Playwright**: Root `playwright.config.ts` targeting `e2e/src/specs`
 - **Environment**: Unified `.env` file for all environment variables
 
@@ -185,6 +193,7 @@ Project Root
 ## 🔧 Complete Command Reference
 
 ### Application Development
+
 ```bash
 npm run dev                     # Start both frontend & backend
 npm run frontend                # React development server (:3000)
@@ -195,6 +204,7 @@ npm run build:all               # Build both frontend & backend
 ```
 
 ### E2E Testing (All from Root Directory)
+
 ```bash
 # Test Execution
 npm run test:e2e                # Complete test suite (all browsers)
@@ -202,7 +212,7 @@ npm run test:e2e:smoke          # Critical path tests only
 npm run test:e2e:api            # API endpoint tests
 npm run test:e2e:visual         # Visual regression tests
 npm run test:e2e:chromium       # Chromium browser only
-npm run test:e2e:firefox        # Firefox browser only  
+npm run test:e2e:firefox        # Firefox browser only
 npm run test:e2e:webkit         # WebKit/Safari only
 npm run test:e2e:mobile         # Mobile browsers (Chrome & Safari)
 
@@ -218,6 +228,7 @@ npm run install:browsers        # Install/update Playwright browsers
 ```
 
 ### Code Quality & Validation
+
 ```bash
 # Formatting & Linting (All File Types)
 npm run format                  # Auto-fix code formatting
@@ -273,17 +284,20 @@ npm run type-check:server       # Backend TypeScript validation
 ## 🎯 Demo Application & Test Credentials
 
 **Task Manager Features:**
+
 - JWT-based authentication with protected routes
-- Full CRUD operations for task management  
+- Full CRUD operations for task management
 - Real-time UI updates and responsive design
 - RESTful API with comprehensive validation
 - Multi-browser compatibility testing
 
 **Test Credentials:**
+
 - **Username**: `admin`
 - **Password**: `changeme`
 
 **API Endpoints:**
+
 - Authentication: `POST /api/auth/login`
 - Tasks: `GET|POST|PUT|DELETE /api/tasks`
 - Base URL: `http://localhost:3001` (backend)
@@ -292,12 +306,14 @@ npm run type-check:server       # Backend TypeScript validation
 ## 🔍 Quality Assurance & Architecture
 
 ### **Code Quality Standards**
+
 - ✅ **TypeScript Strict Mode**: Full type safety across the stack
 - ✅ **ESLint + Prettier**: Automated code formatting and quality checks
 - ✅ **Comprehensive Error Handling**: Proper error boundaries and validation
 - ✅ **Security Best Practices**: JWT authentication, input validation, CORS
 
-### **Testing Strategy** 
+### **Testing Strategy**
+
 - ✅ **Optimized Browser Matrix**: 5-browser configuration (Chromium, Firefox, WebKit, Mobile Chrome, Mobile Safari)
 - ✅ **Visual Regression Testing**: Screenshot comparison across all browsers for UI consistency
 - ✅ **Page Object Model**: Maintainable test architecture with centralized locators
@@ -306,6 +322,7 @@ npm run type-check:server       # Backend TypeScript validation
 - ✅ **Performance Benchmarking**: Lighthouse CI integration
 
 ### **Unified Architecture Benefits**
+
 - 🚀 **50% Faster Setup**: Single `npm install` for everything
 - 🔧 **Zero Configuration Conflicts**: No duplicate or conflicting configs
 - 📦 **Simplified Dependency Management**: One package.json to rule them all

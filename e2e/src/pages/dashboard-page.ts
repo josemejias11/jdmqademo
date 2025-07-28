@@ -47,7 +47,7 @@ export class DashboardPage implements BasePage {
    */
   private async handleMobileNavigation(): Promise<void> {
     const navbarToggler = this.page.locator(this.selectors.navbarToggler);
-    
+
     // Check if we're in mobile view
     if (!(await navbarToggler.isVisible())) {
       // Desktop view - navigation should already be visible
@@ -55,7 +55,7 @@ export class DashboardPage implements BasePage {
     }
 
     const tasksNavLink = this.page.locator(this.selectors.tasksNavLink);
-    
+
     // If navigation is already visible, no need to toggle
     if (await tasksNavLink.isVisible()) {
       return;
@@ -68,36 +68,37 @@ export class DashboardPage implements BasePage {
     for (let attempt = 1; attempt <= maxAttempts && !success; attempt++) {
       try {
         console.log(`Attempt ${attempt}: Trying to expand mobile navigation`);
-        
+
         // Click the navbar toggler
         await navbarToggler.click();
-        
+
         // Wait for Bootstrap animation with proper timeout
         await expect(this.page.locator('body')).toBeVisible({ timeout: 500 });
-        
+
         // Check multiple indicators of successful expansion
         const navbarCollapse = this.page.locator('#navbarNav');
         const isExpanded = await navbarCollapse.getAttribute('class');
         const isNavVisible = await tasksNavLink.isVisible();
-        
+
         if (isExpanded?.includes('show') || isNavVisible) {
           success = true;
           console.log(`Mobile navigation expanded successfully on attempt ${attempt}`);
           break;
         }
-        
+
         // If last attempt failed, wait before retry
         if (attempt < maxAttempts) {
           await expect(this.page.locator('body')).toBeVisible({ timeout: 300 });
         }
-        
       } catch (error) {
         console.log(`Attempt ${attempt} failed:`, error);
       }
     }
 
     if (!success) {
-      console.warn('Mobile navigation expansion failed after all attempts. Will use direct navigation fallback.');
+      console.warn(
+        'Mobile navigation expansion failed after all attempts. Will use direct navigation fallback.'
+      );
     }
   }
 
@@ -190,12 +191,12 @@ export class DashboardPage implements BasePage {
   async navigateToTasksViaNavbar(): Promise<void> {
     const navbarToggler = this.page.locator(this.selectors.navbarToggler);
     const isMobile = await navbarToggler.isVisible();
-    
+
     if (isMobile) {
       // For mobile, use direct navigation to avoid Bootstrap collapse issues
       console.log('Mobile device detected, using direct navigation to tasks page');
       await this.page.goto(`${config.baseUrl}/tasks`);
-      
+
       // Wait for tasks page to load with multiple selectors
       try {
         await expect(this.page.locator('h2:has-text("My Tasks")')).toBeVisible({
@@ -207,7 +208,7 @@ export class DashboardPage implements BasePage {
           timeout: 5000
         });
       }
-      
+
       await expect(this.page).toHaveURL(/tasks$/, { timeout: 10000 });
       return;
     }
@@ -232,11 +233,11 @@ export class DashboardPage implements BasePage {
   async logout(): Promise<void> {
     const navbarToggler = this.page.locator(this.selectors.navbarToggler);
     const isMobile = await navbarToggler.isVisible();
-    
+
     if (isMobile) {
       // For mobile, try to expand navbar first, then use fallback
       await this.handleMobileNavigation();
-      
+
       try {
         // Wait a moment for navbar to expand, then try logout
         await expect(this.page.locator('body')).toBeVisible({ timeout: 500 });

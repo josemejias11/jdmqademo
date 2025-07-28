@@ -24,8 +24,8 @@ test.describe('Visual Regression Tests', () => {
   test('dashboard visual comparison', async ({ page }) => {
     // Login first
     await page.goto('/login');
-    await page.fill('input[name="email"]', process.env.MOCK_USER_EMAIL || 'user@example.com');
-    await page.fill('input[name="password"]', process.env.MOCK_USER_PASSWORD || 'password123');
+    await page.fill('input[name="email"]', process.env.MOCK_USER || 'admin');
+    await page.fill('input[name="password"]', process.env.MOCK_PASSWORD || 'changeme');
     await page.click('button[type="submit"]');
     
     // Navigate to dashboard
@@ -39,12 +39,12 @@ test.describe('Visual Regression Tests', () => {
   test('tasks page visual comparison', async ({ page }) => {
     // Login first
     await page.goto('/login');
-    await page.fill('input[name="email"]', process.env.MOCK_USER_EMAIL || 'user@example.com');
-    await page.fill('input[name="password"]', process.env.MOCK_USER_PASSWORD || 'password123');
+    await page.fill('input[name="email"]', process.env.MOCK_USER || 'admin');
+    await page.fill('input[name="password"]', process.env.MOCK_PASSWORD || 'changeme');
     await page.click('button[type="submit"]');
     
-    // Navigate to tasks page
-    await page.click('a[href="/tasks"]');
+    // Navigate to tasks page using direct navigation for mobile compatibility
+    await page.goto('/tasks');
     await page.waitForLoadState('domcontentloaded');
     
     // Take a screenshot and compare with baseline

@@ -1,209 +1,155 @@
 # Task Manager with Unified Playwright Test Automation Framework
 
-A modern full-stack task management application demonstrating comprehensive QA automation practices. Features enterprise-grade Playwright testing framework with **consolidated dependency management** and streamlined development workflow.
+A modern full-stack task management application demonstrating comprehensive QA automation practices with enterprise-grade Playwright testing framework and consolidated dependency management.
 
-## 🚀 Key Features
+## 🚀 Features
 
-### 🎯 **Unified Development Experience**
+### 🎯 **Application Features**
 
-- **Single Dependency Management**: All dependencies (React, Express, Playwright) managed from root `package.json`
-- **Consolidated Configuration**: Unified TypeScript, ESLint, Prettier, and Playwright configurations
-- **Streamlined Workflow**: All commands run from root directory - no more switching between folders
-- **Zero Redundancy**: Eliminated duplicate configuration files and dependencies
+- **Task Management**: Full CRUD operations with real-time UI updates
+- **Authentication**: JWT-based authentication with protected routes
+- **Responsive Design**: Bootstrap 5 responsive UI across all devices
+- **RESTful API**: Comprehensive validation and error handling
+- **Multi-browser Support**: Compatible across Chromium, Firefox, WebKit, and mobile browsers
 
-### 🧪 **Advanced Playwright Test Automation**
+### 🧪 **Testing Features**
 
-- **Optimized Browser Matrix**: Chromium, Firefox, WebKit, Mobile Chrome & Safari (5-browser configuration)
-- **Visual Regression Testing**: Comprehensive screenshot comparison across all browsers
+- **5-Browser Matrix**: Chromium, Firefox, WebKit, Mobile Chrome & Safari
+- **Visual Regression Testing**: Screenshot comparison across all browsers
 - **API Testing**: Backend endpoint validation with data consistency verification
-- **Performance Testing**: Lighthouse CI integration for web vitals monitoring
 - **Page Object Model**: Maintainable test architecture with centralized locators
+- **Performance Testing**: Lighthouse CI integration for web vitals monitoring
+- **Interactive Testing**: UI mode for test development and debugging
 
-### 🔧 **Enterprise Infrastructure**
+### 🔧 **Development Features**
 
-- **GitHub Actions**: Single, robust CI/CD pipeline with security scanning
-- **Test Management**: Comprehensive reporting and artifact management
-- **Quality Gates**: Multi-stage validation with intelligent failure handling
-- **Security Integration**: CodeQL analysis and dependency vulnerability scanning
+- **Unified Dependency Management**: Single `package.json` for all components
+- **Consolidated Configuration**: TypeScript, ESLint, Prettier, and Playwright
+- **Root-Level Commands**: All operations from project root directory
+- **Hot Reload**: Live development with automatic rebuilds
+- **Docker Support**: Complete containerized development environment
 
-## 🛠 Tech Stack
+## 🛠 Technologies
 
-**Testing Framework:**
+### **Frontend Stack**
 
-- Playwright + TypeScript
-- Page Object Model architecture
-- API integration & performance testing
+- **React 18** - Modern React with hooks and functional components
+- **TypeScript 5.8.3** - Full type safety and enhanced IDE support
+- **Bootstrap 5** - Responsive CSS framework
+- **Axios** - HTTP client for API communication
+- **React Router** - Client-side routing
 
-**Infrastructure:**
+### **Backend Stack**
 
-- GitHub Actions CI/CD
-- Node.js 20.11.1 LTS
-- Unified dependency management
+- **Express.js 4.18** - Web application framework
+- **Node.js 20.11.1 LTS** - JavaScript runtime
+- **TypeScript** - Type-safe server development
+- **JWT (jsonwebtoken)** - Authentication tokens
+- **Express Validator** - Request validation middleware
+- **CORS** - Cross-origin resource sharing
 
-**Application:**
+### **Testing Stack**
 
-- React 18 + TypeScript frontend
-- Express.js + JWT backend
-- Bootstrap 5 responsive UI
+- **Playwright 1.54.1** - End-to-end testing framework
+- **TypeScript** - Type-safe test development
+- **GitHub Actions** - CI/CD pipeline automation
+- **Docker** - Containerized testing environment
 
-## 🚀 Quick Start
+### **Development Tools**
 
-### Prerequisites
+- **ESLint** - Code quality and linting
+- **Prettier** - Code formatting
+- **Concurrently** - Parallel script execution
+- **TSX** - TypeScript execution engine
+- **Rimraf** - Cross-platform file cleanup
+
+## ⚙️ Setup & Configuration
+
+### **Prerequisites**
 
 - Node.js 20.11.1 LTS
 - npm 10.0.0+
+- Git
 
-### Installation & Setup
+### **Installation**
 
 ```bash
-# Clone and install all dependencies (including Playwright)
+# Clone repository
 git clone https://github.com/josemejias11/jdmqademo.git
-cd jdmqademo && npm install --legacy-peer-deps
+cd jdmqademo
+
+# Install all dependencies (React, Express, Playwright)
+npm install --legacy-peer-deps
 
 # Install Playwright browsers
 npm run install:browsers
 
-# Set up environment variables
+# Environment setup
 cp .env.example .env
-# Edit .env with your JWT secret and other configurations
-
-# Start application (both frontend and backend)
-npm run dev  # Frontend: :3000, Backend: :3001
+# Configure environment variables in .env file
 ```
 
-### Running Tests
+### **Environment Variables**
 
 ```bash
-# All tests from root directory (no cd required!)
-npm run test:e2e              # Complete test suite
-npm run test:e2e:ui           # Interactive test runner
-npm run test:e2e:smoke        # Critical path tests
-npm run test:e2e:api          # API endpoint tests
-npm run test:e2e:visual       # Visual regression tests
-npm run test:e2e:chromium     # Browser-specific tests
-npm run test:e2e:mobile       # Mobile browsers (Chrome & Safari)
-
-# Test reporting
-npm run test:e2e:report       # View test results
-npm run test:e2e:clean        # Clean test artifacts
+NODE_ENV=development
+JWT_SECRET=dev-jwt-secret-key-change-in-production
+MOCK_USER=admin
+MOCK_PASSWORD=changeme
+BACKEND_PORT=3001
+FRONTEND_URL=http://localhost:3000
 ```
 
-### Development Workflow
+### **VS Code Extensions (Recommended)**
+
+The project includes `.vscode/extensions.json` with recommended extensions:
+
+- **Playwright** - Test debugging and execution
+- **ESLint** - Code quality and linting
+- **Prettier** - Code formatting
+- **TypeScript** - Enhanced IDE support
+- **Docker** - Container support
+
+### **Docker Configuration**
 
 ```bash
-# Code quality (all files from root)
-npm run format               # Auto-fix formatting
-npm run lint                 # Lint all files (src, server, e2e)
-npm run type-check           # TypeScript validation
-npm run type-check:server    # Server-specific validation
-
-# Building
-npm run build                # Frontend production build
-npm run build:server         # Backend compilation
-npm run build:all            # Build everything
-```
-
-## 🐳 Docker Setup
-
-Run the entire application stack using Docker:
-
-```bash
-# Build and start the application
+# Build and start complete stack
 docker-compose up --build
 
-# Run in detached mode
+# Development with live reload
 docker-compose up -d
 
 # View logs
 docker-compose logs -f
 
-# Stop the application
+# Stop services
 docker-compose down
 ```
 
-**Docker Configuration:**
+**Docker Services:**
 
-- **Frontend**: React development server on port 3000
-- **Backend**: Express server on port 3001
-- **Live Reload**: Volume mounting for real-time code changes
-- **Environment**: Pre-configured with development settings
+- **Frontend**: React development server (port 3000)
+- **Backend**: Express server (port 3001)
+- **Live Reload**: Volume mounting for real-time changes
 
-**Environment Variables (Docker):**
+## 📋 Available Commands
 
-- `NODE_ENV=development`
-- `JWT_SECRET=devsecret`
-- `MOCK_USER=admin`
-  **Environment Variables:**
-- `NODE_ENV=development`
-- `JWT_SECRET=dev-jwt-secret-key-change-in-production`
-- `MOCK_USER=admin`
-- `MOCK_PASSWORD=changeme`
-- `BACKEND_PORT=3001`
-- `FRONTEND_URL=http://localhost:3000`
-
-For production deployment, update the environment variables in `docker-compose.yml` or use environment-specific compose files.
-
-## 🏗️ Unified Project Architecture
-
-### **Revolutionary Consolidation**
-
-- ✅ **Single `package.json`**: All dependencies (React, Express, Playwright) in one place
-- ✅ **Unified Configuration**: One TypeScript config, one ESLint config, one Prettier config
-- ✅ **Root-Level Commands**: All scripts run from project root (no more `cd e2e`)
-- ✅ **Zero Redundancy**: Eliminated 6+ duplicate configuration files
-- ✅ **Simplified Maintenance**: One source of truth for all tooling
-
-### **Smart Configuration**
-
-- **TypeScript**: Root `tsconfig.json` with path mappings for e2e imports
-- **ESLint**: Single `.eslintrc.cjs` with overrides for different file types
-- **Playwright**: Root `playwright.config.ts` targeting `e2e/src/specs`
-- **Environment**: Unified `.env` file for all environment variables
-
-## 🧪 Clean Test Framework Structure
-
-```
-Project Root
-├── playwright.config.ts       # Unified Playwright configuration
-├── package.json               # Single dependency management
-├── tsconfig.json              # Unified TypeScript configuration
-├── .eslintrc.cjs              # Consolidated linting rules
-├── .env / .env.example        # Environment configuration
-├── src/                       # React frontend source
-├── server/                    # Express backend source
-└── e2e/                       # Clean test-only directory
-    └── src/                   # Test source code only
-        ├── api/               # API client utilities
-        ├── config/            # Test configuration
-        ├── fixtures/          # Test data & fixtures
-        ├── locators/          # Centralized UI selectors
-        ├── models/            # Data models
-        ├── pages/             # Page Object Models
-        ├── specs/             # Test specifications
-        │   ├── api/           # API endpoint tests
-        │   ├── auth/          # Authentication tests
-        │   ├── dashboard/     # Dashboard functionality
-        │   ├── demo/          # Feature demonstrations
-        │   ├── smoke/         # Critical path tests
-        │   ├── tasks/         # Task management tests
-        │   └── visual/        # Visual regression tests
-        └── utils/             # Helper utilities
-```
-
-## 🔧 Complete Command Reference
-
-### Application Development
+### **Application Development**
 
 ```bash
+# Start Services
 npm run dev                     # Start both frontend & backend
 npm run frontend                # React development server (:3000)
 npm run backend                 # Express server with watch mode (:3001)
-npm run build                   # Production build (frontend)
+npm start                       # React development server only
+
+# Building
+npm run build                   # Frontend production build
 npm run build:server            # Backend TypeScript compilation
 npm run build:all               # Build both frontend & backend
 ```
 
-### E2E Testing (All from Root Directory)
+### **Testing Commands**
 
 ```bash
 # Test Execution
@@ -216,7 +162,7 @@ npm run test:e2e:firefox        # Firefox browser only
 npm run test:e2e:webkit         # WebKit/Safari only
 npm run test:e2e:mobile         # Mobile browsers (Chrome & Safari)
 
-# Test Development & Debugging
+# Interactive Testing
 npm run test:e2e:ui             # Interactive test runner (GUI)
 npm run test:e2e:debug          # Debug mode with breakpoints
 npm run test:e2e:headed         # Run with visible browser UI
@@ -227,110 +173,95 @@ npm run test:e2e:clean          # Clean test artifacts
 npm run install:browsers        # Install/update Playwright browsers
 ```
 
-### Code Quality & Validation
+### **Code Quality Commands**
 
 ```bash
-# Formatting & Linting (All File Types)
+# Formatting
 npm run format                  # Auto-fix code formatting
 npm run format:check            # Check formatting (CI-friendly)
+npm run prettier                # Format all files with Prettier
+
+# Linting
 npm run lint                    # ESLint all files (src, server, e2e)
 npm run lint:fix                # Auto-fix linting issues
 
-# TypeScript Validation
+# Type Checking
 npm run type-check              # Frontend TypeScript validation
 npm run type-check:server       # Backend TypeScript validation
 ```
 
-## 🔄 CI/CD Pipeline
+## 🏗️ Project Architecture
 
-**QA Automation Pipeline** (`.github/workflows/ci.yml`):
+### **Unified Configuration Structure**
 
-1. **🔒 Security & Dependency Scan**
-   - npm audit with vulnerability reporting
-   - CodeQL static security analysis
-   - Security audit artifacts
-   - Continue on dev dependency issues
+```
+jdmqademo/
+├── .vscode/                    # VS Code workspace settings
+│   ├── extensions.json         # Recommended extensions
+│   ├── settings.json          # Workspace settings
+│   └── launch.json            # Debug configurations
+├── .github/workflows/          # CI/CD pipeline
+│   └── ci.yml                 # GitHub Actions workflow
+├── playwright.config.ts        # Unified Playwright configuration
+├── package.json               # Single dependency management
+├── tsconfig.json              # Unified TypeScript configuration
+├── .eslintrc.cjs              # Consolidated linting rules
+├── .env / .env.example        # Environment configuration
+├── docker-compose.yml         # Container orchestration
+├── Dockerfile                 # Application containerization
+├── src/                       # React frontend source
+│   ├── components/            # Reusable UI components
+│   ├── context/              # React context providers
+│   ├── pages/                # Application pages
+│   ├── services/             # API service layer
+│   └── utils/                # Frontend utilities
+├── server/                    # Express backend source
+│   ├── controllers/          # Request handlers
+│   ├── middleware/           # Custom middleware
+│   ├── models/               # Data models
+│   ├── routes/               # API routes
+│   └── types/                # Server type definitions
+└── e2e/                      # Test automation framework
+    └── src/                  # Test source code
+        ├── api/              # API client utilities
+        ├── config/           # Test configuration
+        ├── fixtures/         # Test data & fixtures
+        ├── locators/         # Centralized UI selectors
+        ├── models/           # Test data models
+        ├── pages/            # Page Object Models
+        ├── specs/            # Test specifications
+        │   ├── api/          # API endpoint tests
+        │   ├── auth/         # Authentication tests
+        │   ├── dashboard/    # Dashboard functionality
+        │   ├── smoke/        # Critical path tests
+        │   ├── tasks/        # Task management tests
+        │   └── visual/       # Visual regression tests
+        └── utils/            # Test helper utilities
+```
 
-2. **✅ Code Quality & Type Safety**
-   - TypeScript compilation (frontend, server, e2e)
-   - ESLint code quality validation
-   - Prettier formatting enforcement
-   - Smart formatting: warnings on PRs, failures on main/develop
+### **Configuration Files**
 
-3. **🏗️ Build Application**
-   - Frontend React production build
-   - Backend TypeScript compilation
-   - Build artifacts upload for deployment
+- **TypeScript**: Unified configuration with path mappings
+- **ESLint**: Single configuration with file-type overrides
+- **Prettier**: Consistent formatting across all file types
+- **Playwright**: Centralized test configuration
+- **Docker**: Complete development environment setup
 
-4. **🧪 E2E Tests (Optimized Browser Matrix)**
-   - **Browsers**: Chromium, Firefox, WebKit, Mobile Chrome, Mobile Safari (5-browser matrix)
-   - **Visual Regression**: Screenshot comparison testing across all browsers
-   - **Parallel execution** with fail-fast disabled
-   - **Test suites**: smoke, API, visual, regression, full (workflow_dispatch)
-   - **Environment isolation** with configurable test data
-   - **Comprehensive reporting** with screenshots/videos on failure
+## 🎯 Demo Application
 
-5. **⚡ Performance Testing**
-   - **Lighthouse CI** integration
-   - **Web vitals** monitoring and reporting
-   - **Performance budget** enforcement
+### **Application Access**
 
-6. **📊 QA Summary & Validation**
-   - **Comprehensive test reporting** in GitHub summary
-   - **Quality gate validation** with intelligent failure handling
-   - **Deployment readiness** assessment
-   - **Primary gates**: E2E tests, quality checks, build success
+- **Frontend**: http://localhost:3000
+- **Backend API**: http://localhost:3001
+- **Test Reports**: Generated in `playwright-report/`
 
-## 🎯 Demo Application & Test Credentials
-
-**Task Manager Features:**
-
-- JWT-based authentication with protected routes
-- Full CRUD operations for task management
-- Real-time UI updates and responsive design
-- RESTful API with comprehensive validation
-- Multi-browser compatibility testing
-
-**Test Credentials:**
+### **Test Credentials**
 
 - **Username**: `admin`
 - **Password**: `changeme`
 
-**API Endpoints:**
+### **API Endpoints**
 
-- Authentication: `POST /api/auth/login`
-- Tasks: `GET|POST|PUT|DELETE /api/tasks`
-- Base URL: `http://localhost:3001` (backend)
-- Frontend: `http://localhost:3000`
-
-## 🔍 Quality Assurance & Architecture
-
-### **Code Quality Standards**
-
-- ✅ **TypeScript Strict Mode**: Full type safety across the stack
-- ✅ **ESLint + Prettier**: Automated code formatting and quality checks
-- ✅ **Comprehensive Error Handling**: Proper error boundaries and validation
-- ✅ **Security Best Practices**: JWT authentication, input validation, CORS
-
-### **Testing Strategy**
-
-- ✅ **Optimized Browser Matrix**: 5-browser configuration (Chromium, Firefox, WebKit, Mobile Chrome, Mobile Safari)
-- ✅ **Visual Regression Testing**: Screenshot comparison across all browsers for UI consistency
-- ✅ **Page Object Model**: Maintainable test architecture with centralized locators
-- ✅ **Test Data Isolation**: Clean test environment for each run
-- ✅ **API Testing Integration**: Backend endpoint validation with frontend tests
-- ✅ **Performance Benchmarking**: Lighthouse CI integration
-
-### **Unified Architecture Benefits**
-
-- 🚀 **50% Faster Setup**: Single `npm install` for everything
-- 🔧 **Zero Configuration Conflicts**: No duplicate or conflicting configs
-- 📦 **Simplified Dependency Management**: One package.json to rule them all
-- 🎯 **Developer Experience**: All commands from root, no directory switching
-- 🛠️ **Easier Maintenance**: Single source of truth for all tooling
-- 📊 **Consistent Tooling**: Same linting, formatting, and type checking everywhere
-
----
-
-**Version**: 6.0 - Optimized Browser Matrix & Visual Testing  
-**Last Updated**: July 2025
+- **Authentication**: `POST /api/auth/login`
+- **Tasks**: `GET|POST|PUT|DELETE /api/tasks`
+- **Base URL**: `http://localhost:3001`

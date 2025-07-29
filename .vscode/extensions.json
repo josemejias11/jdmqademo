@@ -6,6 +6,10 @@
     "dbaeumer.vscode-eslint",
     "ms-vscode.vscode-typescript-next",
     "ms-playwright.playwright",
-    "esbenp.prettier-vscode"
+    "esbenp.prettier-vscode",
+    "github.vscode-github-actions",
+    "github.codespaces",
+    "github.copilot",
+    "github.copilot-chat",
   ]
 }

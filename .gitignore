@@ -48,7 +48,7 @@ Thumbs.db
 
 # IDE specific files
 .idea
-.vscode
+.vscode/settings.json.user
 *.swp
 *.swo
 

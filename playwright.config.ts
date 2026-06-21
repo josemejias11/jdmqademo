@@ -23,6 +23,10 @@ export default defineConfig({
   // Fail the build on CI if you accidentally left test.only in the source code
   forbidOnly: !!process.env.CI,
 
+  // Skip visual regression tests in CI — baselines are OS-specific (macOS vs Ubuntu)
+  // Run locally with: npm run test:e2e:visual
+  testIgnore: process.env.CI ? /visual/ : undefined,
+
   // Retry tests on CI
   retries: 0,
 

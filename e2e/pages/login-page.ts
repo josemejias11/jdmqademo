@@ -1,7 +1,7 @@
 import { Page, expect } from '@playwright/test';
-import { BasePage } from '../models/models';
-import { config } from '../config/config';
-import { retry, waitForStableElement } from '../utils/helpers';
+import { BasePage } from '@models/models';
+import { config } from '@config/config';
+import { retry, waitForStableElement } from '@utils/helpers';
 import { login as loginLocators } from '../locators/app-locators';
 
 /**

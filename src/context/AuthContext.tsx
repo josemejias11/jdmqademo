@@ -107,7 +107,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const login = async (username: string, password: string): Promise<void> => {
     setAuthState({
-      loading: true,
       error: null
     });
 
@@ -124,7 +123,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       if (!data || !data.success || !token || typeof token !== 'string' || !token.trim()) {
         console.error('Invalid login response structure:', data);
         setAuthState({
-          loading: false,
           error: 'Invalid response from server'
         });
         return;
@@ -137,7 +135,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setAuthState({
         isAuthenticated: true,
         user: { username },
-        loading: false,
         error: null
       });
 
@@ -162,7 +159,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       }
 
       setAuthState({
-        loading: false,
         error: errorMessage
       });
 

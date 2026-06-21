@@ -1,7 +1,7 @@
-import { test, expect } from '../../fixtures/test-fixtures';
-import { ApiClient } from '../../api/api-client';
-import { generateUnique } from '../../utils/helpers';
-import { config } from '../../config/config';
+import { test, expect } from '@fixtures/test-fixtures';
+import { ApiClient } from '@api/api-client';
+import { generateUnique } from '@utils/helpers';
+import { config } from '@config/config';
 
 /**
  * API Test Suite

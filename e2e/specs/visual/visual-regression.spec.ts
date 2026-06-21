@@ -1,4 +1,4 @@
-import { test, expect } from '../../fixtures/test-fixtures';
+import { test, expect } from '@fixtures/test-fixtures';
 
 test.describe('Visual Regression Tests', () => {
   test('homepage visual comparison', async ({ page }) => {

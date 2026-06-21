@@ -44,7 +44,7 @@ export class TestDataCleanup {
           await deleteButton.click();
 
           // Handle confirmation if there is one
-          const confirmButton = this.page.getByRole('button', { name: /confirm|yes|ok/i });
+          const confirmButton = this.page.locator('.modal-footer button:has-text("Delete"), .modal-footer button:has-text("Confirm"), .modal-footer .btn-danger').first();
           if (await confirmButton.isVisible()) {
             await confirmButton.click();
           }

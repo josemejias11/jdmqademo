@@ -1,6 +1,6 @@
 import { request } from '@playwright/test';
-import { Task } from '../models/models';
-import { config } from '../config/config';
+import { Task } from '@models/models';
+import { config } from '@config/config';
 
 /**
  * API client for interacting with the backend API

@@ -90,7 +90,7 @@ export default defineConfig({
   // Run your local dev server before starting the tests (only for local development)
   webServer: process.env.CI ? undefined : {
     command: 'npm run dev',
-    url: 'http://127.0.0.1:3000',
+    url: 'http://127.0.0.1:3001/api/health',
     reuseExistingServer: !process.env.CI || process.env.REUSE_SERVER === 'true',
     timeout: 120 * 1000
   }

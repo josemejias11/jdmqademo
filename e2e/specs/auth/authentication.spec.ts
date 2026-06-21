@@ -1,5 +1,5 @@
-import { test, expect } from '../../fixtures/test-fixtures';
-import { config } from '../../config/config';
+import { test, expect } from '@fixtures/test-fixtures';
+import { config } from '@config/config';
 
 /**
  * Authentication test suite

@@ -1,6 +1,6 @@
-import { test, expect } from '../../fixtures/test-fixtures';
-import { AppLocators, login, dashboard, taskForm } from '../../locators/app-locators';
-import { config } from '../../config/config';
+import { test, expect } from '@fixtures/test-fixtures';
+import { AppLocators, login, dashboard, taskForm } from '@locators/app-locators';
+import { config } from '@config/config';
 
 /**
  * Demo test suite showing how to use centralized locators

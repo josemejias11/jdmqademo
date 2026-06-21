@@ -1,6 +1,6 @@
-import { test, expect, withLogin } from '../../fixtures/test-fixtures';
-import { generateUnique } from '../../utils/helpers';
-import { TaskData } from '../../models/models';
+import { test, expect, withLogin } from '@fixtures/test-fixtures';
+import { generateUnique } from '@utils/helpers';
+import { TaskData } from '@models/models';
 
 /**
  * Task management test suite

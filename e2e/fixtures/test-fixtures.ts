@@ -1,8 +1,8 @@
 import { test as base } from '@playwright/test';
-import { LoginPage } from '../pages/login-page';
-import { DashboardPage } from '../pages/dashboard-page';
-import { TasksPage } from '../pages/tasks-page';
-import { TestDataCleanup } from '../utils/test-data-cleanup';
+import { LoginPage } from '@pages/login-page';
+import { DashboardPage } from '@pages/dashboard-page';
+import { TasksPage } from '@pages/tasks-page';
+import { TestDataCleanup } from '@utils/test-data-cleanup';
 
 /**
  * Extended test fixture with page objects

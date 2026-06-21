@@ -225,7 +225,7 @@ export class TasksPage implements BasePage {
     try {
       await this.page.click('a.nav-link:has-text("Dashboard")');
       await expect(this.page).toHaveURL(/dashboard/);
-    } catch (error) {
+    } catch {
       console.warn('Desktop navbar navigation failed, using direct navigation fallback');
       await this.page.goto(`${config.baseUrl}/dashboard`);
       await expect(this.page).toHaveURL(/dashboard/);
@@ -271,7 +271,7 @@ export class TasksPage implements BasePage {
       // Final attempt with a longer timeout
       try {
         await expect(dashboardNavLink).toBeVisible({ timeout: 5000 });
-      } catch (error) {
+      } catch {
         console.warn(
           'Mobile navigation failed to expand after multiple attempts. Continuing with test...'
         );

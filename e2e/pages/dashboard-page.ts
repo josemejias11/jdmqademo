@@ -217,7 +217,7 @@ export class DashboardPage implements BasePage {
     try {
       await this.page.click(this.selectors.tasksNavLink);
       await expect(this.page).toHaveURL(/tasks$/);
-    } catch (error) {
+    } catch {
       console.warn('Desktop navbar navigation failed, using direct navigation fallback');
       await this.page.goto(`${config.baseUrl}/tasks`);
       await expect(this.page.locator('h2:has-text("My Tasks")')).toBeVisible({
@@ -243,7 +243,7 @@ export class DashboardPage implements BasePage {
         await expect(this.page.locator('body')).toBeVisible({ timeout: 500 });
         await this.page.click(this.selectors.logoutButton);
         await expect(this.page).toHaveURL(/login/);
-      } catch (error) {
+      } catch {
         console.warn('Mobile logout via navbar failed, using direct navigation');
         // Direct logout via URL navigation - clear local storage first to prevent auto-login redirect
         await this.page.evaluate(() => localStorage.removeItem('auth_token'));

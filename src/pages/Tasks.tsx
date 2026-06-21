@@ -86,7 +86,7 @@ const Tasks: React.FC = () => {
       taskContext.deleteTask(taskToDelete);
       setShowDeleteModal(false);
       setTaskToDelete(null);
-    } catch (error: Error | unknown) {
+    } catch {
       // Optionally show a local error
     }
   };

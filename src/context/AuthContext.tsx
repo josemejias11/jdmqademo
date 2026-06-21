@@ -179,7 +179,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       });
 
       // Logout successful
-    } catch (error) {
+    } catch {
       // Error during logout
     }
   };

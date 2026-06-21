@@ -149,9 +149,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       // Special handling for specific errors
       if (err && typeof err === 'object' && 'response' in err) {
-        const errorObj = err as { response?: { status?: number; data?: { message?: string } } };
+        const errorObj = err as {
+          response?: { status?: number; data?: { message?: string; error?: { message?: string } } };
+        };
         if (errorObj.response?.status === 431) {
           errorMessage = 'Server error: Headers too large. Please try again later.';
+        } else if (errorObj.response?.data?.error?.message) {
+          errorMessage = errorObj.response.data.error.message;
         } else if (errorObj.response?.data?.message) {
           errorMessage = errorObj.response.data.message;
         }

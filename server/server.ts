@@ -100,33 +100,41 @@ const taskValidationRules = [
 ];
 
 // GET /api/tasks
-app.get('/api/tasks', auth as express.RequestHandler, (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const authReq = req as AuthenticatedRequest;
-    const sessionId = (req.header('x-test-session-id') || 'default') as string;
-    const userTasks = SessionTaskStore.findByUserId(sessionId, authReq.user.username);
-    res.json({ success: true, data: userTasks });
-  } catch (err) {
-    next(err);
+app.get(
+  '/api/tasks',
+  auth as express.RequestHandler,
+  (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const authReq = req as AuthenticatedRequest;
+      const sessionId = (req.header('x-test-session-id') || 'default') as string;
+      const userTasks = SessionTaskStore.findByUserId(sessionId, authReq.user.username);
+      res.json({ success: true, data: userTasks });
+    } catch (err) {
+      next(err);
+    }
   }
-});
+);
 
 // GET /api/tasks/:id
-app.get('/api/tasks/:id', auth as express.RequestHandler, (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const authReq = req as AuthenticatedRequest<{ id: string }>;
-    const sessionId = (req.header('x-test-session-id') || 'default') as string;
-    const task = SessionTaskStore.findById(sessionId, authReq.params.id, authReq.user.username);
-    if (!task) {
-      const error = new Error('Task not found') as CustomError;
-      error.statusCode = 404;
-      return next(error);
+app.get(
+  '/api/tasks/:id',
+  auth as express.RequestHandler,
+  (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const authReq = req as AuthenticatedRequest<{ id: string }>;
+      const sessionId = (req.header('x-test-session-id') || 'default') as string;
+      const task = SessionTaskStore.findById(sessionId, authReq.params.id, authReq.user.username);
+      if (!task) {
+        const error = new Error('Task not found') as CustomError;
+        error.statusCode = 404;
+        return next(error);
+      }
+      res.json({ success: true, data: task });
+    } catch (err) {
+      next(err);
     }
-    res.json({ success: true, data: task });
-  } catch (err) {
-    next(err);
   }
-});
+);
 
 // POST /api/tasks
 app.post(
@@ -136,7 +144,11 @@ app.post(
   validate,
   (req: Request, res: Response, next: NextFunction) => {
     try {
-      const authReq = req as AuthenticatedRequest<Record<string, never>, unknown, { title: string; description?: string }>;
+      const authReq = req as AuthenticatedRequest<
+        Record<string, never>,
+        unknown,
+        { title: string; description?: string }
+      >;
       const sessionId = (req.header('x-test-session-id') || 'default') as string;
       const { title, description } = authReq.body;
       const task = SessionTaskStore.create(sessionId, {
@@ -159,14 +171,23 @@ app.put(
   validate,
   (req: Request, res: Response, next: NextFunction) => {
     try {
-      const authReq = req as AuthenticatedRequest<{ id: string }, unknown, { title?: string; description?: string; completed?: boolean }>;
+      const authReq = req as AuthenticatedRequest<
+        { id: string },
+        unknown,
+        { title?: string; description?: string; completed?: boolean }
+      >;
       const sessionId = (req.header('x-test-session-id') || 'default') as string;
       const { title, description, completed } = authReq.body;
-      const updatedTask = SessionTaskStore.update(sessionId, authReq.params.id, authReq.user.username, {
-        title,
-        description,
-        completed
-      });
+      const updatedTask = SessionTaskStore.update(
+        sessionId,
+        authReq.params.id,
+        authReq.user.username,
+        {
+          title,
+          description,
+          completed
+        }
+      );
       if (!updatedTask) {
         const error = new Error('Task not found') as CustomError;
         error.statusCode = 404;
@@ -180,21 +201,25 @@ app.put(
 );
 
 // DELETE /api/tasks/:id
-app.delete('/api/tasks/:id', auth as express.RequestHandler, (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const authReq = req as AuthenticatedRequest<{ id: string }>;
-    const sessionId = (req.header('x-test-session-id') || 'default') as string;
-    const deleted = SessionTaskStore.delete(sessionId, authReq.params.id, authReq.user.username);
-    if (!deleted) {
-      const error = new Error('Task not found') as CustomError;
-      error.statusCode = 404;
-      return next(error);
+app.delete(
+  '/api/tasks/:id',
+  auth as express.RequestHandler,
+  (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const authReq = req as AuthenticatedRequest<{ id: string }>;
+      const sessionId = (req.header('x-test-session-id') || 'default') as string;
+      const deleted = SessionTaskStore.delete(sessionId, authReq.params.id, authReq.user.username);
+      if (!deleted) {
+        const error = new Error('Task not found') as CustomError;
+        error.statusCode = 404;
+        return next(error);
+      }
+      res.json({ success: true, message: 'Task deleted successfully' });
+    } catch (err) {
+      next(err);
     }
-    res.json({ success: true, message: 'Task deleted successfully' });
-  } catch (err) {
-    next(err);
   }
-});
+);
 
 // Error handling
 app.use(notFound);

@@ -39,8 +39,13 @@ const Login: React.FC = () => {
       let errorMessage = 'Login failed. Please check your credentials and try again.';
 
       if (error && typeof error === 'object') {
-        const errObj = error as { response?: { status?: number; data?: { message?: string } }; message?: string };
-        if (errObj.response?.data?.message) {
+        const errObj = error as {
+          response?: { status?: number; data?: { message?: string; error?: { message?: string } } };
+          message?: string;
+        };
+        if (errObj.response?.data?.error?.message) {
+          errorMessage = errObj.response.data.error.message;
+        } else if (errObj.response?.data?.message) {
           errorMessage = errObj.response.data.message;
         } else if (errObj.response?.status === 401) {
           errorMessage = 'Invalid username or password. Please try again.';

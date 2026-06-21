@@ -1,7 +1,7 @@
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { CustomError } from '../types/index.js';
 
-const errorHandler = (err: CustomError, _req: Request, res: Response) => {
+const errorHandler = (err: CustomError, _req: Request, res: Response, _next: NextFunction) => {
   console.error(err.stack);
 
   const statusCode = err.statusCode || 500;

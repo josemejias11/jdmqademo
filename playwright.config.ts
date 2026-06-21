@@ -15,7 +15,7 @@ dotenv.config({ path: path.join(__dirname, '.env') });
  */
 export default defineConfig({
   // Directory where tests are located
-  testDir: './e2e/src/specs',
+  testDir: './e2e/specs',
 
   // Maximum time one test can run
   timeout: 30 * 1000,
@@ -33,7 +33,7 @@ export default defineConfig({
   reporter: [['html', { open: 'never' }], ['list']],
 
   // Global setup for the entire test suite
-  globalSetup: './e2e/src/config/global-setup.ts',
+  globalSetup: './e2e/config/global-setup.ts',
 
   // Output directories
   outputDir: 'test-results/',

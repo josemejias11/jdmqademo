@@ -19,15 +19,15 @@
     "rootDir": ".",
     "baseUrl": ".",
     "paths": {
-      "@pages/*": ["e2e/src/pages/*"],
-      "@fixtures/*": ["e2e/src/fixtures/*"],
-      "@utils/*": ["e2e/src/utils/*"],
-      "@config/*": ["e2e/src/config/*"],
-      "@models/*": ["e2e/src/models/*"],
-      "@api/*": ["e2e/src/api/*"],
-      "@locators/*": ["e2e/src/locators/*"]
+      "@pages/*": ["e2e/pages/*"],
+      "@fixtures/*": ["e2e/fixtures/*"],
+      "@utils/*": ["e2e/utils/*"],
+      "@config/*": ["e2e/config/*"],
+      "@models/*": ["e2e/models/*"],
+      "@api/*": ["e2e/api/*"],
+      "@locators/*": ["e2e/locators/*"]
     }
   },
-  "include": ["src", "server", "e2e/src", "playwright.config.ts"],
+  "include": ["src", "server", "e2e", "playwright.config.ts"],
   "exclude": ["node_modules", "dist", "test-results", "playwright-report"]
 }

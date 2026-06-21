@@ -10,12 +10,12 @@ A full-stack demo application for showcasing QA automation practices with a prod
 
 ## Tech Stack
 
-| Layer | Technology |
-|---|---|
+| Layer        | Technology                                                    |
+| ------------ | ------------------------------------------------------------- |
 | **Frontend** | React 18, TypeScript, Bootstrap 5, React Router, Formik + Yup |
-| **Backend** | Express 4, Node.js ≥ 20, JWT auth, Express Validator |
-| **Testing** | Playwright 1.54, TypeScript, Page Object Model |
-| **Tooling** | Vite 8, ESLint 9, Prettier, TSX, Concurrently |
+| **Backend**  | Express 4, Node.js ≥ 20, JWT auth, Express Validator          |
+| **Testing**  | Playwright 1.54, TypeScript, Page Object Model                |
+| **Tooling**  | Vite 8, ESLint 9, Prettier, TSX, Concurrently                 |
 
 ---
 
@@ -112,9 +112,9 @@ npm run backend      # Backend only (tsx watch)
 
 ### Test Credentials
 
-| Username | Password |
-|---|---|
-| `admin` | `changeme` |
+| Username | Password   |
+| -------- | ---------- |
+| `admin`  | `changeme` |
 
 ---
 
@@ -158,13 +158,13 @@ The Playwright test project follows a clean Page Object Model (POM) pattern with
 
 ### Key Design Decisions
 
-| Pattern | Implementation |
-|---|---|
-| **Base class** | `BasePOM` in `e2e/models/base-page.ts` — shared `isMobile()`, `ensureNavExpanded()`, `logout()` |
-| **Locators** | All selectors centralized in `e2e/locators/app-locators.ts` |
-| **Fixtures** | `test-fixtures.ts` extends Playwright's `test` with page objects, session IDs, and cleanup |
-| **Cleanup** | `TestDataCleanup` uses `APIRequestContext` — no brittle UI modal interaction |
-| **Path aliases** | `@pages`, `@models`, `@locators`, `@fixtures`, `@utils`, `@api`, `@config` |
+| Pattern          | Implementation                                                                                  |
+| ---------------- | ----------------------------------------------------------------------------------------------- |
+| **Base class**   | `BasePOM` in `e2e/models/base-page.ts` — shared `isMobile()`, `ensureNavExpanded()`, `logout()` |
+| **Locators**     | All selectors centralized in `e2e/locators/app-locators.ts`                                     |
+| **Fixtures**     | `test-fixtures.ts` extends Playwright's `test` with page objects, session IDs, and cleanup      |
+| **Cleanup**      | `TestDataCleanup` uses `APIRequestContext` — no brittle UI modal interaction                    |
+| **Path aliases** | `@pages`, `@models`, `@locators`, `@fixtures`, `@utils`, `@api`, `@config`                      |
 
 ### Path Aliases
 
@@ -178,14 +178,14 @@ import { config } from '@config/config';
 
 ### Test Suites
 
-| Suite | File | Coverage |
-|---|---|---|
-| Auth | `specs/auth/authentication.spec.ts` | Login, logout, error handling, session retention |
-| Dashboard | `specs/dashboard/dashboard.spec.ts` | Stats, navigation, task reflection |
-| Tasks | `specs/tasks/task-management.spec.ts` | Create, toggle, delete, filter |
-| Smoke | `specs/smoke/smoke.spec.ts` | End-to-end critical user journey |
-| API | `specs/api/api.spec.ts` | JWT auth, task CRUD via API |
-| Visual | `specs/visual/visual-regression.spec.ts` | Screenshot baseline comparison |
+| Suite     | File                                     | Coverage                                         |
+| --------- | ---------------------------------------- | ------------------------------------------------ |
+| Auth      | `specs/auth/authentication.spec.ts`      | Login, logout, error handling, session retention |
+| Dashboard | `specs/dashboard/dashboard.spec.ts`      | Stats, navigation, task reflection               |
+| Tasks     | `specs/tasks/task-management.spec.ts`    | Create, toggle, delete, filter                   |
+| Smoke     | `specs/smoke/smoke.spec.ts`              | End-to-end critical user journey                 |
+| API       | `specs/api/api.spec.ts`                  | JWT auth, task CRUD via API                      |
+| Visual    | `specs/visual/visual-regression.spec.ts` | Screenshot baseline comparison                   |
 
 ---
 
@@ -236,10 +236,10 @@ GitHub Actions workflow in `.github/workflows/ci.yml` runs on every push and pul
 
 ## API Reference
 
-| Method | Endpoint | Description | Auth |
-|---|---|---|---|
-| `POST` | `/api/auth/login` | Login, returns JWT | No |
-| `GET` | `/api/tasks` | List all tasks | Bearer token |
-| `POST` | `/api/tasks` | Create a task | Bearer token |
-| `PUT` | `/api/tasks/:id` | Update a task | Bearer token |
-| `DELETE` | `/api/tasks/:id` | Delete a task | Bearer token |
+| Method   | Endpoint          | Description        | Auth         |
+| -------- | ----------------- | ------------------ | ------------ |
+| `POST`   | `/api/auth/login` | Login, returns JWT | No           |
+| `GET`    | `/api/tasks`      | List all tasks     | Bearer token |
+| `POST`   | `/api/tasks`      | Create a task      | Bearer token |
+| `PUT`    | `/api/tasks/:id`  | Update a task      | Bearer token |
+| `DELETE` | `/api/tasks/:id`  | Delete a task      | Bearer token |

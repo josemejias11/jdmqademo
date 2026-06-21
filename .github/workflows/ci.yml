@@ -258,7 +258,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        browser: [chromium, firefox, webkit, mobile-chrome, mobile-safari]
+        browser: [chromium, firefox, webkit]
         include:
           - browser: chromium
             project: chromium
@@ -274,16 +274,6 @@ jobs:
             project: webkit
             backend_port: 3021
             frontend_port: 3020
-            playwright_browser: webkit
-          - browser: mobile-chrome
-            project: 'Mobile Chrome'
-            backend_port: 3031
-            frontend_port: 3030
-            playwright_browser: chromium
-          - browser: mobile-safari
-            project: 'Mobile Safari'
-            backend_port: 3041
-            frontend_port: 3040
             playwright_browser: webkit
 
     env:

@@ -150,8 +150,8 @@ export const AppLocators = {
 
     // Navigation links (scoped to navbar to avoid strict-mode violations
     // when card links share the same href on dashboard)
-    dashboardLink: '.navbar a[href="/dashboard"]',
-    tasksLink: '.navbar a[href="/tasks"]',
+    dashboardLink: '.navbar-nav a[href="/dashboard"]',
+    tasksLink: '.navbar-nav a[href="/tasks"]',
     logoutButton: 'button:has-text("Logout")',
 
     // User info

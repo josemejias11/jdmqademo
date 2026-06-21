@@ -9,24 +9,24 @@ export default tseslint.config(
   ...tseslint.configs.recommended,
   {
     plugins: {
-      react: reactPlugin,
+      react: reactPlugin
     },
     languageOptions: {
       parserOptions: {
         ecmaFeatures: {
-          jsx: true,
-        },
-      },
+          jsx: true
+        }
+      }
     },
     settings: {
       react: {
-        version: 'detect',
-      },
+        version: 'detect'
+      }
     },
     rules: {
       '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
-      'react/react-in-jsx-scope': 'off',
-    },
+      'react/react-in-jsx-scope': 'off'
+    }
   },
   // Playwright specs override
   {
@@ -36,8 +36,8 @@ export default tseslint.config(
       ...playwrightPlugin.configs['flat/recommended'].rules,
       '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
       'playwright/no-standalone-expect': 'off',
-      'playwright/expect-expect': 'off',
-    },
+      'playwright/expect-expect': 'off'
+    }
   },
   // Prettier config (disables formatting rules) must be last
   eslintConfigPrettier,
@@ -47,7 +47,7 @@ export default tseslint.config(
       'dist/**/*',
       'node_modules/**/*',
       'test-results/**/*',
-      'playwright-report/**/*',
-    ],
+      'playwright-report/**/*'
+    ]
   }
 );

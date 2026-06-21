@@ -35,9 +35,7 @@ export class TestDataCleanup {
 
     const headers = {
       Authorization: `Bearer ${this.token}`,
-      ...(process.env.TEST_SESSION_ID
-        ? { 'x-test-session-id': process.env.TEST_SESSION_ID }
-        : {})
+      ...(process.env.TEST_SESSION_ID ? { 'x-test-session-id': process.env.TEST_SESSION_ID } : {})
     };
 
     const listRes = await this.request.get(`${config.apiUrl}/api/tasks`, { headers });

@@ -341,7 +341,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: build-files
-          path: .
+          path: dist
 
       - name: Set up test environment
         run: |

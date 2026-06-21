@@ -9,8 +9,12 @@ A work item containing a title, description, and completion status.
 _Avoid_: Todo, action item
 
 **TaskStore**:
-The deep module in the frontend that coordinates local state, caches tasks, and acts as the single seam for all UI mutations.
+A deep module in the frontend that coordinates local state, caches tasks, and acts as the single seam for all UI mutations.
 _Avoid_: TaskContext, TaskService
+
+**AuthStore**:
+The deep module in the frontend that manages token storage, authentication state, and encapsulates authentication API communication.
+_Avoid_: AuthContext, authService, AuthService
 
 **SessionTaskStore**:
 The deep module in the backend that isolates, validates, and manages task states per test session in memory.

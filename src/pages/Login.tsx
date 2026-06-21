@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { useNavigate } from 'react-router-dom';
-import { login } from '../services/authService';
 import { useAuth } from '../context/AuthContext';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Modal } from 'react-bootstrap';
@@ -19,7 +18,7 @@ const LoginSchema = Yup.object().shape({
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
-  const { setAuthState, authState } = useAuth();
+  const { login } = useAuth();
   const [loginError, setLoginError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -29,28 +28,31 @@ const Login: React.FC = () => {
     setLoginError(null);
     setShowModal(false);
     try {
-      // Call the login function from authService
+      // Call the login function from AuthStore
       await login(values.username, values.password);
-
-      // Update auth context with the new login state
-      setAuthState({
-        isAuthenticated: true,
-        user: { username: values.username },
-        loading: false,
-        error: null
-      });
 
       // Redirect to dashboard on success
       navigate('/dashboard');
       // Removed window.location.reload(); to allow context to update naturally
     } catch (error: Error | unknown) {
-      // Prefer error from context if available
-      let errorMessage =
-        authState.error ||
-        (error instanceof Error ? error.message : 'Login failed. Please try again.');
+      console.error('Login submit failed:', error);
+      let errorMessage = 'Login failed. Please check your credentials and try again.';
+
+      if (error && typeof error === 'object') {
+        const errObj = error as { response?: { status?: number; data?: { message?: string } }; message?: string };
+        if (errObj.response?.data?.message) {
+          errorMessage = errObj.response.data.message;
+        } else if (errObj.response?.status === 401) {
+          errorMessage = 'Invalid username or password. Please try again.';
+        } else if (errObj.message) {
+          errorMessage = errObj.message;
+        }
+      }
+
       if (errorMessage === 'Request failed with status code 401') {
         errorMessage = 'Invalid username or password. Please try again.';
       }
+
       setLoginError(errorMessage);
       setShowModal(true);
     } finally {

@@ -83,16 +83,6 @@ const RootRoute: React.FC = () => {
   }
 };
 
-// Task Detail page - placeholder component that would be implemented in a real app
-const TaskDetailComponent: React.FC = () => {
-  return <TaskDetail />;
-};
-
-// Not Found page - placeholder component that would be implemented in a real app
-const NotFoundComponent: React.FC = () => {
-  return <NotFound />;
-};
-
 const AppRouter: React.FC = () => {
   return (
     <BrowserRouter>
@@ -110,11 +100,11 @@ const AppRouter: React.FC = () => {
           <Route element={<Tasks />} path="/tasks" />
           <Route element={<TaskForm />} path="/tasks/new" />
           <Route element={<TaskForm />} path="/tasks/edit/:id" />
-          <Route element={<TaskDetailComponent />} path="/tasks/:id" />
+          <Route element={<TaskDetail />} path="/tasks/:id" />
         </Route>
 
         {/* 404 Not Found route */}
-        <Route element={<NotFoundComponent />} path="*" />
+        <Route element={<NotFound />} path="*" />
       </Routes>
     </BrowserRouter>
   );

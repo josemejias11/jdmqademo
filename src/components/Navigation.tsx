@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { logout } from '../services/authService';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '@fontsource/montserrat/700.css';
 import '@fontsource/poppins/700.css';
@@ -9,7 +8,7 @@ import '@fontsource/inter/400.css';
 import '@fontsource/roboto/400.css';
 
 const Navigation: React.FC = () => {
-  const { authState, setAuthState } = useAuth();
+  const { authState, logout } = useAuth();
   const navigate = useNavigate();
 
   // Only render navigation if user is authenticated
@@ -18,16 +17,8 @@ const Navigation: React.FC = () => {
   }
 
   const handleLogout = () => {
-    // Call logout service
+    // Call logout from AuthStore
     logout();
-
-    // Update auth context
-    setAuthState({
-      isAuthenticated: false,
-      user: null,
-      loading: false,
-      error: null
-    });
 
     // Redirect to login page
     navigate('/login');

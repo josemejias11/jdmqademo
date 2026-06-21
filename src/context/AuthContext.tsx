@@ -37,7 +37,6 @@ export interface AuthState {
 
 interface AuthContextType {
   authState: AuthState;
-  setAuthState: (state: Partial<AuthState>) => void;
   login: (username: string, password: string) => Promise<void>;
   logout: () => void;
 }
@@ -114,7 +113,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
     try {
       // Use minimal headers for login request
-      const response = await apiClient.post<AuthResponse>('/api/auth/login', {
+      const response = await apiClient.post<AuthResponse>('/auth/login', {
         username,
         password
       });
@@ -188,7 +187,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   // Values and functions to expose via the context
   const contextValue: AuthContextType = {
     authState,
-    setAuthState,
     login,
     logout
   };

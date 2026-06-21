@@ -30,26 +30,20 @@ export const AppLocators = {
     welcomeCard: '.card.shadow-sm',
     statsContainer: '.row.mb-4',
 
-    // Statistics cards - updated to match actual HTML structure
+    // Statistics cards — match actual classes from Dashboard.tsx
     totalTasksCard: '.card.bg-primary',
     completedTasksCard: '.card.bg-success',
     pendingTasksCard: '.card.bg-warning',
-    completionCard: '.col-12 .card.shadow-sm',
+    completionProgressBar: '.progress-bar',
 
-    // Action buttons
-    viewAllTasksButton: 'a[href="/tasks"]',
-    createNewTaskButton: 'a[href="/tasks/new"]',
-    quickActionsSection: '.row:last-child',
+    // Action links
+    viewAllTasksButton: 'a:has-text("View All Tasks")',
+    createTaskButton: 'a:has-text("Create Task")',
 
-    // Quick actions cards
-    viewTasksCard: '.col-md-6:nth-child(1) .card',
-    createTaskCard: '.col-md-6:nth-child(2) .card',
-
-    // Icons
-    totalTasksIcon: '.fa-clipboard-list',
-    completedTasksIcon: '.fa-check-circle',
-    pendingTasksIcon: '.fa-hourglass-half',
-    createTaskIcon: '.fa-plus'
+    // Stats headings (used for text assertions)
+    totalTasksHeading: '.card.bg-primary h5',
+    completedTasksHeading: '.card.bg-success h5',
+    pendingTasksHeading: '.card.bg-warning h5'
   },
 
   // === TASK FORM (Create/Edit) ===
@@ -154,10 +148,11 @@ export const AppLocators = {
     navbarToggler: '.navbar-toggler',
     navbarNav: '.navbar-nav',
 
-    // Navigation links
-    dashboardLink: 'a[href="/dashboard"]',
-    tasksLink: 'a[href="/tasks"]',
-    logoutButton: 'button:contains("Logout")',
+    // Navigation links (scoped to navbar to avoid strict-mode violations
+    // when card links share the same href on dashboard)
+    dashboardLink: '.navbar a[href="/dashboard"]',
+    tasksLink: '.navbar a[href="/tasks"]',
+    logoutButton: 'button:has-text("Logout")',
 
     // User info
     userGreeting: '.navbar-text',

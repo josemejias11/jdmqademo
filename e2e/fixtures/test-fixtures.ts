@@ -5,7 +5,7 @@ import { TasksPage } from '@pages/tasks-page';
 import { TestDataCleanup } from '@utils/test-data-cleanup';
 
 /**
- * Extended test fixture with page objects
+ * Extended test fixture with page objects and per-test data cleanup.
  */
 export const test = base.extend<{
   sessionId: string;
@@ -14,18 +14,17 @@ export const test = base.extend<{
   tasksPage: TasksPage;
   cleanup: TestDataCleanup;
 }>({
+  // Unique session ID per test worker — keeps server-side task state isolated
   sessionId: async ({}, use) => {
-    const randomStr = Math.random().toString(36).substring(2, 9);
-    const sessionId = `session-${randomStr}`;
-    process.env.TEST_SESSION_ID = sessionId;
-    await use(sessionId);
+    const id = `session-${Math.random().toString(36).substring(2, 9)}`;
+    process.env.TEST_SESSION_ID = id;
+    await use(id);
   },
 
+  // Inject x-test-session-id into every browser request
   page: async ({ browser, sessionId }, use) => {
     const context = await browser.newContext({
-      extraHTTPHeaders: {
-        'x-test-session-id': sessionId
-      }
+      extraHTTPHeaders: { 'x-test-session-id': sessionId }
     });
     const page = await context.newPage();
     await use(page);
@@ -33,57 +32,38 @@ export const test = base.extend<{
     await context.close();
   },
 
+  // Inject x-test-session-id into every API request context
   request: async ({ playwright, sessionId }, use) => {
-    const requestContext = await playwright.request.newContext({
-      extraHTTPHeaders: {
-        'x-test-session-id': sessionId
-      }
+    const ctx = await playwright.request.newContext({
+      extraHTTPHeaders: { 'x-test-session-id': sessionId }
     });
-    await use(requestContext);
-    await requestContext.dispose();
+    await use(ctx);
+    await ctx.dispose();
   },
 
-  // Define fixtures that will be passed to tests
-  loginPage: async ({ page }, use) => {
-    const loginPage = new LoginPage(page);
-    await use(loginPage);
-  },
+  // Page object fixtures
+  loginPage: async ({ page }, use) => await use(new LoginPage(page)),
+  dashboardPage: async ({ page }, use) => await use(new DashboardPage(page)),
+  tasksPage: async ({ page }, use) => await use(new TasksPage(page)),
 
-  dashboardPage: async ({ page }, use) => {
-    const dashboardPage = new DashboardPage(page);
-    await use(dashboardPage);
-  },
-
-  tasksPage: async ({ page }, use) => {
-    const tasksPage = new TasksPage(page);
-    await use(tasksPage);
-  },
-
-  cleanup: async ({ page }, use) => {
-    const cleanup = new TestDataCleanup(page);
+  // API-based cleanup — authenticates once, then deletes test tasks after the test
+  cleanup: async ({ request }, use) => {
+    const cleanup = new TestDataCleanup(request);
     await use(cleanup);
-    // After test completes, clean up tasks
     await cleanup.cleanupTasks();
   }
 });
 
-/**
- * Re-export expect from Playwright for convenience
- */
 export { expect } from '@playwright/test';
 
 /**
- * Authentication fixture for tests requiring login
+ * Pre-authenticated fixture — logs in as admin before each test.
  */
-export const withLogin = test.extend<{
-  authenticated: void;
-}>({
-  // Define authenticated fixture that logs in before each test
+export const withLogin = test.extend<{ authenticated: void }>({
   authenticated: async ({ loginPage }, use) => {
     await loginPage.goto();
     await loginPage.loginWithDefaultUser();
     await loginPage.verifySuccessfulLogin();
-
     await use();
   }
 });

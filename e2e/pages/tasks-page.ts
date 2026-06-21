@@ -1,290 +1,160 @@
-import { Page, expect } from '@playwright/test';
+import { expect } from '@playwright/test';
+import { BasePOM } from '@models/base-page';
 import { BasePage, TaskData } from '@models/models';
 import { config } from '@config/config';
 import { retry, waitForStableElement } from '@utils/helpers';
-// import { taskForm, tasksList } from '../locators/app-locators'; // TODO: Implement centralized locators
+import { taskForm as taskFormLocators, navigation } from '@locators/app-locators';
+
+// Task-page–specific selectors (kept local — not generic enough for the shared locators file)
+const sel = {
+  pageTitle: 'h2:has-text("My Tasks")',
+  createTaskButton: 'a:has-text("New Task")',
+  taskRows: 'tbody tr',
+  completeButton: 'button[title*="Mark as"]',
+  deleteButton: 'button[title="Delete task"]',
+  confirmDeleteButton: '.modal-footer button:has-text("Delete")',
+  filterAll: 'button:has-text("All")',
+  filterCompleted: 'button:has-text("Completed")',
+  filterPending: 'button:has-text("Pending")',
+  noTasksMessage: 'text=No tasks found'
+} as const;
 
 /**
- * Page object model for the tasks page
+ * Page object model for the Tasks list page.
  */
-export class TasksPage implements BasePage {
-  private selectors = {
-    pageTitle: 'h2:has-text("My Tasks")',
-    createTaskButton: 'a:has-text("New Task")',
-    taskTitleInput: 'input[name="title"]',
-    taskDescriptionInput: 'textarea[name="description"]',
-    taskSubmitButton: 'button[type="submit"]',
-    taskItems: 'tbody tr',
-    taskTitle: '.task-title',
-    completeCheckbox: 'button[title*="Mark as"]', // Button with title containing "Mark as"
-    deleteButton: 'button[title="Delete task"]',
-    confirmDeleteButton: '.modal-footer button:has-text("Delete")',
-    filterAllButton: 'button:has-text("All")',
-    filterCompletedButton: 'button:has-text("Completed")',
-    filterPendingButton: 'button:has-text("Pending")',
-    noTasksMessage: 'text=No tasks found'
-  };
+export class TasksPage extends BasePOM implements BasePage {
+  // ─── Navigation ──────────────────────────────────────────────────────────
 
-  constructor(private page: Page) {}
-
-  /**
-   * Navigate to the tasks page
-   */
   async goto(): Promise<void> {
     await this.page.goto(`${config.baseUrl}/tasks`);
     await this.verifyPageLoaded();
   }
 
-  /**
-   * Verify tasks page is loaded with all expected elements
-   */
+  // ─── Assertions ──────────────────────────────────────────────────────────
+
   async verifyPageLoaded(): Promise<void> {
     await retry(async () => {
       await expect(this.page).toHaveURL(/tasks$/);
-      await expect(this.page.locator(this.selectors.pageTitle)).toBeVisible();
-      await expect(this.page.locator(this.selectors.createTaskButton)).toBeVisible();
+      await expect(this.page.locator(sel.pageTitle)).toBeVisible();
+      await expect(this.page.locator(sel.createTaskButton)).toBeVisible();
     });
   }
 
-  /**
-   * Navigate to task creation page
-   */
-  async navigateToCreateTask(): Promise<void> {
-    await this.page.click(this.selectors.createTaskButton);
-    await expect(this.page).toHaveURL(/tasks\/new/);
-    await expect(this.page.locator(this.selectors.taskTitleInput)).toBeVisible();
-  }
-
-  /**
-   * Create a new task
-   * @param taskData Task data to create
-   */
-  async createTask(taskData: TaskData): Promise<void> {
-    // Navigate to task creation if not already there
-    if (!this.page.url().includes('/new')) {
-      await this.navigateToCreateTask();
-    }
-
-    await waitForStableElement(this.page, this.selectors.taskTitleInput);
-    await this.page.fill(this.selectors.taskTitleInput, taskData.title);
-    await this.page.fill(this.selectors.taskDescriptionInput, taskData.description);
-
-    // Submit the form and wait for navigation
-    try {
-      await Promise.all([
-        this.page.waitForURL(/tasks$/, { timeout: 10000 }),
-        this.page.click(this.selectors.taskSubmitButton)
-      ]);
-    } catch (error) {
-      // If navigation fails, check if we're still on the form page (validation error)
-      if (this.page.url().includes('/new')) {
-        // Check for any error messages on the form
-        const errorMessage = this.page.locator('.invalid-feedback').first();
-        if (await errorMessage.isVisible()) {
-          const errorText = await errorMessage.textContent();
-          throw new Error(`Task creation failed with validation error: ${errorText}`);
-        }
-      }
-      throw error;
-    }
-
-    // Verify the task was created successfully
-    await this.verifyTaskExists(taskData.title);
-  }
-
-  /**
-   * Verify a task exists in the list
-   * @param title Task title to check
-   */
   async verifyTaskExists(title: string): Promise<void> {
     await expect(this.page.getByText(title)).toBeVisible();
   }
 
-  /**
-   * Verify a task does not exist
-   * @param title Task title to verify
-   */
   async verifyTaskDoesNotExist(title: string): Promise<void> {
-    // Wait for a brief moment for UI to update and use toBeHidden instead of not.toBeVisible
-    const taskElement = this.page.getByText(title);
-    await expect(taskElement).toBeHidden({ timeout: 5000 });
+    await expect(this.page.getByText(title)).toBeHidden({ timeout: config.timeouts.medium });
   }
 
-  /**
-   * Toggle the completion status of a task
-   * @param title Task title to toggle
-   */
-  async toggleTaskCompletion(title: string): Promise<void> {
-    const taskRow = this.page.locator(this.selectors.taskItems).filter({ hasText: title });
-    const completeButton = taskRow.locator(this.selectors.completeCheckbox);
+  // ─── Data ─────────────────────────────────────────────────────────────────
 
-    // Get the current state before clicking
-    const currentClass = (await completeButton.getAttribute('class')) || '';
-    const wasCompleted = currentClass.includes('btn-success');
-
-    // Click the button
-    await completeButton.click();
-
-    // Wait for the state to change by waiting for the opposite class
-    if (wasCompleted) {
-      // Was completed, now should be pending (btn-outline-secondary)
-      await expect(completeButton).toHaveClass(/btn-outline-secondary/, { timeout: 10000 });
-    } else {
-      // Was pending, now should be completed (btn-success)
-      await expect(completeButton).toHaveClass(/btn-success/, { timeout: 10000 });
-    }
+  async getTaskCount(): Promise<number> {
+    return this.page.locator(sel.taskRows).count();
   }
 
-  /**
-   * Check if a task is completed
-   * @param title Task title to check
-   * @returns True if the task is completed, false otherwise
-   */
   async isTaskCompleted(title: string): Promise<boolean> {
-    const taskRow = this.page.locator(this.selectors.taskItems).filter({ hasText: title });
-    const completeButton = taskRow.locator(this.selectors.completeCheckbox);
+    const row = this._rowByTitle(title);
+    const btn = row.locator(sel.completeButton);
+    await expect(btn).toBeVisible();
+    const cls = (await btn.getAttribute('class')) ?? '';
+    return cls.includes('btn-success');
+  }
 
-    // Wait for the button to be stable and then check its class
-    await expect(completeButton).toBeVisible();
-    const buttonClass = (await completeButton.getAttribute('class')) || '';
-    return buttonClass.includes('btn-success');
+  // ─── Actions ─────────────────────────────────────────────────────────────
+
+  async navigateToCreateTask(): Promise<void> {
+    await this.page.click(sel.createTaskButton);
+    await expect(this.page).toHaveURL(/tasks\/new/);
+    await expect(this.page.locator(taskFormLocators.titleInput)).toBeVisible();
   }
 
   /**
-   * Delete a task
-   * @param title Task title to delete
+   * Create a task via the form UI. Throws if a validation error appears.
    */
+  async createTask(taskData: TaskData): Promise<void> {
+    if (!this.page.url().includes('/new')) {
+      await this.navigateToCreateTask();
+    }
+
+    await waitForStableElement(this.page, taskFormLocators.titleInput);
+    await this.page.fill(taskFormLocators.titleInput, taskData.title);
+    await this.page.fill(taskFormLocators.descriptionTextarea, taskData.description);
+
+    try {
+      await Promise.all([
+        this.page.waitForURL(/tasks$/, { timeout: config.timeouts.long }),
+        this.page.click(taskFormLocators.submitButton)
+      ]);
+    } catch {
+      if (this.page.url().includes('/new')) {
+        const errEl = this.page.locator('.invalid-feedback').first();
+        if (await errEl.isVisible()) {
+          throw new Error(`Task creation failed: ${await errEl.textContent()}`);
+        }
+      }
+      throw new Error('Task creation: unexpected navigation failure');
+    }
+
+    await this.verifyTaskExists(taskData.title);
+  }
+
+  async toggleTaskCompletion(title: string): Promise<void> {
+    const btn = this._rowByTitle(title).locator(sel.completeButton);
+    const wasCompleted = ((await btn.getAttribute('class')) ?? '').includes('btn-success');
+
+    await btn.click();
+
+    await expect(btn).toHaveClass(wasCompleted ? /btn-outline-secondary/ : /btn-success/, {
+      timeout: config.timeouts.long
+    });
+  }
+
   async deleteTask(title: string): Promise<void> {
-    const taskRow = this.page.locator(this.selectors.taskItems).filter({ hasText: title });
+    // Use the specific delete button by title attribute in the correct row
+    const deleteBtn = this._rowByTitle(title).locator(sel.deleteButton);
+    await deleteBtn.click();
 
-    // Click delete button (3rd button in the button group)
-    await taskRow.locator('td:last-child div button:nth-child(3)').click();
-
-    // Wait for modal to appear - using the modal.show class selector
     const modal = this.page.locator('.modal.show');
-    await modal.waitFor({ state: 'visible', timeout: 10000 });
-
-    // Verify modal content is loaded
+    await modal.waitFor({ state: 'visible', timeout: config.timeouts.long });
     await expect(modal.locator('.modal-title')).toContainText('Confirm Delete');
 
-    // Click the delete confirmation button (2nd button in modal footer)
-    const confirmButton = modal.locator('.modal-footer button:nth-child(2)');
-    await confirmButton.waitFor({ state: 'visible', timeout: 5000 });
-    await confirmButton.click();
+    const confirmBtn = this.page.locator(sel.confirmDeleteButton);
+    await confirmBtn.waitFor({ state: 'visible', timeout: config.timeouts.medium });
+    await confirmBtn.click();
 
-    // Wait for modal to disappear
-    await expect(modal).toBeHidden({ timeout: 10000 });
-
-    // Verify task was deleted by checking if it's no longer in the task list
-    await expect(
-      this.page.locator(this.selectors.taskItems).filter({ hasText: title })
-    ).toHaveCount(0, { timeout: 10000 });
+    await expect(modal).toBeHidden({ timeout: config.timeouts.long });
+    await expect(this._rowByTitle(title)).toHaveCount(0, { timeout: config.timeouts.long });
   }
 
-  /**
-   * Filter tasks by completion status
-   * @param filter Filter to apply: 'all', 'completed', or 'pending'
-   */
   async filterTasks(filter: 'all' | 'completed' | 'pending'): Promise<void> {
-    switch (filter) {
-      case 'all':
-        await this.page.click(this.selectors.filterAllButton);
-        break;
-      case 'completed':
-        await this.page.click(this.selectors.filterCompletedButton);
-        break;
-      case 'pending':
-        await this.page.click(this.selectors.filterPendingButton);
-        break;
-    }
+    const map = { all: sel.filterAll, completed: sel.filterCompleted, pending: sel.filterPending };
+    await this.page.click(map[filter]);
   }
 
   /**
-   * Navigate back to dashboard using mobile-friendly approach
+   * Navigate to Dashboard via navbar, with mobile-aware direct fallback.
    */
   async navigateToDashboard(): Promise<void> {
-    const navbarToggler = this.page.locator('.navbar-toggler');
-    const isMobile = await navbarToggler.isVisible();
-
-    if (isMobile) {
-      // For mobile, use direct navigation to avoid Bootstrap collapse issues
-      console.log('Mobile device detected, using direct navigation to dashboard');
+    if (await this.isMobile()) {
       await this.page.goto(`${config.baseUrl}/dashboard`);
       await expect(this.page).toHaveURL(/dashboard/);
-
-      // Wait for dashboard content to load
-      await expect(this.page.locator('h1:has-text("Welcome"), h2:has-text("Welcome")')).toBeVisible(
-        {
-          timeout: 10000
-        }
-      );
       return;
     }
-
-    // Desktop navigation - try navbar first
     try {
-      await this.page.click('a.nav-link:has-text("Dashboard")');
+      await this.page.click(navigation.dashboardLink);
       await expect(this.page).toHaveURL(/dashboard/);
     } catch {
-      console.warn('Desktop navbar navigation failed, using direct navigation fallback');
+      console.warn('TasksPage.navigateToDashboard: navbar click failed, falling back');
       await this.page.goto(`${config.baseUrl}/dashboard`);
       await expect(this.page).toHaveURL(/dashboard/);
     }
   }
 
-  /**
-   * Helper method to handle mobile navigation
-   */
-  private async handleMobileNavigation(): Promise<void> {
-    const navbarToggler = this.page.locator('.navbar-toggler');
+  // ─── Private helpers ─────────────────────────────────────────────────────
 
-    if (await navbarToggler.isVisible()) {
-      // Check if navigation links are already visible
-      const dashboardNavLink = this.page.locator('a.nav-link:has-text("Dashboard")');
-
-      if (await dashboardNavLink.isVisible()) {
-        // Navigation is already expanded, no need to toggle
-        return;
-      }
-
-      // Try to expand the navigation
-      await navbarToggler.click();
-
-      // Wait for navigation links to become visible with multiple attempts
-      let attempts = 0;
-      const maxAttempts = 3;
-
-      while (attempts < maxAttempts) {
-        try {
-          await expect(dashboardNavLink).toBeVisible({ timeout: 3000 });
-          return; // Success, navigation is now visible
-        } catch {
-          attempts++;
-          if (attempts < maxAttempts) {
-            // Try clicking the toggler again
-            console.log(`Attempt ${attempts}: Retrying navbar toggle...`);
-            await navbarToggler.click();
-          }
-        }
-      }
-
-      // Final attempt with a longer timeout
-      try {
-        await expect(dashboardNavLink).toBeVisible({ timeout: 5000 });
-      } catch {
-        console.warn(
-          'Mobile navigation failed to expand after multiple attempts. Continuing with test...'
-        );
-        // Don't throw error - let the test continue and fail naturally if navigation is needed
-      }
-    }
-  }
-
-  /**
-   * Get the count of tasks displayed
-   * @returns Number of tasks displayed
-   */
-  async getTaskCount(): Promise<number> {
-    return await this.page.locator(this.selectors.taskItems).count();
+  private _rowByTitle(title: string) {
+    return this.page.locator(sel.taskRows).filter({ hasText: title });
   }
 }

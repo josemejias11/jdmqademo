@@ -1,88 +1,62 @@
-import { Page } from '@playwright/test';
-import { config } from '../config/config';
-import { retry } from './helpers';
+import { APIRequestContext } from '@playwright/test';
+import { config } from '@config/config';
 
 /**
- * Data cleanup utility for removing test data
+ * API-based test data cleanup.
+ * Deletes tasks whose title contains "Test" via the REST API — faster and
+ * more reliable than driving the delete modal through the browser.
  */
 export class TestDataCleanup {
-  constructor(private page: Page) {}
+  private token: string | null = null;
+
+  constructor(private readonly request: APIRequestContext) {}
 
   /**
-   * Clean up tasks created during tests
+   * Authenticate with the API using the default admin credentials.
+   * Must be called before cleanupTasks().
    */
-  async cleanupTasks(): Promise<void> {
-    try {
-      // Navigate to tasks page
-      await this.page.goto(`${config.baseUrl}/tasks`);
-
-      // Check if we're authenticated and on the tasks page
-      if (!this.page.url().includes('/tasks')) {
-        console.log('Not on tasks page, skipping task cleanup');
-        return;
-      }
-
-      // Look for tasks with "Test" in the name (assuming test tasks have this marker)
-      const testTasks = this.page.getByText(/Test.*-[0-9]+/);
-
-      if ((await testTasks.count()) === 0) {
-        console.log('No test tasks found to clean up');
-        return;
-      }
-
-      console.log(`Found ${await testTasks.count()} test tasks to clean up`);
-
-      // Get all delete buttons for test tasks
-      const deleteButtons = this.page.getByRole('button', { name: /delete/i });
-      const count = await deleteButtons.count();
-
-      // Click each delete button and confirm deletion
-      for (let i = 0; i < count; i++) {
-        try {
-          // Always get the first delete button since the list shifts after each deletion
-          const deleteButton = this.page.getByRole('button', { name: /delete/i }).first();
-          await deleteButton.click();
-
-          // Handle confirmation if there is one
-          const confirmButton = this.page.locator('.modal-footer button:has-text("Delete"), .modal-footer button:has-text("Confirm"), .modal-footer .btn-danger').first();
-          if (await confirmButton.isVisible()) {
-            await confirmButton.click();
-          }
-
-          // Wait for UI to update
-          await this.page.waitForLoadState('domcontentloaded');
-        } catch (err) {
-          console.error(`Error during task cleanup: ${err}`);
-        }
-      }
-
-      console.log('Task cleanup complete');
-    } catch (error) {
-      console.log(`Could not clean up tasks: ${error}`);
+  async authenticate(): Promise<void> {
+    const res = await this.request.post(`${config.apiUrl}/api/auth/login`, {
+      data: { username: config.users.admin.username, password: config.users.admin.password }
+    });
+    if (!res.ok()) {
+      console.warn('TestDataCleanup.authenticate: login failed, cleanup will be skipped');
+      return;
     }
+    this.token = (await res.json()).token ?? null;
   }
 
   /**
-   * Clean up user's auth state if needed
+   * Delete all tasks whose title contains "Test".
    */
-  async resetAuthState(): Promise<void> {
-    try {
-      await retry(async () => {
-        await this.page.goto(`${config.baseUrl}/dashboard`);
+  async cleanupTasks(): Promise<void> {
+    if (!this.token) await this.authenticate();
+    if (!this.token) return;
 
-        // Check if we're authenticated
-        if (this.page.url().includes('/dashboard')) {
-          // Look for logout button
-          const logoutButton = this.page.getByRole('button', { name: /logout/i });
-          if (await logoutButton.isVisible()) {
-            await logoutButton.click();
-            await this.page.waitForURL(/login/);
-          }
-        }
-      });
-      console.log('Auth state reset complete');
-    } catch (error) {
-      console.log(`Could not reset auth state: ${error}`);
+    const headers = {
+      Authorization: `Bearer ${this.token}`,
+      ...(process.env.TEST_SESSION_ID
+        ? { 'x-test-session-id': process.env.TEST_SESSION_ID }
+        : {})
+    };
+
+    const listRes = await this.request.get(`${config.apiUrl}/api/tasks`, { headers });
+    if (!listRes.ok()) {
+      console.warn('TestDataCleanup.cleanupTasks: could not fetch tasks');
+      return;
+    }
+
+    const tasks: Array<{ id: string; title: string }> = (await listRes.json()).data ?? [];
+    const testTasks = tasks.filter(t => /Test/.test(t.title));
+
+    if (testTasks.length === 0) {
+      console.log('TestDataCleanup: no test tasks to remove');
+      return;
+    }
+
+    console.log(`TestDataCleanup: removing ${testTasks.length} test task(s)`);
+    for (const task of testTasks) {
+      await this.request.delete(`${config.apiUrl}/api/tasks/${task.id}`, { headers });
     }
   }
 }

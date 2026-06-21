@@ -413,8 +413,12 @@ jobs:
     needs: [setup, quality_gates, build]
 
     env:
-      BACKEND_PORT: 3051  # Unique port to avoid conflicts
-      FRONTEND_PORT: 3050
+      NODE_ENV: test
+      JWT_SECRET: dev-jwt-secret-key-change-in-production
+      MOCK_USER: admin
+      MOCK_PASSWORD: changeme
+      BACKEND_PORT: 3001
+      FRONTEND_URL: http://127.0.0.1:3000
 
     steps:
       - name: Checkout code
@@ -440,25 +444,16 @@ jobs:
         if: needs.setup.outputs.cache-hit != 'true'
         run: npm ci
 
-      - name: Download build artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: build-files
-          path: .
-
-      - name: Start application for testing (optimized)
+      - name: Start backend
         run: |
-          # Use pre-built artifacts if available
-          if [ -d "dist" ]; then
-            echo "Using pre-built artifacts for performance testing"
-            BACKEND_PORT=${{ env.BACKEND_PORT }} node dist/server.js &
-            npx -y serve -s dist -l ${{ env.FRONTEND_PORT }} &
-          else
-            echo "Building and starting applications"
-            BACKEND_PORT=${{ env.BACKEND_PORT }} npm run backend &
-            PORT=${{ env.FRONTEND_PORT }} npm run frontend &
-          fi
-          npx wait-on http://localhost:${{ env.FRONTEND_PORT }} --timeout 60000
+          npm run backend &
+          npx wait-on http://127.0.0.1:3001/api/health --timeout 30000
+
+      - name: Start frontend
+        run: |
+          # Pass --port explicitly — Vite does not read the PORT env var
+          npm run frontend -- --port 3000 --host 127.0.0.1 &
+          npx wait-on http://127.0.0.1:3000 --timeout 60000
 
       - name: Cache Lighthouse CI
         uses: actions/cache@v4
@@ -470,15 +465,9 @@ jobs:
           restore-keys: |
             ${{ env.CACHE_KEY_PREFIX }}-lighthouse-${{ runner.os }}-
 
-      - name: Run Lighthouse CI (optimized)
+      - name: Run Lighthouse CI
         run: |
-          # Install Lighthouse CI with caching
           npm install -g @lhci/cli@0.12.x
-
-          # Update lighthouse config for custom port
-          sed -i "s|http://localhost:3000|http://localhost:${{ env.FRONTEND_PORT }}|g" .lighthouserc.json
-
-          # Run Lighthouse CI
           lhci autorun --config=./.lighthouserc.json || echo "Lighthouse CI completed with warnings"
         continue-on-error: true
 

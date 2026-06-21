@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Codebase Architecture Review - jdmqademo</title>
+      <!-- Tailwind CSS -->
+      <script src="https://cdn.tailwindcss.com"></script>
+      <!-- Mermaid JS -->
+      <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+      <script>
+        mermaid.initialize({ startOnLoad: true, theme: 'neutral' });
+      </script>
+    </head>
+    <body class="bg-gray-50 text-gray-900 font-sans leading-normal tracking-normal">
+    
+      <div class="max-w-6xl mx-auto px-4 py-8">
+        <header class="border-b border-gray-200 pb-6 mb-8">
+          <h1 class="text-4xl font-bold text-gray-900">Codebase Architecture Review</h1>
+          <p class="text-gray-600 mt-2">Targeting Deep Modules, Seam Discipline, and Parallel Testability</p>
+        </header>
+    
+        <!-- Top Recommendation Alert -->
+        <div class="bg-blue-50 border-l-4 border-blue-600 p-6 rounded-r-lg mb-10 shadow-sm">
+          <h2 class="text-xl font-bold text-blue-900 mb-2">⭐ Top Recommendation</h2>
+          <p class="text-blue-800">
+            We recommend tackling **Candidate 1: Multi-Tenant State Isolation Seam** first. 
+            Resolving parallel test execution flakiness provides immediate leverage by reducing the test run time from 1.7 minutes to under 15 seconds, and enables
+  safe CI verification without disabling browser concurrency.
+          </p>
+        </div>
+    
+        <!-- Candidates Grid -->
+        <div class="space-y-12">
+    
+          <!-- Candidate 1 -->
+          <section class="bg-white rounded-xl shadow-md border border-gray-200 p-8">
+            <div class="flex justify-between items-start mb-4">
+              <div>
+                <span class="bg-green-100 text-green-800 text-xs font-semibold px-2.5 py-0.5 rounded-full uppercase tracking-wider">Strong Recommendation</span>
+                <h3 class="text-2xl font-bold mt-2 text-gray-900">Candidate 1: Multi-Tenant State Isolation Seam</h3>
+              </div>
+            </div>
+    
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-6">
+              <div>
+                <h4 class="font-semibold text-gray-700 uppercase tracking-wider text-xs">Files Involved</h4>
+                <ul class="list-disc pl-5 mt-2 text-sm text-gray-600 space-y-1">
+                  <li><code>server/server.ts</code> (Backend server)</li>
+                  <li><code>e2e/src/fixtures/test-fixtures.ts</code> (Playwright test client setup)</li>
+                </ul>
+    
+                <h4 class="font-semibold text-gray-700 uppercase tracking-wider text-xs mt-6">Problem</h4>
+                <p class="mt-2 text-sm text-gray-600">
+                  The backend uses a single global in-memory database array. Tests executing in parallel across chromium, firefox, and webkit modify the same tasks
+  array, causing statistics and task filter assertions to fail with race conditions.
+                </p>
+    
+                <h4 class="font-semibold text-gray-700 uppercase tracking-wider text-xs mt-6">Solution</h4>
+                <p class="mt-2 text-sm text-gray-600">
+                  Deepen the memory store by wrapping it in an adapter that uses a <code>session-id</code> header to route read/write operations to isolated, thread-
+  safe dynamic stores. The Playwright fixture generates a unique session ID per test thread.
+                </p>
+    
+                <h4 class="font-semibold text-gray-700 uppercase tracking-wider text-xs mt-6">Benefits</h4>
+                <p class="mt-2 text-sm text-gray-600">
+                  Provides complete **locality** of test state. The interface remains simple (just an HTTP header injection), but enables massive **leverage**—enabling
+  100% stable parallel test runs across all browsers.
+                </p>
+              </div>
+    
+              <div class="bg-gray-50 p-4 rounded-lg border border-gray-100 flex flex-col justify-between">
+                <h4 class="font-semibold text-gray-700 uppercase tracking-wider text-xs mb-4">State Flow Architecture</h4>
+                
+                <div class="mermaid">
+                  graph TD
+                    subgraph Before (Shared Collision)
+                      T1[Test Worker 1] -->|POST /tasks| GlobalStore[Single In-Memory DB]
+                      T2[Test Worker 2] -->|GET /tasks| GlobalStore
+                    end
+                    
+                    subgraph After (Isolated Tenants)
+                      W1[Test Worker 1: Session A] -->|Header: Session A| Router[State Seam Router]
+                      W2[Test Worker 2: Session B] -->|Header: Session B| Router
+                      Router -->|Map to| StoreA[(DB Partition A)]
+                      Router -->|Map to| StoreB[(DB Partition B)]
+                    end
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Candidate 2 -->
+          <section class="bg-white rounded-xl shadow-md border border-gray-200 p-8">
+            <div class="flex justify-between items-start mb-4">
+              <div>
+                <span class="bg-yellow-100 text-yellow-800 text-xs font-semibold px-2.5 py-0.5 rounded-full uppercase tracking-wider">Worth Exploring</span>
+                <h3 class="text-2xl font-bold mt-2 text-gray-900">Candidate 2: Deep Page Modules for Navigation and State</h3>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-6">
+              <div>
+                <h4 class="font-semibold text-gray-700 uppercase tracking-wider text-xs">Files Involved</h4>
+                <ul class="list-disc pl-5 mt-2 text-sm text-gray-600 space-y-1">
+                  <li><code>e2e/src/pages/tasks-page.ts</code></li>
+                  <li><code>e2e/src/pages/dashboard-page.ts</code></li>
+                  <li><code>e2e/src/specs/tasks/task-management.spec.ts</code></li>
+                </ul>
+
+                <h4 class="font-semibold text-gray-700 uppercase tracking-wider text-xs mt-6">Problem</h4>
+                <p class="mt-2 text-sm text-gray-600">
+                  E2E tests manually navigate via raw URLs, manipulate responsive menus (like the mobile toggle button), and perform direct assertions on CSS classes.
+  When layout structures shift (e.g. mobile vs desktop responsive views), tests break because Page Objects are shallow wrappers.
+                </p>
+
+                <h4 class="font-semibold text-gray-700 uppercase tracking-wider text-xs mt-6">Solution</h4>
+                <p class="mt-2 text-sm text-gray-600">
+                  Extend the Page Object Interface to internally abstract the viewport sizing. Methods like <code>navigateToTasks()</code> will automatically detect if
+  the mobile toggle button is visible, click to expand it if necessary, and handle timeouts internally.
+                </p>
+
+                <h4 class="font-semibold text-gray-700 uppercase tracking-wider text-xs mt-6">Benefits</h4>
+                <p class="mt-2 text-sm text-gray-600">
+                  Spec files only concern themselves with domain behavior (creating, completing, and filtering tasks) rather than viewport layout concerns. Deletion or
+  refactoring of layout classes will only require updating the page object implementation, preserving test suite stability.
+                </p>
+              </div>
+
+              <div class="bg-gray-50 p-4 rounded-lg border border-gray-100 flex flex-col justify-between">
+                <h4 class="font-semibold text-gray-700 uppercase tracking-wider text-xs mb-4">Module Seam Architecture</h4>
+                
+                <div class="mermaid">
+                  graph TD
+                    subgraph Shallow Page Objects
+                      Spec[Test Spec] -->|click toggle menu| Page[Page Object]
+                      Spec -->|wait for selector| Page
+                      Spec -->|assert button class| Page
+                    end
+                    
+                    subgraph Deep Page Objects
+                      SpecDeep[Test Spec] -->|tasksPage.filterCompleted| PageDeep[Page Object Module]
+                      PageDeep -->|Internal: Detect Viewport| Logic[Responsive Menu Handler]
+                      PageDeep -->|Internal: Wait Predicate| Verify[Completion Class Matcher]
+                    end
+                </div>
+              </div>
+            </div>
+          </section>
+
+        </div>
+      </div>
+
+    </body>
+    </html>
+

@@ -34,15 +34,13 @@ test.describe('Smoke Tests', () => {
     }
   );
 
-  authenticatedTest('should navigate to tasks page', async ({ dashboardPage, tasksPage }) => {
-    await dashboardPage.goto();
+  authenticatedTest('should navigate to tasks page', async ({ tasksPage, authenticated: _authenticated }) => {
     // Use direct navigation for mobile-friendly approach
     await tasksPage.goto();
     await tasksPage.verifyPageLoaded();
   });
 
-  authenticatedTest('should create and delete a task', async ({ dashboardPage, tasksPage }) => {
-    await dashboardPage.goto();
+  authenticatedTest('should create and delete a task', async ({ tasksPage, authenticated: _authenticated }) => {
     // Use direct navigation for mobile-friendly approach
     await tasksPage.goto();
     await tasksPage.verifyPageLoaded();

@@ -2,8 +2,8 @@
  * Global configuration values for the test suite
  */
 export const config = {
-  baseUrl: process.env.BASE_URL || 'http://localhost:3000',
-  apiUrl: process.env.API_URL || 'http://localhost:3001',
+  baseUrl: process.env.BASE_URL || 'http://127.0.0.1:3000',
+  apiUrl: process.env.API_URL || 'http://127.0.0.1:3001',
 
   // Default test user
   users: {

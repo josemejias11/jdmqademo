@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../../fixtures/test-fixtures';
 
 test.describe('Visual Regression Tests', () => {
   test('homepage visual comparison', async ({ page }) => {
@@ -24,7 +24,7 @@ test.describe('Visual Regression Tests', () => {
   test('dashboard visual comparison', async ({ page }) => {
     // Login first
     await page.goto('/login');
-    await page.fill('input[name="email"]', process.env.MOCK_USER || 'admin');
+    await page.fill('input[name="username"]', process.env.MOCK_USER || 'admin');
     await page.fill('input[name="password"]', process.env.MOCK_PASSWORD || 'changeme');
     await page.click('button[type="submit"]');
 
@@ -39,7 +39,7 @@ test.describe('Visual Regression Tests', () => {
   test('tasks page visual comparison', async ({ page }) => {
     // Login first
     await page.goto('/login');
-    await page.fill('input[name="email"]', process.env.MOCK_USER || 'admin');
+    await page.fill('input[name="username"]', process.env.MOCK_USER || 'admin');
     await page.fill('input[name="password"]', process.env.MOCK_PASSWORD || 'changeme');
     await page.click('button[type="submit"]');
 

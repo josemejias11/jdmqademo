@@ -15,6 +15,16 @@ import NotFound from '../pages/NotFound';
 const ProtectedRoute: React.FC = () => {
   const { authState } = useAuth();
 
+  if (authState.loading) {
+    return (
+      <div className="d-flex justify-content-center align-items-center vh-100 bg-light">
+        <div className="spinner-border text-primary" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    );
+  }
+
   // If not authenticated, redirect to login
   if (!authState.isAuthenticated) {
     return <Navigate replace to="/login" />;
@@ -33,6 +43,16 @@ const ProtectedRoute: React.FC = () => {
 const LoginRoute: React.FC = () => {
   const { authState } = useAuth();
 
+  if (authState.loading) {
+    return (
+      <div className="d-flex justify-content-center align-items-center vh-100 bg-light">
+        <div className="spinner-border text-primary" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    );
+  }
+
   // If already authenticated, redirect to dashboard
   if (authState.isAuthenticated) {
     return <Navigate replace to="/dashboard" />;
@@ -45,6 +65,16 @@ const LoginRoute: React.FC = () => {
 // Root route wrapper - redirects to dashboard if logged in, login if not
 const RootRoute: React.FC = () => {
   const { authState } = useAuth();
+
+  if (authState.loading) {
+    return (
+      <div className="d-flex justify-content-center align-items-center vh-100 bg-light">
+        <div className="spinner-border text-primary" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    );
+  }
 
   if (authState.isAuthenticated) {
     return <Navigate replace to="/dashboard" />;

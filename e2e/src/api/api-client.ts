@@ -13,6 +13,11 @@ export class ApiClient {
     this.baseUrl = config.apiUrl;
   }
 
+  private getSessionHeaders(): Record<string, string> {
+    const sessionId = process.env.TEST_SESSION_ID;
+    return sessionId ? { 'x-test-session-id': sessionId } : {};
+  }
+
   /**
    * Login via API and get authentication token
    * @param username Username for login
@@ -21,7 +26,8 @@ export class ApiClient {
    */
   async login(username: string, password: string): Promise<string | null> {
     const apiContext = await request.newContext({
-      baseURL: this.baseUrl
+      baseURL: this.baseUrl,
+      extraHTTPHeaders: this.getSessionHeaders()
     });
 
     const response = await apiContext.post('/api/auth/login', {
@@ -55,7 +61,8 @@ export class ApiClient {
     const apiContext = await request.newContext({
       baseURL: this.baseUrl,
       extraHTTPHeaders: {
-        Authorization: `Bearer ${this.token}`
+        Authorization: `Bearer ${this.token}`,
+        ...this.getSessionHeaders()
       }
     });
 
@@ -89,7 +96,8 @@ export class ApiClient {
     const apiContext = await request.newContext({
       baseURL: this.baseUrl,
       extraHTTPHeaders: {
-        Authorization: `Bearer ${this.token}`
+        Authorization: `Bearer ${this.token}`,
+        ...this.getSessionHeaders()
       }
     });
 
@@ -117,7 +125,8 @@ export class ApiClient {
     const apiContext = await request.newContext({
       baseURL: this.baseUrl,
       extraHTTPHeaders: {
-        Authorization: `Bearer ${this.token}`
+        Authorization: `Bearer ${this.token}`,
+        ...this.getSessionHeaders()
       }
     });
 

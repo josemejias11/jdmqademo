@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { getTaskById, deleteTask } from '../services/taskService';
 import { Task } from '../types';
+import { TaskContext } from '../context/TaskContext';
 import { FaArrowLeft, FaEdit, FaTrash, FaCheck, FaHourglassHalf } from 'react-icons/fa';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '@fontsource/montserrat/700.css';
@@ -18,6 +18,12 @@ const TaskDetail: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
+  const taskContext = useContext(TaskContext);
+  if (!taskContext) {
+    throw new Error('TaskDetail must be used within a TaskProvider');
+  }
+  const { getTaskById, deleteTask } = taskContext;
+
   useEffect(() => {
     if (!id) {
       setError('Task ID is required');
@@ -28,8 +34,8 @@ const TaskDetail: React.FC = () => {
     const fetchTask = async () => {
       try {
         setIsLoading(true);
-        const response = await getTaskById(id);
-        setTask(response.data);
+        const fetchedTask = await getTaskById(id);
+        setTask(fetchedTask);
         setError(null);
       } catch (error: Error | unknown) {
         const errorMessage =
@@ -41,7 +47,7 @@ const TaskDetail: React.FC = () => {
     };
 
     void fetchTask();
-  }, [id]);
+  }, [id, getTaskById]);
 
   const handleDelete = async () => {
     if (!id) return;

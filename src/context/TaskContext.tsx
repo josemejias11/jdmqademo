@@ -1,22 +1,22 @@
 import React, { createContext, useState, useEffect } from 'react';
 import { Task } from '../types';
 import {
-  getTasks,
-  createTask,
-  updateTask,
-  deleteTask,
+  getTasks as apiGetTasks,
+  getTaskById as apiGetTaskById,
+  createTask as apiCreateTask,
+  updateTask as apiUpdateTask,
+  deleteTask as apiDeleteTask,
   TaskFormValues
 } from '../services/taskService';
 import { useAuth } from './AuthContext';
 
 interface TaskContextType {
   tasks: Task[];
-  task: string;
-  setTask: (task: string) => void;
-  handleAddTask: (e: React.FormEvent<HTMLFormElement>) => void;
-  addTaskObject: (taskData: TaskFormValues) => Promise<void>;
-  toggleTaskDone: (id: string) => void;
-  deleteTask: (id: string) => void;
+  createTask: (taskData: TaskFormValues) => Promise<Task>;
+  getTaskById: (id: string) => Promise<Task>;
+  updateTask: (id: string, taskData: TaskFormValues) => Promise<Task>;
+  toggleTaskDone: (id: string) => Promise<void>;
+  deleteTask: (id: string) => Promise<void>;
   loading: boolean;
   error: string | null;
 }
@@ -31,7 +31,6 @@ interface TaskProviderProps {
 // Provider component
 const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
   const [tasks, setTasks] = useState<Task[]>([]);
-  const [task, setTask] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const { authState } = useAuth();
@@ -46,7 +45,7 @@ const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
       setLoading(true);
       setError(null);
       try {
-        const response = await getTasks();
+        const response = await apiGetTasks();
         setTasks(response.data);
       } catch (err) {
         const apiError = err as { message?: string };
@@ -58,79 +57,102 @@ const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
     void fetchTasks();
   }, [authState.isAuthenticated]);
 
-  // Add a new task via API
-  const addTask = async (text: string): Promise<void> => {
-    if (text.trim() === '') return;
+  // Fetch a task by ID (loads from API and updates/adds to cache)
+  const getTaskById = async (id: string): Promise<Task> => {
     setLoading(true);
     setError(null);
     try {
-      const response = await createTask({ title: text.trim(), description: '', completed: false });
-      setTasks([...tasks, response.data]);
+      const response = await apiGetTaskById(id);
+      const fetchedTask = response.data;
+      setTasks(prevTasks => {
+        const exists = prevTasks.some(t => t.id === id);
+        if (exists) {
+          return prevTasks.map(t => (t.id === id ? fetchedTask : t));
+        } else {
+          return [...prevTasks, fetchedTask];
+        }
+      });
+      return fetchedTask;
     } catch (err) {
       const apiError = err as { message?: string };
-      setError(apiError.message || 'Failed to add task. Please try again later.');
+      setError(apiError.message || 'Failed to load task. Please try again later.');
+      throw err;
     } finally {
       setLoading(false);
     }
   };
 
-  // Add a new task via API with full task object
-  const addTaskObject = async (taskData: TaskFormValues): Promise<void> => {
+  // Create a new task
+  const createTask = async (taskData: TaskFormValues): Promise<Task> => {
     setLoading(true);
     setError(null);
     try {
-      const response = await createTask(taskData);
-      setTasks([...tasks, response.data]);
+      const response = await apiCreateTask(taskData);
+      const newTask = response.data;
+      setTasks(prevTasks => [...prevTasks, newTask]);
+      return newTask;
     } catch (err) {
       const apiError = err as { message?: string };
       setError(apiError.message || 'Failed to add task. Please try again later.');
-      throw err; // Re-throw so the form can handle the error
+      throw err;
     } finally {
       setLoading(false);
     }
   };
 
-  // Add a new task
-  const handleAddTask = (e: React.FormEvent<HTMLFormElement>): void => {
-    e.preventDefault();
-    void addTask(task);
-    setTask('');
+  // Update an existing task
+  const updateTask = async (id: string, taskData: TaskFormValues): Promise<Task> => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await apiUpdateTask(id, taskData);
+      const updatedTask = response.data;
+      setTasks(prevTasks => prevTasks.map(t => (t.id === id ? updatedTask : t)));
+      return updatedTask;
+    } catch (err) {
+      const apiError = err as { message?: string };
+      setError(apiError.message || 'Failed to update task. Please try again later.');
+      throw err;
+    } finally {
+      setLoading(false);
+    }
   };
 
-  // Toggle the 'done' status of a task via API
+  // Toggle the 'done' status of a task
   const toggleTaskDone = async (id: string): Promise<void> => {
     setLoading(true);
     setError(null);
     try {
       const taskToToggle = tasks.find(t => t.id === id);
       if (!taskToToggle) {
-        setError('Task not found');
-        return;
+        throw new Error('Task not found');
       }
-      const response = await updateTask(id, {
+      const response = await apiUpdateTask(id, {
         title: taskToToggle.title,
         description: taskToToggle.description,
         completed: !taskToToggle.completed
       });
-      setTasks(tasks.map(t => (t.id === id ? response.data : t)));
+      setTasks(prevTasks => prevTasks.map(t => (t.id === id ? response.data : t)));
     } catch (err) {
       const apiError = err as { message?: string };
       setError(apiError.message || 'Failed to update task. Please try again later.');
+      throw err;
     } finally {
       setLoading(false);
     }
   };
 
-  // Delete a task via API
+  // Delete a task
   const removeTask = async (id: string): Promise<void> => {
     setLoading(true);
     setError(null);
     try {
-      await deleteTask(id);
-      setTasks(tasks.filter(t => t.id !== id));
+      await apiDeleteTask(id);
+      setTasks(prevTasks => prevTasks.filter(t => t.id !== id));
     } catch (err) {
       const apiError = err as { message?: string };
       setError(apiError.message || 'Failed to delete task. Please try again later.');
+      throw err;
     } finally {
       setLoading(false);
     }
@@ -139,10 +161,9 @@ const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
   // Values and functions to expose via the context
   const value = {
     tasks,
-    task,
-    setTask,
-    handleAddTask,
-    addTaskObject,
+    createTask,
+    getTaskById,
+    updateTask,
     toggleTaskDone,
     deleteTask: removeTask,
     loading,

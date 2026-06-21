@@ -41,7 +41,7 @@ export default defineConfig({
   // Shared settings for all projects
   use: {
     // Base URL for all tests
-    baseURL: process.env.BASE_URL || 'http://localhost:3000',
+    baseURL: process.env.BASE_URL || 'http://127.0.0.1:3000',
 
     // Capture screenshot only on failure
     screenshot: 'only-on-failure',
@@ -90,7 +90,7 @@ export default defineConfig({
   // Run your local dev server before starting the tests (only for local development)
   webServer: process.env.CI ? undefined : {
     command: 'npm run dev',
-    url: 'http://localhost:3000',
+    url: 'http://127.0.0.1:3000',
     reuseExistingServer: !process.env.CI || process.env.REUSE_SERVER === 'true',
     timeout: 120 * 1000
   }

@@ -245,7 +245,8 @@ export class DashboardPage implements BasePage {
         await expect(this.page).toHaveURL(/login/);
       } catch (error) {
         console.warn('Mobile logout via navbar failed, using direct navigation');
-        // Direct logout via URL navigation
+        // Direct logout via URL navigation - clear local storage first to prevent auto-login redirect
+        await this.page.evaluate(() => localStorage.removeItem('auth_token'));
         await this.page.goto(`${config.baseUrl}/login`);
         await expect(this.page).toHaveURL(/login/);
       }

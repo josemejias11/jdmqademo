@@ -18,7 +18,7 @@ const login = async (
   password: string
 ): Promise<{ success: boolean; user: User }> => {
   try {
-    const response = await apiClient.post<AuthResponse>('http://localhost:3001/api/auth/login', {
+    const response = await apiClient.post<AuthResponse>('http://127.0.0.1:3001/api/auth/login', {
       username,
       password
     });

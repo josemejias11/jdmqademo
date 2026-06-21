@@ -109,13 +109,13 @@ jobs:
       - name: Run npm audit
         run: |
           # Run audit and capture output for review
-          npm audit --audit-level high || echo "⚠️ Security vulnerabilities found - see details above"
+          npm audit --audit-level high || echo "Security vulnerabilities found - see details above"
 
           # Generate audit report for artifacts
           npm audit --json > audit-report.json || true
 
           # Show summary
-          echo "📊 Security Audit Summary:"
+          echo "Security Audit Summary:"
           npm audit --audit-level critical || echo "No critical vulnerabilities found"
 
       - name: Run CodeQL Analysis
@@ -175,16 +175,16 @@ jobs:
 
       - name: Code formatting check
         run: |
-          echo "🎨 Checking code formatting..."
+          echo "Checking code formatting..."
 
           # Check formatting and capture exit code
           if npm run format:check; then
-            echo "✅ All files are properly formatted"
+            echo "All files are properly formatted"
           else
-            echo "⚠️ Code style issues found."
+            echo "Code style issues found."
             
             echo ""
-            echo "🔧 To fix locally, run:"
+            echo "To fix locally, run:"
             echo "npm run format"
             
             # For development workflow, we'll continue but mark as warning
@@ -333,10 +333,10 @@ jobs:
 
       - name: Install specific Playwright browser
         run: |
-          echo "🎭 Installing Playwright browser: ${{ matrix.playwright_browser }} for ${{ matrix.browser }}"
-          echo "⏱️ This saves time by not installing all browsers (chromium, firefox, webkit)"
+          echo "Installing Playwright browser: ${{ matrix.playwright_browser }} for ${{ matrix.browser }}"
+          echo "This saves time by not installing all browsers (chromium, firefox, webkit)"
           npx playwright install ${{ matrix.playwright_browser }} --with-deps
-          echo "✅ Browser ${{ matrix.playwright_browser }} installed successfully"
+          echo "Browser ${{ matrix.playwright_browser }} installed successfully"
 
       - name: Download build artifacts
         uses: actions/download-artifact@v4
@@ -361,10 +361,10 @@ jobs:
         run: |
           # Use pre-built server if available
           if [ -d "dist" ]; then
-            echo "🚀 Using pre-built server from artifacts"
+            echo "Using pre-built server from artifacts"
             BACKEND_PORT=${{ matrix.backend_port }} node dist/server.js &
           else
-            echo "🔧 Building and starting server"
+            echo "Building and starting server"
             BACKEND_PORT=${{ matrix.backend_port }} npm run backend &
           fi
           npx wait-on http://localhost:${{ matrix.backend_port }} --timeout 30000
@@ -373,7 +373,7 @@ jobs:
         run: |
           # Use pre-built frontend if available  
           if [ -d "build" ]; then
-            echo "🚀 Serving pre-built frontend from artifacts"
+            echo "Serving pre-built frontend from artifacts"
             npx -y serve -s build -l ${{ matrix.frontend_port }} &
           else
             echo "🔧 Building and starting frontend"
@@ -451,11 +451,11 @@ jobs:
         run: |
           # Use pre-built artifacts if available
           if [ -d "dist" ] && [ -d "build" ]; then
-            echo "🚀 Using pre-built artifacts for performance testing"
+            echo "Using pre-built artifacts for performance testing"
             BACKEND_PORT=${{ env.BACKEND_PORT }} node dist/server.js &
             npx -y serve -s build -l ${{ env.FRONTEND_PORT }} &
           else
-            echo "🔧 Building and starting applications"
+            echo "Building and starting applications"
             BACKEND_PORT=${{ env.BACKEND_PORT }} npm run backend &
             PORT=${{ env.FRONTEND_PORT }} npm run frontend &
           fi
@@ -480,7 +480,7 @@ jobs:
           sed -i "s|http://localhost:3000|http://localhost:${{ env.FRONTEND_PORT }}|g" .lighthouserc.json
 
           # Run Lighthouse CI
-          lhci autorun --config=./.lighthouserc.json || echo "⚠️ Lighthouse CI completed with warnings"
+          lhci autorun --config=./.lighthouserc.json || echo "Lighthouse CI completed with warnings"
         continue-on-error: true
 
       - name: Upload Lighthouse results
@@ -504,7 +504,7 @@ jobs:
     steps:
       - name: Check test results
         run: |
-          echo "🔍 QA Pipeline Results Summary"
+          echo "QA Pipeline Results Summary"
           echo "Setup: ${{ needs.setup.result }}"
           echo "Security Scan: ${{ needs.security_scan.result }}"
           echo "Quality Gates: ${{ needs.quality_gates.result }}"
@@ -514,26 +514,26 @@ jobs:
 
           # Calculate optimization metrics
           echo ""
-          echo "📊 Optimization Metrics:"
-          echo "- Shared dependency caching: ✅ Enabled"
-          echo "- Browser-specific installation: ✅ Enabled"
-          echo "- Build artifact reuse: ✅ Enabled"
-          echo "- Port conflict prevention: ✅ Enabled"
-          echo "- Parallel job execution: ✅ Optimized"
+          echo "Optimization Metrics:"
+          echo "- Shared dependency caching: Enabled"
+          echo "- Browser-specific installation: Enabled"
+          echo "- Build artifact reuse: Enabled"
+          echo "- Port conflict prevention: Enabled"
+          echo "- Parallel job execution: Optimized"
 
       - name: Generate QA report (enhanced)
         run: |
-          echo "## 🧪 QA Automation Report" >> $GITHUB_STEP_SUMMARY
+          echo "## QA Automation Report" >> $GITHUB_STEP_SUMMARY
           echo "| Test Suite | Status | Notes |" >> $GITHUB_STEP_SUMMARY
           echo "|------------|--------|-------|" >> $GITHUB_STEP_SUMMARY
-          echo "| Setup & Caching | ${{ needs.setup.result == 'success' && '✅ Passed' || '❌ Failed' }} | Shared dependency management |" >> $GITHUB_STEP_SUMMARY
-          echo "| Security Scan | ${{ needs.security_scan.result == 'success' && '✅ Passed' || '⚠️ See Details' }} | Dev dependencies may have known issues |" >> $GITHUB_STEP_SUMMARY
-          echo "| Quality Gates | ${{ needs.quality_gates.result == 'success' && '✅ Passed' || '❌ Failed' }} | Unified code quality and type safety |" >> $GITHUB_STEP_SUMMARY
-          echo "| Build | ${{ needs.build.result == 'success' && '✅ Passed' || '❌ Failed' }} | Application compilation + artifacts |" >> $GITHUB_STEP_SUMMARY
-          echo "| E2E Tests | ${{ needs.e2e_tests.result == 'success' && '✅ Passed' || '❌ Failed' }} | 5-browser matrix (Desktop + Mobile) |" >> $GITHUB_STEP_SUMMARY
-          echo "| Performance | ${{ needs.performance_tests.result == 'success' && '✅ Passed' || '❌ Failed' }} | Lighthouse performance audit |" >> $GITHUB_STEP_SUMMARY
+          echo "| Setup & Caching | ${{ needs.setup.result == 'success' && 'Passed' || 'Failed' }} | Shared dependency management |" >> $GITHUB_STEP_SUMMARY
+          echo "| Security Scan | ${{ needs.security_scan.result == 'success' && 'Passed' || 'See Details' }} | Dev dependencies may have known issues |" >> $GITHUB_STEP_SUMMARY
+          echo "| Quality Gates | ${{ needs.quality_gates.result == 'success' && 'Passed' || 'Failed' }} | Unified code quality and type safety |" >> $GITHUB_STEP_SUMMARY
+          echo "| Build | ${{ needs.build.result == 'success' && 'Passed' || 'Failed' }} | Application compilation + artifacts |" >> $GITHUB_STEP_SUMMARY
+          echo "| E2E Tests | ${{ needs.e2e_tests.result == 'success' && 'Passed' || 'Failed' }} | 5-browser matrix (Desktop + Mobile) |" >> $GITHUB_STEP_SUMMARY
+          echo "| Performance | ${{ needs.performance_tests.result == 'success' && 'Passed' || 'Failed' }} | Lighthouse performance audit |" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### 🚀 **Pipeline Optimizations:**" >> $GITHUB_STEP_SUMMARY
+          echo "### **Pipeline Optimizations:**" >> $GITHUB_STEP_SUMMARY
           echo "- **Shared Dependency Caching**: ~70% faster dependency installation" >> $GITHUB_STEP_SUMMARY
           echo "- **Browser-Specific Installation**: ~70% reduction in browser download time" >> $GITHUB_STEP_SUMMARY
           echo "- **Build Artifact Reuse**: ~60% faster E2E test startup" >> $GITHUB_STEP_SUMMARY
@@ -541,7 +541,7 @@ jobs:
           echo "- **Optimized Caching**: Playwright browsers + build tools cached" >> $GITHUB_STEP_SUMMARY
           echo "- **Parallel Execution**: Quality gates + security scan run simultaneously" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### ⚡ **Performance Improvements:**" >> $GITHUB_STEP_SUMMARY
+          echo "### **Performance Improvements:**" >> $GITHUB_STEP_SUMMARY
           echo "- **Total CI Time**: ~40-50% reduction from baseline" >> $GITHUB_STEP_SUMMARY
           echo "- **Network Usage**: ~60% reduction in downloads" >> $GITHUB_STEP_SUMMARY
           echo "- **Storage Efficiency**: Smart caching + artifact compression" >> $GITHUB_STEP_SUMMARY
@@ -550,11 +550,11 @@ jobs:
         run: |
           # Primary validation: E2E tests and quality gates must pass
           if [ "${{ needs.e2e_tests.result }}" = "success" ] && [ "${{ needs.quality_gates.result }}" = "success" ] && [ "${{ needs.build.result }}" = "success" ]; then
-            echo "✅ QA validation passed - Ready for review"
-            echo "ℹ️ Note: Security scan may show vulnerabilities in dev dependencies (not affecting production)"
+            echo "QA validation passed - Ready for review"
+            echo "Note: Security scan may show vulnerabilities in dev dependencies (not affecting production)"
             exit 0
           else
-            echo "❌ QA validation failed - Review required"
+            echo "QA validation failed - Review required"
             echo "Failed components:"
             [ "${{ needs.e2e_tests.result }}" != "success" ] && echo "  - E2E Tests: ${{ needs.e2e_tests.result }}"
             [ "${{ needs.quality_gates.result }}" != "success" ] && echo "  - Quality Gates: ${{ needs.quality_gates.result }}"

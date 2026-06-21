@@ -25,10 +25,10 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  NODE_VERSION: '20.11.1'
+  NODE_VERSION: '22'
   # Global cache keys for optimization
-  CACHE_KEY_PREFIX: 'v2-jdmqa'
-  PLAYWRIGHT_CACHE_KEY: 'playwright-browsers-v2'
+  CACHE_KEY_PREFIX: 'v3-jdmqa'
+  PLAYWRIGHT_CACHE_KEY: 'playwright-browsers-v3'
 
 jobs:
   # Shared dependency installation and caching
@@ -61,7 +61,7 @@ jobs:
 
       - name: Install dependencies
         if: steps.cache-deps.outputs.cache-hit != 'true'
-        run: npm ci --legacy-peer-deps
+        run: npm ci
 
       - name: Cache build tools
         uses: actions/cache@v4
@@ -104,7 +104,7 @@ jobs:
 
       - name: Install dependencies (if cache miss)
         if: needs.setup.outputs.cache-hit != 'true'
-        run: npm ci --legacy-peer-deps
+        run: npm ci
 
       - name: Run npm audit
         run: |
@@ -162,7 +162,7 @@ jobs:
 
       - name: Install dependencies (if cache miss)
         if: needs.setup.outputs.cache-hit != 'true'
-        run: npm ci --legacy-peer-deps
+        run: npm ci
 
       - name: Lint all files (unified)
         run: npm run lint
@@ -224,7 +224,7 @@ jobs:
 
       - name: Install dependencies (if cache miss)
         if: needs.setup.outputs.cache-hit != 'true'
-        run: npm ci --legacy-peer-deps
+        run: npm ci
 
       - name: Cache build output
         uses: actions/cache@v4
@@ -245,7 +245,6 @@ jobs:
         with:
           name: build-files
           path: |
-            build/
             dist/
           retention-days: 1
           compression-level: 9
@@ -320,7 +319,7 @@ jobs:
 
       - name: Install dependencies (if cache miss)
         if: needs.setup.outputs.cache-hit != 'true'
-        run: npm ci --legacy-peer-deps
+        run: npm ci
 
       - name: Cache Playwright browser
         uses: actions/cache@v4
@@ -371,12 +370,12 @@ jobs:
 
       - name: Start frontend application (optimized)
         run: |
-          # Use pre-built frontend if available  
-          if [ -d "build" ]; then
+          # Use pre-built frontend if available
+          if [ -d "dist" ]; then
             echo "Serving pre-built frontend from artifacts"
-            npx -y serve -s build -l ${{ matrix.frontend_port }} &
+            npx -y serve -s dist -l ${{ matrix.frontend_port }} &
           else
-            echo "🔧 Building and starting frontend"
+            echo "Building and starting frontend"
             PORT=${{ matrix.frontend_port }} npm run frontend &
           fi
           npx wait-on http://localhost:${{ matrix.frontend_port }} --timeout 60000
@@ -439,7 +438,7 @@ jobs:
 
       - name: Install dependencies (if cache miss)
         if: needs.setup.outputs.cache-hit != 'true'
-        run: npm ci --legacy-peer-deps
+        run: npm ci
 
       - name: Download build artifacts
         uses: actions/download-artifact@v4
@@ -450,10 +449,10 @@ jobs:
       - name: Start application for testing (optimized)
         run: |
           # Use pre-built artifacts if available
-          if [ -d "dist" ] && [ -d "build" ]; then
+          if [ -d "dist" ]; then
             echo "Using pre-built artifacts for performance testing"
             BACKEND_PORT=${{ env.BACKEND_PORT }} node dist/server.js &
-            npx -y serve -s build -l ${{ env.FRONTEND_PORT }} &
+            npx -y serve -s dist -l ${{ env.FRONTEND_PORT }} &
           else
             echo "Building and starting applications"
             BACKEND_PORT=${{ env.BACKEND_PORT }} npm run backend &

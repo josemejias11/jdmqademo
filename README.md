@@ -1,6 +1,6 @@
 # JDM QA Demo — Task Manager
 
-A full-stack demo application for showcasing QA automation practices with a production-quality Playwright E2E framework.
+A full-stack demo application for showcasing QA automation practices with a Playwright E2E framework.
 
 ## Overview
 

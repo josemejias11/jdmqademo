@@ -43,8 +43,12 @@ test.describe('Visual Regression Tests', () => {
     await page.fill('input[name="password"]', process.env.MOCK_PASSWORD || 'changeme');
     await page.click('button[type="submit"]');
 
+    // Wait for login to finish before navigating to another protected route
+    await page.waitForURL('/dashboard');
+
     // Navigate to tasks page using direct navigation for mobile compatibility
     await page.goto('/tasks');
+    await page.waitForURL('/tasks');
     await page.waitForLoadState('domcontentloaded');
 
     // Take a screenshot and compare with baseline

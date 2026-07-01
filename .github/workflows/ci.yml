@@ -267,13 +267,13 @@ jobs:
             playwright_browser: chromium
           - browser: firefox
             project: firefox
-            backend_port: 3011
-            frontend_port: 3010
+            backend_port: 3001
+            frontend_port: 3000
             playwright_browser: firefox
           - browser: webkit
             project: webkit
-            backend_port: 3021
-            frontend_port: 3020
+            backend_port: 3001
+            frontend_port: 3000
             playwright_browser: webkit
 
     env:

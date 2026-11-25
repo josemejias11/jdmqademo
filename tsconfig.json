@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "ES2020",
     "module": "ESNext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "jsx": "react-jsx",
     "strict": true,
     "esModuleInterop": true,
@@ -14,18 +14,17 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "types": ["react", "react-dom", "node", "@playwright/test"],
+    "types": ["react", "react-dom", "node", "@playwright/test", "vite/client"],
     "outDir": "./dist",
     "rootDir": ".",
-    "baseUrl": ".",
     "paths": {
-      "@pages/*": ["e2e/pages/*"],
-      "@fixtures/*": ["e2e/fixtures/*"],
-      "@utils/*": ["e2e/utils/*"],
-      "@config/*": ["e2e/config/*"],
-      "@models/*": ["e2e/models/*"],
-      "@api/*": ["e2e/api/*"],
-      "@locators/*": ["e2e/locators/*"]
+      "@pages/*": ["./e2e/pages/*"],
+      "@fixtures/*": ["./e2e/fixtures/*"],
+      "@utils/*": ["./e2e/utils/*"],
+      "@config/*": ["./e2e/config/*"],
+      "@models/*": ["./e2e/models/*"],
+      "@api/*": ["./e2e/api/*"],
+      "@locators/*": ["./e2e/locators/*"]
     }
   },
   "include": ["src", "server", "e2e", "playwright.config.ts"],

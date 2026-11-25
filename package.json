@@ -24,7 +24,7 @@
     "test:e2e:api": "playwright test e2e/specs/api",
     "test:e2e:report": "playwright show-report",
     "test:e2e:clean": "rimraf test-results playwright-report",
-    "install:browsers": "playwright install firefox webkit"
+    "install:browsers": "playwright install webkit"
   },
   "dependencies": {
     "@fontsource/inter": "^5.2.6",

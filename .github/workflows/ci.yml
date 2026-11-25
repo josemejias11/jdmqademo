@@ -258,18 +258,18 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        browser: [chromium, firefox, webkit]
+        browser: [chrome, firefox, webkit]
         include:
-          - browser: chromium
-            project: chromium
+          - browser: chrome
+            project: chrome
             backend_port: 3001
             frontend_port: 3000
-            playwright_browser: chromium
+            playwright_browser: chrome
           - browser: firefox
             project: firefox
             backend_port: 3001
             frontend_port: 3000
-            playwright_browser: firefox
+            playwright_browser: moz-firefox
           - browser: webkit
             project: webkit
             backend_port: 3001
@@ -322,10 +322,20 @@ jobs:
 
       - name: Install specific Playwright browser
         run: |
-          echo "Installing Playwright browser: ${{ matrix.playwright_browser }} for ${{ matrix.browser }}"
-          echo "This saves time by not installing all browsers (chromium, firefox, webkit)"
-          npx playwright install ${{ matrix.playwright_browser }} --with-deps
-          echo "Browser ${{ matrix.playwright_browser }} installed successfully"
+          echo "Installing browser: ${{ matrix.playwright_browser }} for ${{ matrix.browser }}"
+          if [ "${{ matrix.playwright_browser }}" = "moz-firefox" ]; then
+            # The firefox project uses channel 'moz-firefox' (stock Firefox), which Playwright
+            # cannot install and looks up at /snap/bin/firefox on Linux. Point it at the
+            # runner's preinstalled Firefox.
+            FIREFOX_BIN="$(readlink -f "$(command -v firefox)")"
+            sudo mkdir -p /snap/bin
+            sudo ln -sf "$FIREFOX_BIN" /snap/bin/firefox
+            /snap/bin/firefox --version
+          else
+            # chrome installs Google Chrome stable system-wide; webkit downloads Playwright's build
+            npx playwright install ${{ matrix.playwright_browser }} --with-deps
+          fi
+          echo "Browser ${{ matrix.playwright_browser }} ready"
 
       - name: Download build artifacts
         uses: actions/download-artifact@v8

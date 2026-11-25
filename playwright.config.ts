@@ -66,8 +66,8 @@ export default defineConfig({
   // Configure projects for essential browsers
   projects: [
     {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'] }
+      name: 'chrome',
+      use: { ...devices['Desktop Chrome'], channel: 'chrome' }
     },
 
     {

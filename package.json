@@ -24,7 +24,7 @@
     "test:e2e:api": "playwright test e2e/specs/api",
     "test:e2e:report": "playwright show-report",
     "test:e2e:clean": "rimraf test-results playwright-report",
-    "install:browsers": "playwright install"
+    "install:browsers": "playwright install firefox webkit"
   },
   "dependencies": {
     "@fontsource/inter": "^5.2.6",
@@ -71,5 +71,9 @@
   "engines": {
     "node": ">=20.19.0",
     "npm": ">=10.0.0"
+  },
+  "allowScripts": {
+    "esbuild@0.28.1": true,
+    "fsevents@2.3.3": true
   }
 }

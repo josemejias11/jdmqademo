@@ -33,24 +33,17 @@
 
 ## Subagent Routing
 
-Full routing table lives in `~/.config/opencode/AGENTS.md` (“New Project Bootstrap”). For this repo:
+Roster and dispatch rules live in `~/.claude/CLAUDE.md` and `~/.claude/agents/`.
+For this repo:
 
 - Frontend UI, routing, React state, Vite config, `src/` work -> `web-engineer`.
-- Express routes, controllers, middleware, auth, server runtime -> `api-services-engineer`.
-- Playwright specs, fixtures, locators, visual checks, test stability -> `qa-automation-engineer`.
-- Cross-cutting performance, Docker/CI, or release risk -> `devops-sre-engineer` or `security-engineer` as needed.
+- Express routes, controllers, middleware, auth, server runtime (`server/`) -> `web-engineer`.
+- Playwright specs, fixtures, locators, visual checks, test stability (`e2e/`) -> `qa-automation-engineer`.
+- GitHub Actions, Docker/docker-compose -> `devops-sre-engineer`.
+- Auth flows, new endpoints, secrets -> `security-engineer` review (read-only).
+- Architecture or cross-cutting decisions -> `tech-lead` (read-only).
 
 If a task touches multiple areas, dispatch the relevant specialists in parallel.
-
-## SDD Model Selection
-
-Use the SDD triplet for spec-driven work:
-
-- Implementation (primary) -> `sdd-implementer` (`openai/gpt-5.4`)
-- Implementation (explicit code-only opt-in) -> `sdd-implementer-code` (`openai/gpt-5.3-codex-spark`)
-- Implementation (fallback) -> `general` (`openai/gpt-5.4-mini`)
-- Task review -> `sdd-reviewer` (`openai/gpt-5.5`)
-- Architecture / final review -> `sdd-architect` (`openai/gpt-5.5`)
 
 ## Notes
 
